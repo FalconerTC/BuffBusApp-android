@@ -9,7 +9,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".activity.MainActivity"
-            android:label="@string/title_activity_main2" >
+            android:label="@string/main_activity" >
         </activity>
     </application>
 
