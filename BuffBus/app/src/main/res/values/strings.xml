@@ -2,4 +2,6 @@
     <string name="app_name">BuffBus</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="main_title">Boulder Bus Tracker</string>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>
