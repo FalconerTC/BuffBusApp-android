@@ -7,5 +7,5 @@ import app.buffbus.utils.parser.objects.ParsedObject;
  */
 public interface Parser {
 
-    public ParsedObject parse();
+    public ParsedObject[] parse();
 }

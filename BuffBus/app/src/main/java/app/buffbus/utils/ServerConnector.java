@@ -19,6 +19,7 @@ import java.util.Map;
 import app.buffbus.utils.parser.ParserFactory;
 import app.buffbus.utils.parser.objects.ParsedObject;
 import app.buffbus.utils.parser.objects.Route;
+import app.buffbus.utils.parser.objects.Stop;
 
 /**
  * Created by Falcon on 8/13/2015.
@@ -34,10 +35,15 @@ public class ServerConnector{
     private ParserFactory parser;
     private Thread requester;
 
+    // Parsed objects
+    public Route[] routes;
+    public Stop[] stops;
+
     public static final String SERVER_ADDR = "http://104.131.176.10:8080/";
     public static final String ROUTES_ADDR = SERVER_ADDR + ParserFactory.PARSER_ROUTES;
+    public static final String STOPS_ADDR = SERVER_ADDR + ParserFactory.PARSER_STOPS;
 
-    public static final long POLLING_INTERVAL = 5000; //10 seconds
+    public static final long POLLING_INTERVAL = 5 * 1000; //5 seconds
 
     private ServerConnector() {
         httpPosts = new HashMap<String, HttpPost>();
@@ -46,11 +52,16 @@ public class ServerConnector{
         routesPost.setHeader("Content-type", "application/json");
         httpPosts.put(ParserFactory.PARSER_ROUTES, routesPost);
 
+        // Post to /stops
+        HttpPost stopsPost = new HttpPost(STOPS_ADDR);
+        stopsPost.setHeader("Content-type", "application/json");
+        httpPosts.put(ParserFactory.PARSER_STOPS, stopsPost);
+
         client = new DefaultHttpClient(new BasicHttpParams());
 
         parser = new ParserFactory();
 
-        System.out.println("Initialized connector");
+        Log.i("ParserFactory", "Parser factory initialized");
     }
 
     /* Initialize and fetch ServerConnector singleton */
@@ -73,7 +84,6 @@ public class ServerConnector{
                         Log.e("Thread error", "Thread failed to update");
                         e.printStackTrace();
                     }
-
                     try {
                         Thread.sleep(POLLING_INTERVAL);
                     // Kill thread if interrupted
@@ -99,12 +109,14 @@ public class ServerConnector{
     /* Create server requests and set resulting data */
     public void update() {
         // Fetch routes only once
-        Route routes = (Route)sendRequest(ParserFactory.PARSER_ROUTES);
-        System.out.println(routes.name);
+        if (this.routes == null) {
+            this.routes = (Route[]) sendRequest(ParserFactory.PARSER_ROUTES);
+        }
+        //this.stops = (Stop[])sendRequest(ParserFactory.PARSER_STOPS);
     }
 
     /* Request an update from the server and parse it to a usable object */
-    public ParsedObject sendRequest(String type) {
+    public ParsedObject[] sendRequest(String type) {
         // Fetch specific post
         HttpPost post = httpPosts.get(type);
         InputStream stream = null;
@@ -142,8 +154,8 @@ public class ServerConnector{
             }
         }
         // Parse JSON response
-        ParsedObject obj = parser.parse(type, result);
-        return obj;
+        ParsedObject[] objects = parser.parse(type, result);
+        return objects;
     }
 
 }

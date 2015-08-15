@@ -1,6 +1,7 @@
 package app.buffbus.utils.parser;
 
 import app.buffbus.utils.parser.objects.ParsedObject;
+import app.buffbus.utils.parser.objects.StopParser;
 
 /**
  * Created by Falcon on 8/14/2015.
@@ -8,10 +9,13 @@ import app.buffbus.utils.parser.objects.ParsedObject;
 public class ParserFactory {
 
     public static final String PARSER_ROUTES = "routes";
+    public static final String PARSER_STOPS = "stops";
 
-    public ParsedObject parse(String type, String data) {
+    public ParsedObject[] parse(String type, String data) {
         if (type.equals(PARSER_ROUTES)) {
             return new RouteParser(data).parse();
+        } else if (type.equals(PARSER_STOPS)) {
+            return new StopParser(data).parse();
         }
         return null;
     }
