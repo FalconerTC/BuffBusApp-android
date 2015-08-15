@@ -24,12 +24,13 @@ import app.buffbus.utils.parser.objects.Route;
  * Created by Falcon on 8/13/2015.
  *
  * References http://stackoverflow.com/questions/9605913/how-to-parse-json-in-android
+ *
  */
 public class ServerConnector{
 
     private static ServerConnector connector;
     private DefaultHttpClient client;
-    private Map<String, HttpPost> posts;
+    private Map<String, HttpPost> httpPosts;
     private ParserFactory parser;
     private Thread requester;
 
@@ -39,11 +40,11 @@ public class ServerConnector{
     public static final long POLLING_INTERVAL = 5000; //10 seconds
 
     private ServerConnector() {
-        posts = new HashMap<String, HttpPost>();
+        httpPosts = new HashMap<String, HttpPost>();
         // Post to /routes
         HttpPost routesPost = new HttpPost(ROUTES_ADDR);
         routesPost.setHeader("Content-type", "application/json");
-        posts.put(ParserFactory.PARSER_ROUTES, routesPost);
+        httpPosts.put(ParserFactory.PARSER_ROUTES, routesPost);
 
         client = new DefaultHttpClient(new BasicHttpParams());
 
@@ -105,7 +106,7 @@ public class ServerConnector{
     /* Request an update from the server and parse it to a usable object */
     public ParsedObject sendRequest(String type) {
         // Fetch specific post
-        HttpPost post = this.posts.get(type);
+        HttpPost post = httpPosts.get(type);
         InputStream stream = null;
         String result = "";
         // Send request
