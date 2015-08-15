@@ -34,6 +34,8 @@ public class ServerConnector{
     private Map<String, HttpPost> httpPosts;
     private ParserFactory parser;
     private Thread requester;
+    // Used to notify main thread once route data is received
+    private Object syncObject = null;
 
     // Parsed objects
     public Route[] routes;
@@ -69,6 +71,10 @@ public class ServerConnector{
         if (connector == null)
             connector = new ServerConnector();
         return connector;
+    }
+
+    public void setSyncObject(Object sync) {
+        this.syncObject = sync;
     }
 
     /* Create the server polling thread */
@@ -111,6 +117,12 @@ public class ServerConnector{
         // Fetch routes only once
         if (this.routes == null) {
             this.routes = (Route[]) sendRequest(ParserFactory.PARSER_ROUTES);
+            // Notify main thread
+            if (syncObject != null) {
+                synchronized(syncObject) {
+                    syncObject.notify();
+                }
+            }
         }
         //this.stops = (Stop[])sendRequest(ParserFactory.PARSER_STOPS);
     }

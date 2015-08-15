@@ -2,15 +2,21 @@ package app.buffbus.activity;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.ContextThemeWrapper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import app.buffbus.R;
 import app.buffbus.utils.ServerConnector;
+import app.buffbus.utils.parser.objects.Route;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -20,25 +26,99 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         ServerConnector listener = ServerConnector.getServerConnector();
-        // Start polling the server for updates
-        listener.start();
+        blockUntilReady(listener);
+
+        Route[] routes = listener.routes;
+        // Change route order
+        routes = modifyRoutes(routes);
         //listener.stop();
 
-
         RelativeLayout layout = (RelativeLayout)findViewById(R.id.mainLayout);
-        //TODO button things
-        Button btn = createRouteButton(R.id.route_template, R.string.route_1, R.id.route_2);
-        layout.addView(btn);
+        // Hide template button
+        findViewById(R.id.route_template).setVisibility(View.GONE);
+        int parentElem = R.id.textView_Subtitle;
+        // Create route buttons
+        for (int i = 0; i < routes.length; i++) {
+            Button btn = createRouteButton(parentElem, routes[i].name, (i+1));
+            layout.addView(btn);
+            parentElem = (i+1);
+        }
         setContentView(layout);
     }
 
-    public Button createRouteButton(int parentElem, int text, int id) {
+    /* Block main thread until route information is retrieved */
+    private void blockUntilReady(ServerConnector listener) {
+        Log.i("Blocking main thread", "Waiting for route information...");
+        Object syncObject = new Object();
+        listener.setSyncObject(syncObject);
+        // Start polling the server for updates
+        listener.start();
+        synchronized(syncObject) {
+            try {
+                // Wait for notify from ServerConnection
+                syncObject.wait();
+                Log.i("Route info received", "Unblocking main thread");
+            } catch (InterruptedException e) {
+                Log.i("Thread interrupted", "Unblocking main thread");
+                return;
+            } catch (Exception e) {
+                Log.e("Sync error", "Something unexpected happened");
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /* This applies several hard-coded changes to what routes we show and in what order
+     * This function serves to mimic the route list as it is defined in the iOS version */
+    public Route[] modifyRoutes(Route[] routes) {
+        int len = routes.length;
+        ArrayList<String> excludedRoutes = new ArrayList<String>();
+        excludedRoutes.add("Will Vill Football");
+        excludedRoutes.add("Will Vill Basketball");
+
+        Route[] newRoutes = new Route[len - excludedRoutes.size()];
+        // New routes index
+        int j = 0;
+        for (int i = 0; i < len; i++) {
+            // Check exclusion list
+            if(!(excludedRoutes.contains(routes[i].name))) {
+                // Rename "Will VIll - Brown Line"  to "Buff Bus"
+                if (routes[i].name.equals("Will Vill - Brown Line")) {
+                    routes[i].name = "Buff Bus";
+                }
+                newRoutes[j] = routes[i];
+                j++;
+            }
+        }
+        // Set "Hop Clockwise" to index 1
+        swap(newRoutes, 1, 2);
+        // Set "Athens Court Shuttle" to index 3
+        swap(newRoutes, 2, 3);
+        // Set "Late Night Black" to index 5
+        swap(newRoutes, 4, 5);
+        // Set "Late Night Silver" to index 6
+        swap(newRoutes, 5, 6);
+
+        return newRoutes;
+    }
+
+    /* Efficient swap helper
+    * http://stackoverflow.com/questions/13766209/effective-swapping-of-elements-of-an-array-in-java
+    * */
+    public static final <T> void swap(T[] a, int i, int j) {
+        T t = a[i];
+        a[i] = a[j];
+        a[j] = t;
+    }
+
+    /* Create a button for route-selection, based on the template */
+    public Button createRouteButton(int parentElem, String text, int id) {
         RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         relativeParams.addRule(RelativeLayout.ALIGN_RIGHT, R.id.textView_Title);
         relativeParams.addRule(RelativeLayout.ALIGN_LEFT, R.id.textView_Title);
         relativeParams.addRule(RelativeLayout.BELOW, parentElem);
-        relativeParams.setMargins(0, 10, 0, 0);
+        relativeParams.setMargins(0, 12, 0, 0);
 
         Button btn = new Button(MainActivity.this, null, R.attr.RouteButtonStyle);
 
