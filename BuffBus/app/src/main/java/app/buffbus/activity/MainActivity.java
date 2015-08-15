@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import app.buffbus.R;
+import app.buffbus.utils.ServerConnector;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -18,11 +19,17 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        System.out.println("Getting data");
+        ServerConnector listener = ServerConnector.getServerConnector();
+        listener.start();
+        //listener.stop();
+
+
         RelativeLayout layout = (RelativeLayout)findViewById(R.id.mainLayout);
         //TODO button things
         Button btn = createRouteButton(R.id.route_template, R.string.route_1, R.id.route_2);
-        layout.addView(btn);
-        setContentView(layout);
+        //layout.addView(btn);
+        //setContentView(layout);
     }
 
     public Button createRouteButton(int parentElem, int text, int id) {

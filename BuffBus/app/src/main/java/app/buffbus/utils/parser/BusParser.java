@@ -1,4 +1,4 @@
-package app.buffbus.utils;
+package app.buffbus.utils.parser;
 
 /**
  * Created by Falcon on 8/13/2015.

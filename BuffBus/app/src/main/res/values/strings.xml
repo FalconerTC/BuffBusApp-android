@@ -3,10 +3,12 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
+    <!-- Activity text -->
     <string name="main_activity">BuffBus</string>
     <string name="main_title">Boulder Bus Tracker</string>
     <string name="main_subtitle">Select A Route</string>
 
+    <!-- Routes -->
     <string name="route_1">Buff Bus</string>
     <string name="sample">sample</string>
 </resources>
