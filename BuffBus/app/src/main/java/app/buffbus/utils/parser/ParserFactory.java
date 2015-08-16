@@ -1,7 +1,6 @@
 package app.buffbus.utils.parser;
 
 import app.buffbus.utils.parser.objects.ParsedObject;
-import app.buffbus.utils.parser.objects.StopParser;
 
 /**
  * Created by Falcon on 8/14/2015.

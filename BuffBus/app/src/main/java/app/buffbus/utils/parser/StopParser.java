@@ -1,4 +1,4 @@
-package app.buffbus.utils.parser.objects;
+package app.buffbus.utils.parser;
 
 import android.util.Log;
 
@@ -9,6 +9,8 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 import app.buffbus.utils.parser.Parser;
+import app.buffbus.utils.parser.objects.ParsedObject;
+import app.buffbus.utils.parser.objects.Stop;
 
 /**
  * Created by Falcon on 8/15/2015.
