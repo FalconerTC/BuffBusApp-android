@@ -10,7 +10,8 @@ public class Route implements ParsedObject{
     public int[] stops;
 
     public Route() {
-        name = "Hello there";
+        this.id = 0;
+        this.name = "";
     }
 
 }

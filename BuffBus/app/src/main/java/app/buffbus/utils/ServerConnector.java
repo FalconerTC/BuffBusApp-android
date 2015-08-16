@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import app.buffbus.utils.parser.ParserFactory;
+import app.buffbus.utils.parser.objects.Bus;
 import app.buffbus.utils.parser.objects.ParsedObject;
 import app.buffbus.utils.parser.objects.Route;
 import app.buffbus.utils.parser.objects.Stop;
@@ -33,6 +34,7 @@ public class ServerConnector{
     private DefaultHttpClient client;
     private Map<String, HttpPost> httpPosts;
     private ParserFactory parser;
+    // Thread to manage server requests
     private Thread requester;
     // Used to notify main thread once route data is received
     private Object syncObject = null;
@@ -40,14 +42,17 @@ public class ServerConnector{
     // Parsed objects
     public Route[] routes;
     public Stop[] stops;
+    public Bus[] buses;
 
     public static final String SERVER_ADDR = "http://104.131.176.10:8080/";
     public static final String ROUTES_ADDR = SERVER_ADDR + ParserFactory.PARSER_ROUTES;
     public static final String STOPS_ADDR = SERVER_ADDR + ParserFactory.PARSER_STOPS;
+    public static final String BUSES_ADDR = SERVER_ADDR + ParserFactory.PARSER_BUSES;
 
     public static final long POLLING_INTERVAL = 5 * 1000; //5 seconds
 
     private ServerConnector() {
+        parser = new ParserFactory();
         httpPosts = new HashMap<String, HttpPost>();
         // Post to /routes
         HttpPost routesPost = new HttpPost(ROUTES_ADDR);
@@ -59,10 +64,12 @@ public class ServerConnector{
         stopsPost.setHeader("Content-type", "application/json");
         httpPosts.put(ParserFactory.PARSER_STOPS, stopsPost);
 
+        // Post to /buses
+        HttpPost busesPost = new HttpPost(BUSES_ADDR);
+        busesPost.setHeader("content-type", "application/json");
+        httpPosts.put(ParserFactory.PARSER_BUSES, busesPost);
+
         client = new DefaultHttpClient(new BasicHttpParams());
-
-        parser = new ParserFactory();
-
         Log.i("ParserFactory", "Parser factory initialized");
     }
 
@@ -124,7 +131,9 @@ public class ServerConnector{
                 }
             }
         }
-        //this.stops = (Stop[])sendRequest(ParserFactory.PARSER_STOPS);
+        // Update stops and buses each interval
+        this.stops = (Stop[])sendRequest(ParserFactory.PARSER_STOPS);
+        this.buses = (Bus[])sendRequest(ParserFactory.PARSER_BUSES);
     }
 
     /* Request an update from the server and parse it to a usable object */
