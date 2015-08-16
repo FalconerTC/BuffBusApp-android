@@ -1,5 +1,6 @@
 package app.buffbus.activity;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,10 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import app.buffbus.R;
+import app.buffbus.main.MapController;
 import app.buffbus.utils.ServerConnector;
 import app.buffbus.utils.parser.objects.Route;
 
@@ -55,7 +58,7 @@ public class MainActivity extends ActionBarActivity {
             try {
                 // Wait for notify from ServerConnection
                 syncObject.wait();
-                Log.i("Route info received", "Unblocking main thread");
+                Log.i("Unblocking main thread", "Route info received");
             } catch (InterruptedException e) {
                 Log.i("Thread interrupted", "Unblocking main thread");
                 return;
@@ -123,9 +126,25 @@ public class MainActivity extends ActionBarActivity {
         btn.setText(text);
         btn.setId(id);
         btn.setLayoutParams(relativeParams);
+        btn.setOnClickListener(routeClick(btn));
 
         return btn;
     }
+    /* Called on click for each button in route selector */
+    View.OnClickListener routeClick(final Button button) {
+        return new View.OnClickListener() {
+            public void onClick(View v) {
+                Log.i("NOW HEAR THIS", "A button was clicked");
+                String selectedRoute = ((Button)v).getText().toString();
+                MapController.getMapController(MainActivity.this, selectedRoute).loadMap();
+            }
+        };
+    }
+
+    /*public void loadMap(View v) {
+        Toast.makeText(this, "Clicked on Button", Toast.LENGTH_LONG).show();
+        Log.i("NOW HEAR THIS", "A button was clicked");
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

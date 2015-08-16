@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <item name="route_template" type="id"/>
-    <item name="route_1" type="id"/>
-    <item name="route_2" type="id"/>
-    <item name="route_3" type="id"/>
-
-</resources>

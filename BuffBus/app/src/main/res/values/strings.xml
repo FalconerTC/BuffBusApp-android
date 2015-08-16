@@ -11,4 +11,5 @@
     <!-- Routes -->
     <string name="route_1">Buff Bus</string>
     <string name="sample">sample</string>
+    <string name="title_activity_map">MapActivity</string>
 </resources>
