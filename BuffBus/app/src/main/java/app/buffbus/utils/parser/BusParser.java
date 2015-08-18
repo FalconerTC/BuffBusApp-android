@@ -31,14 +31,9 @@ public class BusParser implements Parser{
                 try {
                     JSONObject current = arr.getJSONObject(i);
                     buses[i] = new Bus();
-                    buses[i].inService = current.getBoolean("inService");
-                    buses[i].equipment = current.getString("equipmentID");
                     buses[i].latitude = current.getDouble("lat");
                     buses[i].longitude = current.getDouble("lng");
-                    if (buses[i].inService) {
-                        buses[i].id = current.getInt("routeID");
-                        buses[i].nextStopId = current.getInt("nextStopID");
-                    }
+                    buses[i].id = current.getInt("routeID");
                 } catch (Exception e) {
                     Log.e("Error", "Something happened while parsing buses array");
                     e.printStackTrace();

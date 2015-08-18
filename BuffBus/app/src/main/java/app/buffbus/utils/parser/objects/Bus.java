@@ -5,20 +5,13 @@ package app.buffbus.utils.parser.objects;
  */
 public class Bus implements ParsedObject{
 
-    public Boolean inService;
-    public String equipment;
+    public int id;
     public double latitude;
     public double longitude;
-    // Only used if bus is in service
-    public int id;
-    public int nextStopId;
 
     public Bus() {
-        this.inService = false;
-        this.equipment = "";
+        this.id = 0;
         this.latitude = 0;
         this.longitude = 0;
-        this.id = 0;
-        this.nextStopId = 0;
     }
 }

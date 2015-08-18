@@ -83,10 +83,6 @@ public class MainActivity extends ActionBarActivity {
         for (int i = 0; i < len; i++) {
             // Check exclusion list
             if(!(excludedRoutes.contains(routes[i].name))) {
-                // Rename "Will VIll - Brown Line"  to "Buff Bus"
-                if (routes[i].name.equals("Will Vill - Brown Line")) {
-                    routes[i].name = "Buff Bus";
-                }
                 newRoutes[j] = routes[i];
                 j++;
             }
