@@ -3,7 +3,7 @@ package app.buffbus.main;
 import android.app.Activity;
 import android.content.Intent;
 
-import app.buffbus.activity.MapActivity;
+import app.buffbus.activity.DisplayActivity;
 import app.buffbus.utils.ServerConnector;
 import app.buffbus.utils.parser.objects.Route;
 
@@ -46,7 +46,7 @@ public class MapController {
 
     /* */
     public void loadMap() {
-        Intent intent = new Intent(original, MapActivity.class);
+        Intent intent = new Intent(original, DisplayActivity.class);
         original.startActivity(intent);
     }
 }

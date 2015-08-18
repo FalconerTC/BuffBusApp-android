@@ -1,6 +1,5 @@
 package app.buffbus.activity;
 
-import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -73,7 +71,7 @@ public class MainActivity extends ActionBarActivity {
      * This function serves to mimic the route list as it is defined in the iOS version */
     public Route[] modifyRoutes(Route[] routes) {
         int len = routes.length;
-        ArrayList<String> excludedRoutes = new ArrayList<String>();
+        ArrayList<String> excludedRoutes = new ArrayList<>();
         excludedRoutes.add("Will Vill Football");
         excludedRoutes.add("Will Vill Basketball");
 
@@ -95,7 +93,6 @@ public class MainActivity extends ActionBarActivity {
         swap(newRoutes, 4, 5);
         // Set "Late Night Silver" to index 6
         swap(newRoutes, 5, 6);
-
         return newRoutes;
     }
 

@@ -1,4 +1,4 @@
-package app.buffbus.activity;
+package app.buffbus.Fragments;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -11,14 +11,14 @@ import app.buffbus.R;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MapActivityFragment extends Fragment {
+public class BussSelectorFragment extends Fragment {
 
-    public MapActivityFragment() {
+    public BussSelectorFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_map, container, false);
+        return inflater.inflate(R.layout.buss_selector, container, false);
     }
 }

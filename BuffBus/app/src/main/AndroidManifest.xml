@@ -14,8 +14,8 @@
             android:label="@string/main_activity" >
         </activity>
         <activity
-            android:name=".activity.MapActivity"
-            android:label="@string/title_activity_map" >
+            android:name=".activity.DisplayActivity"
+            android:label="@string/title_activity_display" >
         </activity>
     </application>
 
