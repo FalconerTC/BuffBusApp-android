@@ -19,13 +19,17 @@ import app.buffbus.utils.parser.objects.Route;
 
 public class MainActivity extends ActionBarActivity {
 
+    public MapController controller;
+    public ServerConnector listener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ServerConnector listener = ServerConnector.getServerConnector();
-        blockUntilReady(listener);
+        listener = ServerConnector.getServerConnector();
+        controller = MapController.getMapController(MainActivity.this);
+        blockUntilReady();
 
         Route[] routes = listener.getRoutes();
         // Change route order
@@ -46,7 +50,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     /* Block main thread until route information is retrieved */
-    private void blockUntilReady(ServerConnector listener) {
+    private void blockUntilReady() {
         Log.i("Blocking main thread", "Waiting for route information...");
         Object syncObject = new Object();
         listener.setSyncObject(syncObject);
@@ -127,9 +131,8 @@ public class MainActivity extends ActionBarActivity {
     View.OnClickListener routeClick(final Button button) {
         return new View.OnClickListener() {
             public void onClick(View v) {
-                Log.i("NOW HEAR THIS", "A button was clicked");
                 String selectedRoute = ((Button)v).getText().toString();
-                MapController.getMapController(MainActivity.this).loadMap(selectedRoute);
+                controller.loadMap(selectedRoute);
             }
         };
     }

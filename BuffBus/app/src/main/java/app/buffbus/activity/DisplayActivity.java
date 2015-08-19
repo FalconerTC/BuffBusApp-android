@@ -12,15 +12,24 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import app.buffbus.R;
+import app.buffbus.main.MapController;
+import app.buffbus.utils.parser.objects.Bus;
+import app.buffbus.utils.parser.objects.Stop;
 
 public class DisplayActivity extends ActionBarActivity {
+
+    NumberPicker stopSelector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
 
-        addListenerOnSpinnerItemSelection();
+        stopSelector = (NumberPicker)findViewById(R.id.stopPicker);
+
+        System.out.println("Creating DisplayActivity");
+        initializeSelector();
+        //updateSelector();
     }
 
     @Override
@@ -45,16 +54,19 @@ public class DisplayActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void addListenerOnSpinnerItemSelection() {
-        System.out.println("THINGS");
-        NumberPicker n = (NumberPicker)findViewById(R.id.numberPicker);
-        n.setMaxValue(4);
-        String[] strs = {"Buff Bus", "Bus 2", "Bus 3", "Bus 4", "Bus 5"};
-        n.setDisplayedValues(strs);
-        n.setWrapSelectorWheel(true);
-        n.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+    /* Set initial values for selector */
+    public void initializeSelector() {
+        String[] stops = MapController.getMapController().getStopNames();
+        stopSelector.setMaxValue(stops.length - 1);
+        stopSelector.setDisplayedValues(stops);
+        stopSelector.setWrapSelectorWheel(true);
+        stopSelector.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+    }
 
-        Spinner spinner = (Spinner)findViewById(R.id.buss_spinner);
+    /* Set values for selector */
+    public void updateSelector() {
+
+        /*Spinner spinner = (Spinner)findViewById(R.id.buss_spinner);
         spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
             @Override
@@ -69,7 +81,7 @@ public class DisplayActivity extends ActionBarActivity {
 
             }
 
-        });
+        });*/
 
     }
 }
