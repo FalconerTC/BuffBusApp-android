@@ -40,9 +40,9 @@ public class ServerConnector{
     private Object syncObject = null;
 
     // Parsed objects
-    public Route[] routes;
-    public Stop[] stops;
-    public Bus[] buses;
+    private Route[] routes;
+    private Stop[] stops;
+    private Bus[] buses;
 
     public static final String SERVER_ADDR = "http://104.131.176.10:8080/";
     public static final String ROUTES_ADDR = SERVER_ADDR + ParserFactory.PARSER_ROUTES;
@@ -50,6 +50,11 @@ public class ServerConnector{
     public static final String BUSES_ADDR = SERVER_ADDR + ParserFactory.PARSER_BUSES;
 
     public static final long POLLING_INTERVAL = 5 * 1000; //5 seconds
+
+    public Route[] getRoutes() { return routes;}
+    public Stop[] getStops() { return stops;}
+    public Bus[] getBuses() { return buses;}
+
 
     private ServerConnector() {
         parser = new ParserFactory();

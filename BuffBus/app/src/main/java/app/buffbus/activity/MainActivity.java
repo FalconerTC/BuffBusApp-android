@@ -27,7 +27,7 @@ public class MainActivity extends ActionBarActivity {
         ServerConnector listener = ServerConnector.getServerConnector();
         blockUntilReady(listener);
 
-        Route[] routes = listener.routes;
+        Route[] routes = listener.getRoutes();
         // Change route order
         routes = modifyRoutes(routes);
         //listener.stop();
@@ -129,7 +129,7 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Log.i("NOW HEAR THIS", "A button was clicked");
                 String selectedRoute = ((Button)v).getText().toString();
-                MapController.getMapController(MainActivity.this, selectedRoute).loadMap();
+                MapController.getMapController(MainActivity.this).loadMap(selectedRoute);
             }
         };
     }

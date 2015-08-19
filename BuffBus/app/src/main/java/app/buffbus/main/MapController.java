@@ -14,17 +14,32 @@ public class MapController {
 
     private static MapController controller;
     private Activity original;
+    private Intent map;
     private ServerConnector connector;
 
     public Route route;
 
 
-    private MapController(Activity original, String selectedRoute) {
+    private MapController(Activity original) {
         this.original = original;
         this.connector = ServerConnector.getServerConnector();
+    }
 
+
+    public static MapController getMapController(Activity original) {
+        if (controller == null)
+            controller = new MapController(original);
+        return controller;
+    }
+
+    public static MapController getMapController() {
+        return controller;
+    }
+
+    /* */
+    public void setRoute(String selectedRoute) {
         // Load route from name
-        Route[] routes = this.connector.routes;
+        Route[] routes = this.connector.getRoutes();
         int routeLen = routes.length;
         for (int i = 0; i > routeLen; i++) {
             if (routes[i].name.equals(selectedRoute)) {
@@ -34,19 +49,11 @@ public class MapController {
         }
     }
 
-    public static MapController getMapController(Activity original, String selectedRoute) {
-        if (controller == null)
-            controller = new MapController(original, selectedRoute);
-        return controller;
-    }
-
-    public static MapController getMapController() {
-        return controller;
-    }
-
     /* */
-    public void loadMap() {
-        Intent intent = new Intent(original, DisplayActivity.class);
-        original.startActivity(intent);
+    public void loadMap(String selectedRoute) {
+        setRoute(selectedRoute);
+        if (map == null)
+            map = new Intent(original, DisplayActivity.class);
+        original.startActivity(map);
     }
 }
