@@ -1,10 +1,14 @@
 package app.buffbus.utils.parser;
 
 import android.util.Log;
+import android.util.SparseArray;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import app.buffbus.utils.parser.objects.ParsedObject;
 import app.buffbus.utils.parser.objects.Route;
@@ -21,25 +25,31 @@ public class RouteParser implements Parser{
     }
 
     /* Parse stringified JSON into ParsedObjects */
-    public ParsedObject[] parse() {
-        Route[] routes = null;
+    public SparseArray<? extends ParsedObject> parse() {
+        //Route[] routes = null;
+        SparseArray<Route> routes = null;
         try {
             JSONArray arr = new JSONArray(data);
             int routesLen = arr.length();
-            routes = new Route[routesLen];
+            //routes = new Route[routesLen];
+            Route route;
+            routes = new SparseArray<>();
             for (int i = 0; i < routesLen; i++) {
                 try {
                     JSONObject current = arr.getJSONObject(i);
-                    routes[i] = new Route();
-                    routes[i].id = current.getInt("id");
-                    routes[i].name = current.getString("name");
+                    route = new Route();
+                    //routes[i] = new Route();
+                    //routes[i].id = current.getInt("id");
+                    Integer id = current.getInt("id");
+                    route.name = current.getString("name");
                     // Read in int array of stops
                     JSONArray stops = current.getJSONArray("stops");
                     int stopsLen = stops.length();
                     int[] stopsArr = new int[stopsLen];
                     for (int j = 0; j < stopsLen; j++)
                         stopsArr[j] = stops.getInt(j);
-                    routes[i].stops = stopsArr;
+                    route.stops = stopsArr;
+                    routes.append(id, route);
                 } catch (Exception e) {
                     Log.e("Error", "Something happened while parsing routes array");
                     e.printStackTrace();

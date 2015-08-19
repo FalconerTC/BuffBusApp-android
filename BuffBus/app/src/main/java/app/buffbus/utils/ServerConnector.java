@@ -1,6 +1,7 @@
 package app.buffbus.utils;
 
 import android.util.Log;
+import android.util.SparseArray;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -40,7 +41,7 @@ public class ServerConnector{
     private Object syncObject = null;
 
     // Parsed objects
-    private Route[] routes;
+    private SparseArray<Route> routes;
     private Stop[] stops;
     private Bus[] buses;
 
@@ -49,9 +50,9 @@ public class ServerConnector{
     public static final String STOPS_ADDR = SERVER_ADDR + ParserFactory.PARSER_STOPS;
     public static final String BUSES_ADDR = SERVER_ADDR + ParserFactory.PARSER_BUSES;
 
-    public static final long POLLING_INTERVAL = 5 * 1000; //5 seconds
+    public static final long POLLING_INTERVAL = 5 * 1000; // 5 seconds
 
-    public Route[] getRoutes() { return routes;}
+    public SparseArray<Route> getRoutes() { return routes;}
     public Stop[] getStops() { return stops;}
     public Bus[] getBuses() { return buses;}
 
@@ -128,7 +129,7 @@ public class ServerConnector{
     public void update() {
         // Fetch routes only once
         if (this.routes == null) {
-            this.routes = (Route[]) sendRequest(ParserFactory.PARSER_ROUTES);
+            this.routes = (SparseArray<Route>) sendRequest(ParserFactory.PARSER_ROUTES);
             // Notify main thread
             if (syncObject != null) {
                 synchronized(syncObject) {
@@ -137,12 +138,12 @@ public class ServerConnector{
             }
         }
         // Update stops and buses each interval
-        this.stops = (Stop[])sendRequest(ParserFactory.PARSER_STOPS);
-        this.buses = (Bus[])sendRequest(ParserFactory.PARSER_BUSES);
+        //this.stops = (Stop[])sendRequest(ParserFactory.PARSER_STOPS);
+        //this.buses = (Bus[])sendRequest(ParserFactory.PARSER_BUSES);
     }
 
     /* Request an update from the server and parse it to a usable object */
-    public ParsedObject[] sendRequest(String type) {
+    public SparseArray<? extends ParsedObject> sendRequest(String type) {
         // Fetch specific post
         HttpPost post = httpPosts.get(type);
         InputStream stream = null;
@@ -180,7 +181,7 @@ public class ServerConnector{
             }
         }
         // Parse JSON response
-        ParsedObject[] objects = parser.parse(type, result);
+        SparseArray<? extends ParsedObject> objects = parser.parse(type, result);
         return objects;
     }
 

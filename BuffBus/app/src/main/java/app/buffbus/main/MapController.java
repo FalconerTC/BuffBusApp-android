@@ -39,14 +39,14 @@ public class MapController {
     /* */
     public void setRoute(String selectedRoute) {
         // Load route from name
-        Route[] routes = this.connector.getRoutes();
+/*        Route[] routes = this.connector.getRoutes();
         int routeLen = routes.length;
         for (int i = 0; i > routeLen; i++) {
             if (routes[i].name.equals(selectedRoute)) {
                 this.route = routes[i];
                 break;
             }
-        }
+        }*/
     }
 
     /* */

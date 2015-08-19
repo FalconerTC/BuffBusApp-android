@@ -1,5 +1,7 @@
 package app.buffbus.utils.parser;
 
+import android.util.SparseArray;
+
 import app.buffbus.utils.parser.objects.ParsedObject;
 
 /**
@@ -7,5 +9,5 @@ import app.buffbus.utils.parser.objects.ParsedObject;
  */
 public interface Parser {
 
-    public ParsedObject[] parse();
+    public SparseArray<? extends ParsedObject> parse();
 }

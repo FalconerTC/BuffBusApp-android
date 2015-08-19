@@ -12,7 +12,7 @@ import app.buffbus.utils.parser.objects.ParsedObject;
 /**
  * Created by Falcon on 8/13/2015.
  */
-public class BusParser implements Parser{
+public class BusParser{
 
     String data;
 

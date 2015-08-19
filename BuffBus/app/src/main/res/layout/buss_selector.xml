@@ -9,22 +9,12 @@
     android:layout_centerInParent="true"
     tools:context="app.buffbus.Fragments.BussSelectorFragment">
 
-    <Spinner
-        android:id="@+id/buss_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:spinnerMode="dropdown"
-        android:entries="@array/planets_array"
-        android:prompt="@string/country_prompt"
-        android:nestedScrollingEnabled="false" />
-
     <NumberPicker
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/numberPicker"
         android:nestedScrollingEnabled="true"
         android:orientation="vertical"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/buss_spinner"/>
+        android:layout_alignParentTop="true" />
 
 </RelativeLayout>

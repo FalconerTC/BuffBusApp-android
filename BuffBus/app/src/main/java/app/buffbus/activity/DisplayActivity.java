@@ -54,7 +54,7 @@ public class DisplayActivity extends ActionBarActivity {
         n.setWrapSelectorWheel(true);
         n.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 
-        Spinner spinner = (Spinner)findViewById(R.id.buss_spinner);
+        /*Spinner spinner = (Spinner)findViewById(R.id.buss_spinner);
         spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
             @Override
@@ -69,7 +69,7 @@ public class DisplayActivity extends ActionBarActivity {
 
             }
 
-        });
+        });*/
 
     }
 }

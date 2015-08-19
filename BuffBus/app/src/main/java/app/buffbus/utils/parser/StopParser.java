@@ -15,7 +15,7 @@ import app.buffbus.utils.parser.objects.Stop;
 /**
  * Created by Falcon on 8/15/2015.
  */
-public class StopParser implements Parser {
+public class StopParser{
 
     String data;
 
