@@ -12,6 +12,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        tools:layout="@layout/buss_selector" />
+        tools:layout="@layout/fragment_buss_selector" />
+
+    <fragment android:name="app.buffbus.Fragments.BussTimesFragment"
+        android:id="@+id/times_fragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/selector_fragment"
+        tools:layout="@layout/fragment_buss_times" />
 
 </RelativeLayout>

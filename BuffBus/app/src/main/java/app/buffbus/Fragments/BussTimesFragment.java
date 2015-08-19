@@ -11,14 +11,14 @@ import app.buffbus.R;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class BussSelectorFragment extends Fragment {
+public class BussTimesFragment extends Fragment {
 
-    public BussSelectorFragment() {
+    public BussTimesFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_buss_selector, container, false);
+        return inflater.inflate(R.layout.fragment_buss_times, container, false);
     }
 }
