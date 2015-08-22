@@ -3,9 +3,7 @@ package app.buffbus.main;
 import android.app.Activity;
 import android.content.Intent;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -13,6 +11,7 @@ import app.buffbus.activity.DisplayActivity;
 import app.buffbus.utils.ServerConnector;
 import app.buffbus.utils.parser.objects.Route;
 import app.buffbus.utils.parser.objects.Stop;
+import app.buffbus.utils.threads.ControllerThread;
 
 /**
  * Created by Falcon on 8/9/2015.
@@ -20,8 +19,9 @@ import app.buffbus.utils.parser.objects.Stop;
 public class MapController {
 
     private static MapController controller;
+    private static ControllerThread updater;
     private Activity original;
-    private Intent map;
+    public Intent map;
     private ServerConnector connector;
 
     private Route route;
@@ -39,11 +39,13 @@ public class MapController {
     private MapController(Activity original) {
         this.original = original;
         this.connector = ServerConnector.getServerConnector();
+        //this.updater = new ControllerThread();
     }
 
     public static MapController getMapController(Activity original) {
         if (controller == null)
             controller = new MapController(original);
+        updater = new ControllerThread(controller);
         return controller;
     }
 
@@ -64,7 +66,6 @@ public class MapController {
                 break;
             }
         }
-
         updateStopData();
         // Load stop names
         int len = stops.length;
@@ -79,14 +80,14 @@ public class MapController {
     public void updateStopData() {
         Stop[] stops = this.connector.getStops();
         // Convert stops int[] to list
-        int[] stopsPrimative = this.route.stops;
+        int[] stopsPrimitive = this.route.stops;
         List<Integer> stopIDs = new ArrayList<>();
-        for (int i = 0; i < stopsPrimative.length; i++)
-            stopIDs.add(stopsPrimative[i]);
+        for (int i = 0; i < stopsPrimitive.length; i++)
+            stopIDs.add(stopsPrimitive[i]);
 
         int len = stops.length;
         ArrayList<Stop> currentStops = new ArrayList<>();
-        for (int i = 0; i < stopsPrimative.length; i++)
+        for (int i = 0; i < stopsPrimitive.length; i++)
             currentStops.add(i, null);
         // Match stopIDs with actual stops
         for (int i = 0; i < len; i++) {
@@ -110,11 +111,18 @@ public class MapController {
         return null;
     }
 
-    /* */
+    /* Transition from the route view to the bus view */
     public void loadMap(String selectedRoute) {
         setRoute(selectedRoute);
+        // Activate thread
+        if (!updater.isAlive())
+            updater.start();
+        else if (updater.isPaused())
+            updater.onResume();
         if (map == null)
             map = new Intent(original, DisplayActivity.class);
         original.startActivity(map);
     }
+
+
 }

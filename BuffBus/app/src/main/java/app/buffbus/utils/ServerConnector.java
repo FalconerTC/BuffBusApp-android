@@ -90,12 +90,15 @@ public class ServerConnector{
     }
 
     /* Create the server polling thread */
+    // TODO move this out to threads
     public void start() {
         requester = new Thread(new Runnable() {
+            private volatile boolean active = true;
+
             @Override
             public void run() {
                 // Continue polling until stopped
-                while(true) {
+                while(active) {
                     try {
                         update();
                     } catch (Exception e) {
@@ -113,6 +116,10 @@ public class ServerConnector{
                         e.printStackTrace();
                     }
                 }
+            }
+
+            public void stop() {
+                active = false;
             }
         });
         requester.start();
