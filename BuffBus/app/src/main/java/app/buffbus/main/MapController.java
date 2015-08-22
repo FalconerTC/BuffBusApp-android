@@ -28,14 +28,18 @@ public class MapController {
     private Stop[] stops;
     private String[] stopNames;
 
+    // Maintains 3-way state of route (including "unknown" null)
+    private Boolean routeActive;
+
     public Route getRoute() { return route; }
     public String[] getStopNames() { return stopNames; }
+    public Boolean getRouteActive(){ return routeActive; }
+    public void setRouteActive(Boolean routeActive) { this.routeActive = routeActive; }
 
     private MapController(Activity original) {
         this.original = original;
         this.connector = ServerConnector.getServerConnector();
     }
-
 
     public static MapController getMapController(Activity original) {
         if (controller == null)
@@ -49,6 +53,8 @@ public class MapController {
 
     /* Set the current route based on the user selection */
     public void setRoute(String selectedRoute) {
+        // Reset route switch
+        this.routeActive = null;
         // Load route from name
         Route[] routes = this.connector.getRoutes();
         int routeLen = routes.length;
@@ -94,9 +100,18 @@ public class MapController {
         this.stops = currentStops.toArray(new Stop[currentStops.size()]);
     }
 
+    /* Get the next bus times for the given stop */
+    public int[] getNextTimes(String selectedStop) {
+        int id = route.id;
+        int len = stops.length;
+        for (int i = 0; i < len; i++)
+            if (stops[i].name.equals(selectedStop))
+                return stops[i].busTimes.get(id);
+        return null;
+    }
+
     /* */
     public void loadMap(String selectedRoute) {
-        System.out.println("Loading map");
         setRoute(selectedRoute);
         if (map == null)
             map = new Intent(original, DisplayActivity.class);

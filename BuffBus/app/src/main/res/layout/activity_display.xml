@@ -19,8 +19,8 @@
 
     <fragment android:name="app.buffbus.Fragments.BussTimesFragment"
         android:id="@+id/times_fragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="75sp"
         android:layout_below="@id/selector_fragment"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"

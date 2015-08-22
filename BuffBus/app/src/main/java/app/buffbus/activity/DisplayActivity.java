@@ -1,29 +1,31 @@
 package app.buffbus.activity;
 
-import android.support.v7.app.ActionBarActivity;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.NumberPicker;
-import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import app.buffbus.R;
 import app.buffbus.main.MapController;
-import app.buffbus.utils.parser.objects.Bus;
 import app.buffbus.utils.parser.objects.Stop;
 
-public class DisplayActivity extends ActionBarActivity {
 
-    NumberPicker stopSelector;
+public class DisplayActivity extends AppCompatActivity {
+
+    private MapController controller;
+    private NumberPicker stopSelector;
+    private String[] stops;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
+        controller = MapController.getMapController();
 
         stopSelector = (NumberPicker)findViewById(R.id.stopPicker);
 
@@ -56,32 +58,61 @@ public class DisplayActivity extends ActionBarActivity {
 
     /* Set initial values for selector */
     public void initializeSelector() {
-        String[] stops = MapController.getMapController().getStopNames();
+        stops = controller.getStopNames();
+        setTimesDisplay(true);
         stopSelector.setMaxValue(stops.length - 1);
         stopSelector.setDisplayedValues(stops);
+        stopSelector.setValue(getStartingValue());
         stopSelector.setWrapSelectorWheel(true);
         stopSelector.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+
+        // Create event listener
+        final Context parent = this;
+        stopSelector.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                String selectedStop = stops[newVal];
+                //Toast.makeText(parent, "New value: " + val1, Toast.LENGTH_SHORT).show();
+                updateTimes(selectedStop);
+                //((TextView)findViewById(R.id.time_1)).setText(val1);
+            }
+        });
+        updateTimes(stops[getStartingValue()]);
     }
 
-    /* Set values for selector */
-    public void updateSelector() {
+    /* Returns the closest stop as the starting value */
+    private int getStartingValue() {
+        return 0;
+    }
 
-        /*Spinner spinner = (Spinner)findViewById(R.id.buss_spinner);
-        spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+    /* Updates the current time display */
+    public void updateTimes(String selectedStop) {
+        // Do nothing if the route is already known to be inactive
+        if (controller.getRouteActive() == Boolean.FALSE) {
+            return;
+        }
 
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                Toast.makeText(parent.getContext(),
-                        "OnItemSelectedListener : " + parent.getItemAtPosition(pos).toString(),
-                        Toast.LENGTH_SHORT).show();
+        int[] times = controller.getNextTimes(selectedStop);
+        if (times != null) {
+            String value1 = times[0] == 0 ? "Now" : (times[0] + " minute" + (times[0] == 1 ? "" : "s"));
+            ((TextView)findViewById(R.id.time_1)).setText(value1);
+            // Some buses have two next times
+            if (times.length > 1) {
+                String value2 = times[0] == 0 ? "Now" : (times[1] + " minute" + (times[1] == 1 ? "" : "s"));
+                ((TextView) findViewById(R.id.time_2)).setText(value2);
             }
+        } else {
+            controller.setRouteActive(Boolean.FALSE);
+            setTimesDisplay(false);
+        }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
+    }
 
-            }
-
-        });*/
-
+    /* Change which set of TextViews are visible */
+    private void setTimesDisplay(boolean active) {
+        findViewById(R.id.time_display).setVisibility(active ? View.VISIBLE : View.GONE);
+        findViewById(R.id.time_1).setVisibility(active ? View.VISIBLE : View.GONE);
+        findViewById(R.id.time_2).setVisibility(active ? View.VISIBLE : View.GONE);
+        findViewById(R.id.time_inactive).setVisibility(active ? View.GONE : View.VISIBLE);
     }
 }
