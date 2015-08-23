@@ -14,8 +14,8 @@ import java.util.ArrayList;
 
 import app.buffbus.R;
 import app.buffbus.main.MapController;
-import app.buffbus.utils.ServerConnector;
-import app.buffbus.utils.parser.objects.Route;
+import app.buffbus.main.ServerConnector;
+import app.buffbus.parser.objects.Route;
 
 public class MainActivity extends ActionBarActivity {
 

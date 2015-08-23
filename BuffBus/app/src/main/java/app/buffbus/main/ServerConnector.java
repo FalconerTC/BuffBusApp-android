@@ -1,4 +1,4 @@
-package app.buffbus.utils;
+package app.buffbus.main;
 
 import android.util.Log;
 
@@ -16,11 +16,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-import app.buffbus.utils.parser.ParserFactory;
-import app.buffbus.utils.parser.objects.Bus;
-import app.buffbus.utils.parser.objects.ParsedObject;
-import app.buffbus.utils.parser.objects.Route;
-import app.buffbus.utils.parser.objects.Stop;
+import app.buffbus.parser.ParserFactory;
+import app.buffbus.parser.objects.Bus;
+import app.buffbus.parser.objects.ParsedObject;
+import app.buffbus.parser.objects.Route;
+import app.buffbus.parser.objects.Stop;
 
 /**
  * Created by Falcon on 8/13/2015.

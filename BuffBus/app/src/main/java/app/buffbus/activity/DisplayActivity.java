@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import app.buffbus.R;
 import app.buffbus.main.MapController;
-import app.buffbus.utils.ServerConnector;
+import app.buffbus.main.ServerConnector;
 
 
 public class DisplayActivity extends AppCompatActivity {

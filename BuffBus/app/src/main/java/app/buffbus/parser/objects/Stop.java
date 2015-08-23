@@ -1,4 +1,4 @@
-package app.buffbus.utils.parser.objects;
+package app.buffbus.parser.objects;
 
 import java.util.HashMap;
 import java.util.Map;

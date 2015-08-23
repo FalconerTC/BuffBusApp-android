@@ -1,9 +1,9 @@
-package app.buffbus.utils.threads;
+package app.buffbus.main.threads;
 
 import android.util.Log;
 
 import app.buffbus.main.MapController;
-import app.buffbus.utils.ServerConnector;
+import app.buffbus.main.ServerConnector;
 
 /**
  * Created by Falcon on 8/22/2015.

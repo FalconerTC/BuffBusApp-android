@@ -8,10 +8,9 @@ import java.util.Collections;
 import java.util.List;
 
 import app.buffbus.activity.DisplayActivity;
-import app.buffbus.utils.ServerConnector;
-import app.buffbus.utils.parser.objects.Route;
-import app.buffbus.utils.parser.objects.Stop;
-import app.buffbus.utils.threads.ControllerThread;
+import app.buffbus.parser.objects.Route;
+import app.buffbus.parser.objects.Stop;
+import app.buffbus.main.threads.ControllerThread;
 
 /**
  * Created by Falcon on 8/9/2015.

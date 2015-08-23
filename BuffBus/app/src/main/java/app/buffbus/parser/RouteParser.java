@@ -1,4 +1,4 @@
-package app.buffbus.utils.parser;
+package app.buffbus.parser;
 
 import android.util.Log;
 
@@ -6,8 +6,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import app.buffbus.utils.parser.objects.ParsedObject;
-import app.buffbus.utils.parser.objects.Route;
+import app.buffbus.parser.objects.ParsedObject;
+import app.buffbus.parser.objects.Route;
 
 /**
  * Created by Falcon on 8/14/2015.

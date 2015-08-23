@@ -1,4 +1,4 @@
-package app.buffbus.Fragments;
+package app.buffbus.activity.Fragments;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
