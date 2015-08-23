@@ -1,7 +1,7 @@
 package app.buffbus.activity;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,7 +17,7 @@ import app.buffbus.main.MapController;
 import app.buffbus.main.ServerConnector;
 import app.buffbus.parser.objects.Route;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
     public MapController controller;
     public ServerConnector listener;
@@ -50,6 +50,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     /* Block main thread until route information is retrieved */
+    // TODO fix blocking to not show a black screen, but to just not spawn buttons yet
     private void blockUntilReady() {
         Log.i("Blocking main thread", "Waiting for route information...");
         Object syncObject = new Object();

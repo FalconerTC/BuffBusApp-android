@@ -10,12 +10,18 @@ import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import app.buffbus.R;
 import app.buffbus.main.MapController;
 import app.buffbus.main.ServerConnector;
 
-
-public class DisplayActivity extends AppCompatActivity {
+// TODO change DisplayActivity to a static Singleton, move out UIThread (?)
+public class DisplayActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private MapController controller;
     private NumberPicker stopSelector;
@@ -25,6 +31,7 @@ public class DisplayActivity extends AppCompatActivity {
 
     /* Returns the closest stop as the starting value */
     private int getStartingValue() {
+        // Default to 0 until map logic is in place
         return 0;
     }
 
@@ -44,6 +51,20 @@ public class DisplayActivity extends AppCompatActivity {
         Log.i("DisplayActivity", "Creating DisplayActivity");
         initializeSelector();
 
+        MapFragment mapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+        GoogleMap map = mapFragment.getMap();
+        map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+
+    }
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(0, 0))
+                .title("Marker"));
     }
 
     @Override
@@ -85,9 +106,7 @@ public class DisplayActivity extends AppCompatActivity {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                 selectedStop = stops[newVal];
-                //Toast.makeText(parent, "New value: " + val1, Toast.LENGTH_SHORT).show();
                 updateTimes();
-                //((TextView)findViewById(R.id.time_1)).setText(val1);
             }
         });
         updateTimes();
