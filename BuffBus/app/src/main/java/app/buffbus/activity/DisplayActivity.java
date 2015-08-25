@@ -101,7 +101,6 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         stopSelector.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 
         // Create event listener
-        final Context parent = this;
         stopSelector.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
@@ -124,11 +123,13 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
             String value1 = times[0] == 0 ? "Now" : (times[0] + " minute" + (times[0] == 1 ? "" : "s"));
             ((TextView)findViewById(R.id.time_1)).setText(value1);
             // Some buses have two next times
+            // TODO fix support for showing only one time
             if (times.length > 1) {
                 String value2 = times[1] == 0 ? "Now" : (times[1] + " minute" + (times[1] == 1 ? "" : "s"));
                 ((TextView) findViewById(R.id.time_2)).setText(value2);
             }
         } else {
+            // TODO make sure "no buses" event can't false trigger and lock out times
             controller.setRouteActive(Boolean.FALSE);
             setTimesDisplay(false);
         }
