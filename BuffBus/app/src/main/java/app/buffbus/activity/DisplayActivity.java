@@ -1,6 +1,5 @@
 package app.buffbus.activity;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -10,22 +9,21 @@ import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import app.buffbus.R;
+import app.buffbus.main.DataController;
 import app.buffbus.main.MapController;
 import app.buffbus.main.ServerConnector;
 
 // TODO change DisplayActivity to a static Singleton, move out UIThread (?)
-public class DisplayActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class DisplayActivity extends AppCompatActivity{
 
-    private MapController controller;
+    private DataController controller;
     private NumberPicker stopSelector;
     private UIThread updater;
+    private MapController map;
+
     private String[] stops;
     private String selectedStop;
 
@@ -37,11 +35,13 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("CREATING DISPLAY_ACTIVITY");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
 
-        controller = MapController.getMapController();
+        controller = DataController.getDataController();
         stopSelector = (NumberPicker)findViewById(R.id.stopPicker);
+        map = MapController.getMapController();
 
 
         updater = new UIThread();
@@ -53,19 +53,23 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-        GoogleMap map = mapFragment.getMap();
-        map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+        mapFragment.getMapAsync(map);
 
     }
 
     @Override
-    public void onMapReady(GoogleMap map) {
-        map.addMarker(new MarkerOptions()
-                .position(new LatLng(0, 0))
-                .title("Marker"));
+    protected void onStop() {
+        super.onStop();
+        System.out.println("Display activity was stopped");
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        System.out.println("Display activity was started");
+        //map.connect();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -147,6 +151,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     /* Updater thread for the view
      * This is kept here as a sub-class instead of with the other
      * threads as DisplayActivity does not have a static context */
+    //TODO create abstract thread class
     class UIThread extends Thread implements Runnable {
         private Object lock = new Object();
         private volatile boolean paused = false;

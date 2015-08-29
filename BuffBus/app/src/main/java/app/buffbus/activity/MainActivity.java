@@ -13,13 +13,13 @@ import android.widget.RelativeLayout;
 import java.util.ArrayList;
 
 import app.buffbus.R;
-import app.buffbus.main.MapController;
+import app.buffbus.main.DataController;
 import app.buffbus.main.ServerConnector;
 import app.buffbus.parser.objects.Route;
 
 public class MainActivity extends AppCompatActivity {
 
-    public MapController controller;
+    public DataController controller;
     public ServerConnector listener;
 
     @Override
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         listener = ServerConnector.getServerConnector();
-        controller = MapController.getMapController(MainActivity.this);
+        controller = DataController.getDataController(MainActivity.this);
         blockUntilReady();
 
         Route[] routes = listener.getRoutes();
@@ -137,11 +137,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
     }
-
-    /*public void loadMap(View v) {
-        Toast.makeText(this, "Clicked on Button", Toast.LENGTH_LONG).show();
-        Log.i("NOW HEAR THIS", "A button was clicked");
-    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

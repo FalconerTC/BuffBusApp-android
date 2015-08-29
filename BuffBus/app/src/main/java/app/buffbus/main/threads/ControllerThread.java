@@ -2,7 +2,7 @@ package app.buffbus.main.threads;
 
 import android.util.Log;
 
-import app.buffbus.main.MapController;
+import app.buffbus.main.DataController;
 import app.buffbus.main.ServerConnector;
 
 /**
@@ -14,9 +14,9 @@ public class ControllerThread extends Thread implements Runnable {
     private volatile boolean paused;
     private volatile boolean active;
 
-    private MapController controller;
+    private DataController controller;
 
-    public ControllerThread(MapController controller) {
+    public ControllerThread(DataController controller) {
         this.lock = new Object();
         this.paused = false;
         this.active = true;

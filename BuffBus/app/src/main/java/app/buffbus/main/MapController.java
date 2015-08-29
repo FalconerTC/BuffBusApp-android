@@ -1,127 +1,67 @@
 package app.buffbus.main;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.location.Location;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.ErrorDialogFragment;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import app.buffbus.activity.DisplayActivity;
-import app.buffbus.parser.objects.Route;
-import app.buffbus.parser.objects.Stop;
-import app.buffbus.main.threads.ControllerThread;
+import app.buffbus.activity.GoogleApiActivity;
 
 /**
- * Created by Falcon on 8/9/2015.
+ * Created by Falcon on 8/29/2015.
  */
-public class MapController {
 
+//TODO rethink when to use singletons
+public class MapController implements OnMapReadyCallback {
+
+    /* Objects */
     private static MapController controller;
-    private static ControllerThread updater;
-    private Activity original;
-    public Intent map;
-    private ServerConnector connector;
+    public GoogleMap map;
 
-    private Route route;
-    private Stop[] stops;
-    private String[] stopNames;
-
-    // Maintains 3-way state of route (including "unknown" null)
-    private Boolean routeActive;
-
-    public Route getRoute() { return route; }
-    public String[] getStopNames() { return stopNames; }
-    public Boolean getRouteActive(){ return routeActive; }
-    public void setRouteActive(Boolean routeActive) { this.routeActive = routeActive; }
-
-    private MapController(Activity original) {
-        this.original = original;
-        this.connector = ServerConnector.getServerConnector();
-        //this.updater = new ControllerThread();
-    }
-
-    public static MapController getMapController(Activity original) {
-        if (controller == null)
-            controller = new MapController(original);
-        updater = new ControllerThread(controller);
-        return controller;
+    private MapController() {
     }
 
     public static MapController getMapController() {
+        if (controller == null)
+            controller = new MapController();
         return controller;
     }
 
-    /* Set the current route based on the user selection */
-    public void setRoute(String selectedRoute) {
-        // Reset route switch
-        this.routeActive = null;
-        // Load route from name
-        Route[] routes = this.connector.getRoutes();
-        int routeLen = routes.length;
-        for (int i = 0; i < routeLen; i++) {
-            if (routes[i].name.equals(selectedRoute)) {
-                this.route = routes[i];
-                break;
-            }
-        }
-        updateStopData();
-        // Load stop names
-        int len = stops.length;
-        this.stopNames = new String[len];
-        for (int i = 0; i < len; i++) {
-            this.stopNames[i] = stops[i].name;
-        }
+    @Override
+    public void onMapReady(GoogleMap map) {
+        this.map = map;
+        System.out.println("Initializing map");
+        LatLng CU = new LatLng(40.001894, -105.260184);
+
+        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        map.setMyLocationEnabled(true);
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(CU, 13));
+
+        map.addMarker(new MarkerOptions()
+                .position(CU)
+                .title("CU")
+                .snippet("Go buffs"));
     }
-
-    //TODO Make this more efficient with SparseArray
-    /* Update the stops based on the current route */
-    public void updateStopData() {
-        Stop[] stops = this.connector.getStops();
-        // Convert stops int[] to list
-        int[] stopsPrimitive = this.route.stops;
-        List<Integer> stopIDs = new ArrayList<>();
-        for (int i = 0; i < stopsPrimitive.length; i++)
-            stopIDs.add(stopsPrimitive[i]);
-
-        int len = stops.length;
-        ArrayList<Stop> currentStops = new ArrayList<>();
-        for (int i = 0; i < stopsPrimitive.length; i++)
-            currentStops.add(i, null);
-        // Match stopIDs with actual stops
-        for (int i = 0; i < len; i++) {
-            int index = stopIDs.indexOf(stops[i].id);
-            if (index >= 0) {
-                currentStops.set(index, stops[i]);
-            }
-        }
-        // Check for nulls (when a route quotes a stop that does not exist)
-        currentStops.removeAll(Collections.singleton(null));
-        this.stops = currentStops.toArray(new Stop[currentStops.size()]);
-    }
-
-    /* Get the next bus times for the given stop */
-    public int[] getNextTimes(String selectedStop) {
-        int id = route.id;
-        int len = stops.length;
-        for (int i = 0; i < len; i++)
-            if (stops[i].name.equals(selectedStop))
-                return stops[i].busTimes.get(id);
-        return null;
-    }
-
-    /* Transition from the route view to the bus view */
-    public void loadMap(String selectedRoute) {
-        setRoute(selectedRoute);
-        // Activate thread
-        if (!updater.isAlive())
-            updater.start();
-        else if (updater.isPaused())
-            updater.onResume();
-        if (map == null)
-            map = new Intent(original, DisplayActivity.class);
-        original.startActivity(map);
-    }
-
 
 }
