@@ -24,11 +24,11 @@
             android:exported="true" >
         </activity>
         <activity
-            android:name=".activity.DisplayActivity"
+            android:name=".main.UIController"
             android:label="@string/title_activity_display" >
         </activity>
         <activity
-            android:name=".activity.GoogleApiActivity" >
+            android:name=".activity.DisplayActivity" >
         </activity>
 
         <meta-data

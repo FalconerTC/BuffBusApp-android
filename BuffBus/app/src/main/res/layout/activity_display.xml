@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
 
     android:background="#fff6be"
-    tools:context="app.buffbus.activity.DisplayActivity">
+    tools:context="app.buffbus.main.UIController">
 
     <fragment android:name="app.buffbus.activity.Fragments.BussSelectorFragment"
         android:id="@+id/selector_fragment"

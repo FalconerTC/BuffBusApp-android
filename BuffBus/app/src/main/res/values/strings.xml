@@ -7,6 +7,7 @@
     <string name="main_activity">BuffBus</string>
     <string name="main_title">Boulder Bus Tracker</string>
     <string name="main_subtitle">Select A Route</string>
+    <string name="location_updated_message">Location was updated</string>
 
     <!-- Routes -->
     <string name="route_1">Buff Bus</string>

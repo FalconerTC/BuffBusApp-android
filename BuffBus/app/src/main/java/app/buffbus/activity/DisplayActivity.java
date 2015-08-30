@@ -1,177 +1,267 @@
 package app.buffbus.activity;
 
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.location.Location;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.NumberPicker;
-import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.MapFragment;
 
 import app.buffbus.R;
 import app.buffbus.main.DataController;
 import app.buffbus.main.MapController;
 import app.buffbus.main.ServerConnector;
+import app.buffbus.main.UIController;
 
-// TODO change DisplayActivity to a static Singleton, move out UIThread (?)
-public class DisplayActivity{
+/*
+  Simple class to maintain GoogleAPIClient and display controllers, built from the following
+  https://developers.google.com/android/guides/api-client#Starting
+ */
+public class DisplayActivity extends FragmentActivity implements
+        ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
 
-    private DataController controller;
-    private NumberPicker stopSelector;
-    private UIThread updater;
-    private GoogleApiActivity original;
+    /* Error codes */
+    // Request code to use when launching the resolution activity
+    private static final int REQUEST_RESOLVE_ERROR = 1001;
 
-    private String[] stops;
-    private String selectedStop;
+    /* Bundle keys */
+    private static final String LOCATION_KEY = "location-key";
+    private static final String STATE_RESOLVING_ERROR = "resolving_error";
+    private static final String DIALOG_ERROR = "dialog_error";
 
-    public DisplayActivity(GoogleApiActivity apiActivity) {
-        Log.i("DisplayActivity", "Creating DisplayActivity");
+    /* Objects */
+    private GoogleApiClient apiClient;
+    private MapController map;
+    private UIController display;
+    private DataController model;
+    private LocationRequest locationRequest;
+    private Location currentLocation;
 
-        this.original = apiActivity;
+    /* Primitives */
+    // Bool to track whether the app is already resolving an error
+    private boolean resolvingError = false;
+    // Bool to track if we are requesting location updates
+    private boolean requestingLocationUpdates;
 
-        controller = DataController.getDataController();
-        stopSelector = (NumberPicker)original.findViewById(R.id.stopPicker);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        Log.i(this.getLocalClassName(), "Creating GoogleApiClient");
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_display);
 
-        updater = new UIThread();
-        updater.start();
+        requestingLocationUpdates = true;
 
-        initializeSelector();
+        // Update values from saved bundle
+        updateValuesFromBundle(savedInstanceState);
+
+        // Create a GoogleApiClient instance
+        buildGoogleApiClient();
+
+        // Initialize data model
+        model = DataController.getDataController();
+
+        // Initialize map
+        map = new MapController(this, model);
+
+        // Initialize display controller and map
+        display = new UIController(this, model);
     }
 
-    /* Returns the closest stop as the starting value */
-    private int getStartingValue() {
-        // Default to 0 until map logic is in place
-        return 0;
-    }
+    /* Updates fields based on stored data passed on create */
+    private void updateValuesFromBundle(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
 
-    /* Set initial values for selector */
-    public void initializeSelector() {
-        stops = controller.getStopNames();
-        selectedStop = stops[getStartingValue()];
-        setTimesDisplay(true);
-        stopSelector.setMaxValue(stops.length - 1);
-        stopSelector.setDisplayedValues(stops);
-        stopSelector.setValue(getStartingValue());
-        stopSelector.setWrapSelectorWheel(true);
-        stopSelector.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-
-        // Create event listener
-        stopSelector.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                selectedStop = stops[newVal];
-                updateTimes();
+            if (savedInstanceState.keySet().contains(STATE_RESOLVING_ERROR)) {
+                resolvingError = savedInstanceState.getBoolean(STATE_RESOLVING_ERROR);
             }
-        });
-        updateTimes();
+
+            if (savedInstanceState.keySet().contains(LOCATION_KEY)) {
+                currentLocation = savedInstanceState.getParcelable(LOCATION_KEY);
+            }
+        }
     }
 
-    /* Updates the current time display */
-    public void updateTimes() {
-        // Do nothing if the route is already known to be inactive
-        if (controller.getRouteActive() == Boolean.FALSE) {
-            return;
-        }
+    protected synchronized void buildGoogleApiClient() {
+        Log.i(this.getLocalClassName(), "Building GoogleApiClient");
+        apiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        createLocationRequest();
+    }
 
-        int[] times = controller.getNextTimes(selectedStop);
-        if (times != null) {
-            String value1 = times[0] == 0 ? "Now" : (times[0] + " minute" + (times[0] == 1 ? "" : "s"));
-            ((TextView)original.findViewById(R.id.time_1)).setText(value1);
-            // Some buses have two next times
-            // TODO fix support for showing only one time
-            if (times.length > 1) {
-                String value2 = times[1] == 0 ? "Now" : (times[1] + " minute" + (times[1] == 1 ? "" : "s"));
-                ((TextView)original.findViewById(R.id.time_2)).setText(value2);
+    /* Define request parameters for current location */
+    protected void createLocationRequest() {
+        locationRequest = new LocationRequest();
+        // Desired interval for polling
+        locationRequest.setInterval(ServerConnector.POLLING_INTERVAL);
+        // Fastest possible time it can poll
+        locationRequest.setFastestInterval(ServerConnector.POLLING_INTERVAL);
+
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    protected void startLocationUpdates() {
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                apiClient, locationRequest, this);
+    }
+
+    protected void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                apiClient, this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!resolvingError) {
+            apiClient.connect();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (apiClient.isConnected() && requestingLocationUpdates) {
+            startLocationUpdates();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (apiClient.isConnected()) {
+            stopLocationUpdates();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        apiClient.disconnect();
+        super.onStop();
+    }
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        Log.i(this.getLocalClassName(), "Connected to GoogleApiClient");
+
+        if (currentLocation == null) {
+            currentLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    apiClient);
+        }
+        System.out.println("Lat: "+ String.valueOf(currentLocation.getLatitude()));
+        System.out.println("Long: " + String.valueOf(currentLocation.getLongitude()));
+
+        if (requestingLocationUpdates) {
+            startLocationUpdates();
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        currentLocation = location;
+        System.out.println("Location changed");
+        Toast.makeText(this, getResources().getString(R.string.location_updated_message),
+                Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConnectionSuspended(int cause) {
+        Log.i(this.getLocalClassName(), "Connection suspended");
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        if (resolvingError) {
+            // Already attempting to resolve an error.
+            return;
+        } else if (result.hasResolution()) {
+            try {
+                resolvingError = true;
+                result.startResolutionForResult(this, REQUEST_RESOLVE_ERROR);
+            } catch (IntentSender.SendIntentException e) {
+                // There was an error with the resolution intent. Try again.
+                apiClient.connect();
             }
         } else {
-            // TODO make sure "no buses" event can't false trigger and lock out times
-            controller.setRouteActive(Boolean.FALSE);
-            setTimesDisplay(false);
+            // Show dialog using GoogleApiAvailability.getErrorDialog()
+            showErrorDialog(result.getErrorCode());
+            resolvingError = true;
         }
-
     }
 
-    /* Change which set of TextViews are visible */
-    private void setTimesDisplay(boolean active) {
-        original.findViewById(R.id.time_display).setVisibility(active ? View.VISIBLE : View.GONE);
-        original.findViewById(R.id.time_1).setVisibility(active ? View.VISIBLE : View.GONE);
-        original.findViewById(R.id.time_2).setVisibility(active ? View.VISIBLE : View.GONE);
-        original.findViewById(R.id.time_inactive).setVisibility(active ? View.GONE : View.VISIBLE);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_RESOLVE_ERROR) {
+            resolvingError = false;
+            if (resultCode == RESULT_OK) {
+                // Make sure the app is not already connected or attempting to connect
+                if (!apiClient.isConnecting() &&
+                        !apiClient.isConnected()) {
+                    apiClient.connect();
+                }
+            }
+        }
     }
 
-    /* Updater thread for the view
-     * This is kept here as a sub-class instead of with the other
-     * threads as DisplayActivity does not have a static context */
-    //TODO create abstract thread class
-    class UIThread extends Thread implements Runnable {
-        private Object lock = new Object();
-        private volatile boolean paused = false;
-        private volatile boolean active = true;
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(STATE_RESOLVING_ERROR, resolvingError);
+        outState.putParcelable(LOCATION_KEY, currentLocation);
+        super.onSaveInstanceState(outState);
+    }
+
+    // The rest of this code is all about building the error dialog
+
+    /* Creates a dialog for an error message */
+    private void showErrorDialog(int errorCode) {
+        // Create a fragment for the error dialog
+        ErrorDialogFragment dialogFragment = new ErrorDialogFragment();
+        // Pass the error that should be displayed
+        Bundle args = new Bundle();
+        args.putInt(DIALOG_ERROR, errorCode);
+        dialogFragment.setArguments(args);
+        dialogFragment.show(getFragmentManager(), "errordialog");
+    }
+
+    /* Called from ErrorDialogFragment when the dialog is dismissed. */
+    public void onDialogDismissed() {
+        resolvingError = false;
+    }
+
+    /* A fragment to display an error dialog */
+    public static class ErrorDialogFragment extends DialogFragment {
+        public ErrorDialogFragment() { }
 
         @Override
-        public void run() {
-            // Continue polling until stopped
-            while(active) {
-                // Check if thread is paused
-                synchronized (lock) {
-                    while(paused) {
-                        try {
-                            lock.wait();
-                        } catch (InterruptedException e) {
-                            Log.i("Thread interrupted", "Exiting display thread");
-                            return;
-                        }
-                    }
-                }
-                try {
-                    Log.i("UIThread", "Updating times indicator");
-                    // UI changes must be on the main thread
-                    original.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateTimes();
-                        }
-                    });
-                } catch (Exception e) {
-                    Log.e("Thread error", "Display thread failed to update");
-                    e.printStackTrace();
-                }
-                try {
-                    Thread.sleep(ServerConnector.POLLING_INTERVAL);
-                    // Kill thread if interrupted
-                } catch(InterruptedException e) {
-                    Log.i("Thread interrupted", "Exiting display thread");
-                    return;
-                } catch (Exception e) {
-                    Log.e("Thread error", "Display thread failed to sleep");
-                    e.printStackTrace();
-                }
-            }
-        }
-        // Kill the thread
-        public void onStop() {
-            active = false;
-        }
-        // Pause execution
-        public void onPause() {
-            synchronized (lock) {
-                paused = true;
-            }
-        }
-        // Resume execution
-        public void onResume() {
-            synchronized (lock) {
-                paused = false;
-                lock.notifyAll();
-            }
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Get the error code and retrieve the appropriate dialog
+            int errorCode = this.getArguments().getInt(DIALOG_ERROR);
+            return GoogleApiAvailability.getInstance().getErrorDialog(
+                    this.getActivity(), errorCode, REQUEST_RESOLVE_ERROR);
         }
 
-        public boolean isPaused() {
-            return paused;
+        @Override
+        public void onDismiss(DialogInterface dialog) {
+            ((DisplayActivity) getActivity()).onDialogDismissed();
         }
     }
+
 }

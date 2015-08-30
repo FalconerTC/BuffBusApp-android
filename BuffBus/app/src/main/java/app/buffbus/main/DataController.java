@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 
 import app.buffbus.activity.DisplayActivity;
-import app.buffbus.activity.GoogleApiActivity;
 import app.buffbus.parser.objects.Route;
 import app.buffbus.parser.objects.Stop;
 import app.buffbus.main.threads.ControllerThread;
@@ -124,7 +123,7 @@ public class DataController {
 
         //TODO resume activities instead of recreating
         if (map == null) {
-            map = new Intent(original, GoogleApiActivity.class);
+            map = new Intent(original, DisplayActivity.class);
             map.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         }
         original.startActivity(map);
