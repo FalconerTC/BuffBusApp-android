@@ -1,5 +1,6 @@
 package app.buffbus.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -17,80 +18,34 @@ import app.buffbus.main.MapController;
 import app.buffbus.main.ServerConnector;
 
 // TODO change DisplayActivity to a static Singleton, move out UIThread (?)
-public class DisplayActivity extends AppCompatActivity{
+public class DisplayActivity{
 
     private DataController controller;
     private NumberPicker stopSelector;
     private UIThread updater;
-    private MapController map;
+    private GoogleApiActivity original;
 
     private String[] stops;
     private String selectedStop;
+
+    public DisplayActivity(GoogleApiActivity apiActivity) {
+        Log.i("DisplayActivity", "Creating DisplayActivity");
+
+        this.original = apiActivity;
+
+        controller = DataController.getDataController();
+        stopSelector = (NumberPicker)original.findViewById(R.id.stopPicker);
+
+        updater = new UIThread();
+        updater.start();
+
+        initializeSelector();
+    }
 
     /* Returns the closest stop as the starting value */
     private int getStartingValue() {
         // Default to 0 until map logic is in place
         return 0;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("CREATING DISPLAY_ACTIVITY");
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_display);
-
-        controller = DataController.getDataController();
-        stopSelector = (NumberPicker)findViewById(R.id.stopPicker);
-        map = MapController.getMapController();
-
-
-        updater = new UIThread();
-        updater.start();
-
-
-        Log.i("DisplayActivity", "Creating DisplayActivity");
-        initializeSelector();
-
-        MapFragment mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(map);
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        System.out.println("Display activity was stopped");
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        System.out.println("Display activity was started");
-        //map.connect();
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_display, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     /* Set initial values for selector */
@@ -125,12 +80,12 @@ public class DisplayActivity extends AppCompatActivity{
         int[] times = controller.getNextTimes(selectedStop);
         if (times != null) {
             String value1 = times[0] == 0 ? "Now" : (times[0] + " minute" + (times[0] == 1 ? "" : "s"));
-            ((TextView)findViewById(R.id.time_1)).setText(value1);
+            ((TextView)original.findViewById(R.id.time_1)).setText(value1);
             // Some buses have two next times
             // TODO fix support for showing only one time
             if (times.length > 1) {
                 String value2 = times[1] == 0 ? "Now" : (times[1] + " minute" + (times[1] == 1 ? "" : "s"));
-                ((TextView) findViewById(R.id.time_2)).setText(value2);
+                ((TextView)original.findViewById(R.id.time_2)).setText(value2);
             }
         } else {
             // TODO make sure "no buses" event can't false trigger and lock out times
@@ -142,10 +97,10 @@ public class DisplayActivity extends AppCompatActivity{
 
     /* Change which set of TextViews are visible */
     private void setTimesDisplay(boolean active) {
-        findViewById(R.id.time_display).setVisibility(active ? View.VISIBLE : View.GONE);
-        findViewById(R.id.time_1).setVisibility(active ? View.VISIBLE : View.GONE);
-        findViewById(R.id.time_2).setVisibility(active ? View.VISIBLE : View.GONE);
-        findViewById(R.id.time_inactive).setVisibility(active ? View.GONE : View.VISIBLE);
+        original.findViewById(R.id.time_display).setVisibility(active ? View.VISIBLE : View.GONE);
+        original.findViewById(R.id.time_1).setVisibility(active ? View.VISIBLE : View.GONE);
+        original.findViewById(R.id.time_2).setVisibility(active ? View.VISIBLE : View.GONE);
+        original.findViewById(R.id.time_inactive).setVisibility(active ? View.GONE : View.VISIBLE);
     }
 
     /* Updater thread for the view
@@ -175,7 +130,7 @@ public class DisplayActivity extends AppCompatActivity{
                 try {
                     Log.i("UIThread", "Updating times indicator");
                     // UI changes must be on the main thread
-                    runOnUiThread(new Runnable() {
+                    original.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             updateTimes();

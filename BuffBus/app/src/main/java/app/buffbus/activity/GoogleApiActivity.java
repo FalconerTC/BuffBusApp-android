@@ -25,7 +25,7 @@ import app.buffbus.main.MapController;
 import app.buffbus.main.ServerConnector;
 
 /*
-  Simple class to maintain GoogleAPIClient, built from the following tutorial
+  Simple class to maintain GoogleAPIClient and display controllers, built from the following
   https://developers.google.com/android/guides/api-client#Starting
  */
 public class GoogleApiActivity extends FragmentActivity implements
@@ -43,6 +43,7 @@ public class GoogleApiActivity extends FragmentActivity implements
     /* Objects */
     private GoogleApiClient apiClient;
     private MapController map;
+    private DisplayActivity display;
     private LocationRequest locationRequest;
     private Location currentLocation;
 
@@ -54,7 +55,7 @@ public class GoogleApiActivity extends FragmentActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i(this.getLocalClassName(), "Building GoogleApiClient");
+        Log.i(this.getLocalClassName(), "Creating GoogleApiClient");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
 
@@ -65,10 +66,13 @@ public class GoogleApiActivity extends FragmentActivity implements
         buildGoogleApiClient();
 
         // Initialize map
-        map = MapController.getMapController();
+        map = new MapController();
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(map);
+
+        // Initialize display
+        display = new DisplayActivity(this);
     }
 
     /* Updates fields based on stored data passed on create */

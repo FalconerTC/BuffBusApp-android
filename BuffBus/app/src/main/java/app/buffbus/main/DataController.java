@@ -121,12 +121,13 @@ public class DataController {
             updater.start();
         else if (updater.isPaused())
             updater.onResume();
-        if (map == null)
-            map = new Intent(original, DisplayActivity.class);
 
-        Intent apiActivity = new Intent(original, GoogleApiActivity.class);
-        original.startActivity(apiActivity);
-        //original.startActivity(map);
+        //TODO resume activities instead of recreating
+        if (map == null) {
+            map = new Intent(original, GoogleApiActivity.class);
+            map.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        }
+        original.startActivity(map);
     }
 
 

@@ -36,16 +36,9 @@ import app.buffbus.activity.GoogleApiActivity;
 public class MapController implements OnMapReadyCallback {
 
     /* Objects */
-    private static MapController controller;
     public GoogleMap map;
 
-    private MapController() {
-    }
-
-    public static MapController getMapController() {
-        if (controller == null)
-            controller = new MapController();
-        return controller;
+    public MapController() {
     }
 
     @Override

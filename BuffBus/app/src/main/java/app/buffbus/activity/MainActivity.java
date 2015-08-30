@@ -133,6 +133,8 @@ public class MainActivity extends AppCompatActivity {
         return new View.OnClickListener() {
             public void onClick(View v) {
                 String selectedRoute = ((Button)v).getText().toString();
+                // TODO reimplement this in MainActivity,
+                // change DataController to not be a singleton
                 controller.loadMap(selectedRoute);
             }
         };
