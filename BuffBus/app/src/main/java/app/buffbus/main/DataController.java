@@ -34,6 +34,7 @@ public class DataController {
 
     public Route getRoute() { return route; }
     public String[] getStopNames() { return stopNames; }
+    public Stop[] getStops() { return stops; }
     public Boolean getRouteActive(){ return routeActive; }
     public void setRouteActive(Boolean routeActive) { this.routeActive = routeActive; }
 

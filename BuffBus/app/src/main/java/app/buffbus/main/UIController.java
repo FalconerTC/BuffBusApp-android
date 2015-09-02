@@ -15,16 +15,18 @@ public class UIController {
     private DataController controller;
     private NumberPicker stopSelector;
     private UIThread updater;
+    private MapController map;
     private Activity original;
 
     private String[] stops;
     private String selectedStop;
 
-    public UIController(Activity activity, DataController model) {
+    public UIController(Activity activity, DataController model, MapController map) {
         Log.i("DisplayActivity", "Creating DisplayActivity");
 
         this.original = activity;
         this.controller = model;
+        this.map = map;
 
         stopSelector = (NumberPicker)original.findViewById(R.id.stopPicker);
 
@@ -84,6 +86,8 @@ public class UIController {
             controller.setRouteActive(Boolean.FALSE);
             setTimesDisplay(false);
         }
+
+        map.onUpdate(selectedStop);
 
     }
 

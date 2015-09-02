@@ -78,7 +78,7 @@ public class DisplayActivity extends FragmentActivity implements
         map = new MapController(this, model);
 
         // Initialize display controller and map
-        display = new UIController(this, model);
+        display = new UIController(this, model, map);
     }
 
     /* Updates fields based on stored data passed on create */
@@ -176,6 +176,7 @@ public class DisplayActivity extends FragmentActivity implements
 
     @Override
     public void onLocationChanged(Location location) {
+        map.setLocation(location);
         currentLocation = location;
         System.out.println("Location changed");
         Toast.makeText(this, getResources().getString(R.string.location_updated_message),
