@@ -1,6 +1,7 @@
 package app.buffbus.main;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.location.Location;
 import android.util.Log;
 
@@ -14,8 +15,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.PolyUtil;
+
+import java.util.List;
 
 import app.buffbus.R;
+import app.buffbus.lib.Polylines;
 import app.buffbus.parser.objects.Stop;
 
 /**
@@ -77,6 +84,16 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     public void initializeData() {
         Log.i("MapController", "Initializing data");
 
+        // Draw the polyline for the current route
+        String route = model.getRoute().name;
+        String line_data = Polylines.POLYLINE_MAP.get(route);
+        if (line_data != null) {
+            map.addPolyline(new PolylineOptions()
+                    .addAll(PolyUtil.decode(line_data))
+                    .width(20)
+                    .color(Color.BLACK));
+        }
+
         Stop[] stops = model.getStops();
         int len = stops.length;
         stopMarkers = new Marker[len];
@@ -85,13 +102,14 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
             MarkerOptions options = new MarkerOptions()
                     .position(pos)
                     .title(stops[i].name)
-                    .snippet("Go buffs")
-                    .icon(BUS_INDICATOR_ICON);
+                    //.snippet("Go buffs")
+                    .icon(BUS_INDICATOR_ICON)
+                    .anchor(0.5f, 0.5f);
 
             stopMarkers[i] = map.addMarker(options);
-
-
         }
+
+        drawBuses();
     }
 
     /* Called by UI thread by interval or stop change */
@@ -107,6 +125,11 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
                 }
             }
         }
+        // Draw updated bus locations
+        drawBuses();
+    }
+
+    private void drawBuses() {
 
     }
 
