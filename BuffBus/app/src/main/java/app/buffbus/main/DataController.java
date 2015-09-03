@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import app.buffbus.activity.DisplayActivity;
+import app.buffbus.parser.objects.Bus;
 import app.buffbus.parser.objects.Route;
 import app.buffbus.parser.objects.Stop;
 import app.buffbus.main.threads.ControllerThread;
@@ -26,8 +27,10 @@ public class DataController {
     private ServerConnector connector;
 
     private Route route;
+    //TODO change stops to be an arraylist ?
     private Stop[] stops;
     private String[] stopNames;
+    private ArrayList<Bus> buses;
 
     // Maintains 3-way state of route (including "unknown" null)
     private Boolean routeActive;
@@ -35,6 +38,7 @@ public class DataController {
     public Route getRoute() { return route; }
     public String[] getStopNames() { return stopNames; }
     public Stop[] getStops() { return stops; }
+    public ArrayList<Bus> getBuses() { return buses; }
     public Boolean getRouteActive(){ return routeActive; }
     public void setRouteActive(Boolean routeActive) { this.routeActive = routeActive; }
 
@@ -80,7 +84,16 @@ public class DataController {
     //TODO Make this more efficient with SparseArray
     /* Update the stops based on the current route */
     public void updateStopData() {
-        Stop[] stops = this.connector.getStops();
+        // Add relevant buses
+        Bus[] bussArr = connector.getBuses();
+        this.buses = new ArrayList<>();
+        for (int i = 0; i < bussArr.length; i++) {
+            if (bussArr[i].id == route.id)
+                buses.add(bussArr[i]);
+        }
+
+
+        Stop[] stops = connector.getStops();
         // Convert stops int[] to list
         int[] stopsPrimitive = this.route.stops;
         List<Integer> stopIDs = new ArrayList<>();

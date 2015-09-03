@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.location.Location;
 import android.util.Log;
+import android.widget.NumberPicker;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -19,10 +20,11 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import app.buffbus.R;
 import app.buffbus.lib.Polylines;
+import app.buffbus.parser.objects.Bus;
 import app.buffbus.parser.objects.Stop;
 
 /**
@@ -33,24 +35,30 @@ import app.buffbus.parser.objects.Stop;
 public class MapController implements OnMapReadyCallback, OnMarkerClickListener {
 
     /* Map constants */
-    public static final LatLng CU_LATLNG = new LatLng(40.001894, -105.260184);
+    public static final BitmapDescriptor BUS_ICON
+            = BitmapDescriptorFactory.fromResource(R.drawable.bus);
     public static final BitmapDescriptor BUS_INDICATOR_ICON
             = BitmapDescriptorFactory.fromResource(R.drawable.bus_indicator_border);
+
+    public static final LatLng CU_LATLNG = new LatLng(40.001894, -105.260184);
     public static final int DEFAULT_MAP_TYPE = GoogleMap.MAP_TYPE_NORMAL;
     public static final int DEFAULT_ZOOM_LEVEL = 14;
 
     /* Objects */
     private DataController model;
     private Activity original;
+    private NumberPicker stopSelector;
     public GoogleMap map;
 
     private String lastStop;
     private Location currentLocation;
     private Marker[] stopMarkers;
+    private Marker[] busMarkers;
 
     public MapController(Activity activity, DataController model) {
         this.model = model;
         this.original = activity;
+        stopSelector = (NumberPicker)original.findViewById(R.id.stopPicker);
 
         this.lastStop = "";
         this.currentLocation = null;
@@ -81,11 +89,12 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     }
 
     /* Called on create to add route information */
+    //TODO change marker z-indexes to be consistent
     public void initializeData() {
         Log.i("MapController", "Initializing data");
 
         // Draw the polyline for the current route
-        String route = model.getRoute().name;
+        int route = model.getRoute().id;
         String line_data = Polylines.POLYLINE_MAP.get(route);
         if (line_data != null) {
             map.addPolyline(new PolylineOptions()
@@ -108,8 +117,6 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
 
             stopMarkers[i] = map.addMarker(options);
         }
-
-        drawBuses();
     }
 
     /* Called by UI thread by interval or stop change */
@@ -129,16 +136,47 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
         drawBuses();
     }
 
+    /* Draw all running buses to the map */
+    //TODO look into animating the bus transition maybe ?
     private void drawBuses() {
-
+        // Remove any existing markers
+        if (busMarkers != null) {
+            int len = busMarkers.length;
+            for (int i = 0; i < len; i++) {
+                busMarkers[i].remove();
+                //marker.remove();
+            }
+        }
+        // Add updated markers
+        ArrayList<Bus> buses = model.getBuses();
+        if (buses != null && map != null) {
+           int len = buses.size();
+            busMarkers = new Marker[len];
+            for (int i = 0; i < len; i++) {
+                LatLng pos = new LatLng(buses.get(i).latitude, buses.get(i).longitude);
+                MarkerOptions options = new MarkerOptions()
+                        .position(pos)
+                        .icon(BUS_ICON)
+                        .anchor(0.5f, 0.5f);
+                busMarkers[i] = map.addMarker(options);
+            }
+        }
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
         Log.i("MapController", "Marker clicked");
         marker.showInfoWindow();
-
         map.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()), 250, null);
+
+        if (stopSelector != null) {
+            String[] stops = stopSelector.getDisplayedValues();
+            for (int i = 0; i < stops.length; i++) {
+                if (marker.getTitle().equals(stops[i])) {
+                    stopSelector.setValue(i);
+                }
+            }
+        }
 
         return false;
     }

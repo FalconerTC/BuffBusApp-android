@@ -4,13 +4,14 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 import android.widget.NumberPicker;
+import android.widget.NumberPicker.OnValueChangeListener;
 import android.widget.TextView;
 
 import app.buffbus.R;
 import app.buffbus.activity.DisplayActivity;
 
 // TODO change DisplayActivity to a static Singleton, move out UIThread (?)
-public class UIController {
+public class UIController implements OnValueChangeListener {
 
     private DataController controller;
     private NumberPicker stopSelector;
@@ -38,7 +39,7 @@ public class UIController {
 
     /* Returns the closest stop as the starting value */
     private int getStartingValue() {
-        // Default to 0 until map logic is in place
+        // Default to 0 until "nearest stop" logic is in place
         return 0;
     }
 
@@ -54,13 +55,14 @@ public class UIController {
         stopSelector.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 
         // Create event listener
-        stopSelector.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                selectedStop = stops[newVal];
-                updateTimes();
-            }
-        });
+        stopSelector.setOnValueChangedListener(this);
+        updateTimes();
+    }
+
+    @Override
+    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+        System.out.println("VALUE CHANGED");
+        selectedStop = stops[newVal];
         updateTimes();
     }
 
