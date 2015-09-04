@@ -7,7 +7,7 @@ import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnValueChangeListener;
 import android.widget.TextView;
 
-import app.com.R;
+import com.cherish.busstracker.R;
 
 // TODO change DisplayActivity to a static Singleton, move out UIThread (?)
 public class UIController implements OnValueChangeListener {

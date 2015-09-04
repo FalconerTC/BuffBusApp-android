@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
-import app.com.R;
+import com.cherish.busstracker.R;
 import com.cherish.busstracker.main.DataController;
 import com.cherish.busstracker.main.ServerConnector;
 import com.cherish.busstracker.parser.objects.Route;

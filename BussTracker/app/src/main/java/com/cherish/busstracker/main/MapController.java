@@ -21,7 +21,7 @@ import com.google.maps.android.PolyUtil;
 
 import java.util.ArrayList;
 
-import app.com.R;
+import com.cherish.busstracker.R;
 import com.cherish.busstracker.lib.Polylines;
 import com.cherish.busstracker.parser.objects.Bus;
 import com.cherish.busstracker.parser.objects.Stop;

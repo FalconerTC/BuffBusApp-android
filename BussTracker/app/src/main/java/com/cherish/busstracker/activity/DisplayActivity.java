@@ -20,7 +20,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationListener;
 
-import app.com.R;
+import com.cherish.busstracker.R;
 import com.cherish.busstracker.main.DataController;
 import com.cherish.busstracker.main.MapController;
 import com.cherish.busstracker.main.ServerConnector;
