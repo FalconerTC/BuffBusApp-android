@@ -138,23 +138,23 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     /* Draw all running buses to the map */
     //TODO look into animating the bus transition maybe ?
     private void drawBuses() {
-        // Remove any existing markers
-        if (busMarkers != null) {
-            int len = busMarkers.length;
-            for (int i = 0; i < len; i++) {
-                busMarkers[i].remove();
-                //marker.remove();
-            }
-        }
         // Add updated markers
         ArrayList<Bus> buses = model.getBuses();
         if (buses != null && map != null) {
+            // Remove any existing markers
+            if (busMarkers != null) {
+                int len = busMarkers.length;
+                for (int i = 0; i < len; i++)
+                    busMarkers[i].remove();
+            }
+
            int len = buses.size();
             busMarkers = new Marker[len];
             for (int i = 0; i < len; i++) {
                 LatLng pos = new LatLng(buses.get(i).latitude, buses.get(i).longitude);
                 MarkerOptions options = new MarkerOptions()
                         .position(pos)
+                        .title("Bus")
                         .icon(BUS_ICON)
                         .anchor(0.5f, 0.5f);
                 busMarkers[i] = map.addMarker(options);
@@ -163,21 +163,23 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     }
 
     @Override
+    //TODO add a real return type
     public boolean onMarkerClick(Marker marker) {
-        Log.i("MapController", "Marker clicked");
-        marker.showInfoWindow();
-        map.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()), 250, null);
-
-        if (stopSelector != null) {
-            String[] stops = stopSelector.getDisplayedValues();
-            for (int i = 0; i < stops.length; i++) {
-                if (marker.getTitle().equals(stops[i])) {
-                    stopSelector.setValue(i);
+        // Ignore clicks on buses
+        if (! marker.getTitle().equals("Bus")) {
+            marker.showInfoWindow();
+            map.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()), 250, null);
+            if (stopSelector != null) {
+                String[] stops = stopSelector.getDisplayedValues();
+                for (int i = 0; i < stops.length; i++) {
+                    if (marker.getTitle().equals(stops[i])) {
+                        stopSelector.setValue(i);
+                    }
                 }
             }
         }
-
-        return false;
+        // Return true to always override the default listener
+        return true;
     }
 
 }

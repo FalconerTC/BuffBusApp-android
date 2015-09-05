@@ -60,7 +60,6 @@ public class UIController implements OnValueChangeListener {
 
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-        System.out.println("VALUE CHANGED");
         selectedStop = stops[newVal];
         updateTimes();
     }
@@ -88,6 +87,7 @@ public class UIController implements OnValueChangeListener {
             setTimesDisplay(false);
         }
 
+        //TODO only re-draw buses if triggered by interval
         map.onUpdate(selectedStop);
 
     }
