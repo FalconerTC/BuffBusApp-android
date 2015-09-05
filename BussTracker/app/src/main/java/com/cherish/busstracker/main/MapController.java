@@ -6,6 +6,7 @@ import android.location.Location;
 import android.util.Log;
 import android.widget.NumberPicker;
 
+import com.cherish.busstracker.activity.DisplayActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
@@ -173,7 +174,9 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
                 String[] stops = stopSelector.getDisplayedValues();
                 for (int i = 0; i < stops.length; i++) {
                     if (marker.getTitle().equals(stops[i])) {
-                        stopSelector.setValue(i);
+                        System.out.println("THINGS ARE HAPPENING");
+                        ((DisplayActivity)original).updateSelector(i);
+                        //stopSelector.setValue(i);
                     }
                 }
             }

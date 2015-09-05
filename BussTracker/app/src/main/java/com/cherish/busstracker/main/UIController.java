@@ -13,13 +13,13 @@ import com.cherish.busstracker.R;
 public class UIController implements OnValueChangeListener {
 
     private DataController controller;
-    private NumberPicker stopSelector;
     private UIThread updater;
     private MapController map;
     private Activity original;
+    public NumberPicker stopSelector;
 
     private String[] stops;
-    private String selectedStop;
+    public String selectedStop;
 
     public UIController(Activity activity, DataController model, MapController map) {
         Log.i("DisplayActivity", "Creating DisplayActivity");
@@ -60,6 +60,11 @@ public class UIController implements OnValueChangeListener {
 
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+        changeSelectedStop(newVal);
+    }
+
+    /* Change current stop and update UI */
+    public void changeSelectedStop(int newVal) {
         selectedStop = stops[newVal];
         updateTimes();
     }

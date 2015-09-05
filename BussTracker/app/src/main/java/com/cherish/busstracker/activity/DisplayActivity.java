@@ -94,6 +94,11 @@ public class DisplayActivity extends FragmentActivity implements
         }
     }
 
+    public void updateSelector(int selectedStop) {
+        display.changeSelectedStop(selectedStop);
+
+    }
+
     protected synchronized void buildGoogleApiClient() {
         Log.i(this.getLocalClassName(), "Building GoogleApiClient");
         apiClient = new GoogleApiClient.Builder(this)
@@ -110,7 +115,7 @@ public class DisplayActivity extends FragmentActivity implements
         // Desired interval for polling
         locationRequest.setInterval(ServerConnector.POLLING_INTERVAL);
         // Fastest possible time it can poll
-        locationRequest.setFastestInterval(ServerConnector.POLLING_INTERVAL);
+        locationRequest.setFastestInterval(ServerConnector.FASTEST_INTERVAL);
 
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
