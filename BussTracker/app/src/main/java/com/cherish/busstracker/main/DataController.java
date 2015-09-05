@@ -11,7 +11,7 @@ import com.cherish.busstracker.activity.DisplayActivity;
 import com.cherish.busstracker.parser.objects.Bus;
 import com.cherish.busstracker.parser.objects.Route;
 import com.cherish.busstracker.parser.objects.Stop;
-import com.cherish.busstracker.main.threads.ControllerThread;
+import com.cherish.busstracker.lib.threads.ControllerThread;
 
 /**
  * Created by Falcon on 8/9/2015.

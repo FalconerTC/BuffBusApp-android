@@ -1,4 +1,4 @@
-package com.cherish.busstracker.main.threads;
+package com.cherish.busstracker.lib.threads;
 
 import android.util.Log;
 

@@ -1,4 +1,4 @@
-package com.cherish.busstracker.activity.Fragments;
+package com.cherish.busstracker.activity.fragments;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;

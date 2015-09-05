@@ -94,6 +94,7 @@ public class DisplayActivity extends FragmentActivity implements
         }
     }
 
+    /* Proxy update requests to the UIController */
     public void updateSelector(int selectedStop) {
         display.changeSelectedStop(selectedStop);
 
