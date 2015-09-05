@@ -1,6 +1,57 @@
+import groovy.swing.SwingBuilder
 apply plugin: 'com.android.application'
 
+/* Groovy function to prompt for keystore credentials on build
+ * Adapted from https://www.timroes.de/2014/01/19/using-password-prompts-with-gradle-build-files/
+ * and https://github.com/Newbilius/longtext_sharer/blob/master/longtextsharer/build.gradle
+ */
+gradle.taskGraph.whenReady { taskGraph ->
+    if(taskGraph.hasTask(':app:assembleRelease')) {
+        def pass = ''
+        if (System.console() == null) {
+            new SwingBuilder().edt {
+                dialog(modal: true,
+                        title: 'Enter password',
+                        alwaysOnTop: true,
+                        resizable: false,
+                        locationRelativeTo: null, // Place dialog in center of the screen
+                        pack: true,
+                        show: true
+                ) {
+                    vbox {
+                        label(text: "Please enter key passphrase:")
+                        input = passwordField()
+                        button(defaultButton: true, text: 'OK', actionPerformed: {
+                            pass = input.password;
+                            dispose();
+                        })
+                    }
+                }
+            }
+        } else {
+            pass = System.console().readPassword("\nPlease enter key passphrase: ")
+            pass = new String(pass)
+        }
+
+        if (pass.size() <= 0) {
+            throw new InvalidUserDataException("You must enter a password to proceed.")
+        }
+
+        // set signing config key passwords
+        android.signingConfigs.release.storePassword = pass
+        android.signingConfigs.release.keyPassword = pass
+    }
+}
+
 android {
+    signingConfigs {
+        release {
+            keyAlias 'FalconsAndroidKey'
+            keyPassword ""
+            storeFile file('D:/projects/keystore.jks')
+            storePassword ""
+        }
+    }
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
     defaultConfig {
@@ -14,6 +65,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
         debug {
             debuggable true
@@ -25,5 +77,5 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'com.google.android.gms:play-services:7.8.0'
-    compile 'com.google.maps.android:android-maps-utils:0.4'
+    compile 'com.google.maps.android:android-maps-utils:0.4+'
 }
