@@ -32,21 +32,23 @@ public class MainActivity extends AppCompatActivity {
         blockUntilReady();
 
         Route[] routes = listener.getRoutes();
-        // Change route order
-        routes = modifyRoutes(routes);
-        //listener.stop();
+        if (routes != null) {
+            // Change route order
+            routes = modifyRoutes(routes);
+            //listener.stop();
 
-        RelativeLayout layout = (RelativeLayout)findViewById(R.id.mainLayout);
-        // Hide template button
-        findViewById(R.id.route_template).setVisibility(View.GONE);
-        int parentElem = R.id.textView_Subtitle;
-        // Create route buttons
-        for (int i = 0; i < routes.length; i++) {
-            Button btn = createRouteButton(parentElem, routes[i].name, (i+1));
-            layout.addView(btn);
-            parentElem = (i+1);
+            RelativeLayout layout = (RelativeLayout) findViewById(R.id.mainLayout);
+            // Hide template button
+            findViewById(R.id.route_template).setVisibility(View.GONE);
+            int parentElem = R.id.textView_Subtitle;
+            // Create route buttons
+            for (int i = 0; i < routes.length; i++) {
+                Button btn = createRouteButton(parentElem, routes[i].name, (i + 1));
+                layout.addView(btn);
+                parentElem = (i + 1);
+            }
+            setContentView(layout);
         }
-        setContentView(layout);
     }
 
     /* Block main thread until route information is retrieved */

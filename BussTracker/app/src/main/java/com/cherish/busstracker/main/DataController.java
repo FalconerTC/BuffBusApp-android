@@ -11,7 +11,7 @@ import com.cherish.busstracker.activity.DisplayActivity;
 import com.cherish.busstracker.parser.objects.Bus;
 import com.cherish.busstracker.parser.objects.Route;
 import com.cherish.busstracker.parser.objects.Stop;
-import com.cherish.busstracker.lib.threads.ControllerThread;
+import com.cherish.busstracker.lib.threads.ModelThread;
 
 /**
  * Created by Falcon on 8/9/2015.
@@ -21,7 +21,7 @@ import com.cherish.busstracker.lib.threads.ControllerThread;
 public class DataController {
 
     private static DataController controller;
-    private static ControllerThread updater;
+    private static ModelThread updater;
     private Activity original;
     public Intent map;
     private ServerConnector connector;
@@ -51,7 +51,8 @@ public class DataController {
     public static DataController getDataController(Activity original) {
         if (controller == null)
             controller = new DataController(original);
-        updater = new ControllerThread(controller);
+        updater = new ModelThread(controller);
+        //updater = new GenericThread();
         return controller;
     }
 
@@ -130,8 +131,10 @@ public class DataController {
     public void loadMap(String selectedRoute) {
         setRoute(selectedRoute);
         // Activate thread
-        if (!updater.isAlive())
+        if (!updater.isAlive()) {
+            System.out.println("Starting updater thread");
             updater.start();
+        }
         else if (updater.isPaused())
             updater.onResume();
 

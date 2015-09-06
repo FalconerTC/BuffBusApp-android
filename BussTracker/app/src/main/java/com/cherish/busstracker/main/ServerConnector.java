@@ -5,6 +5,7 @@ import android.util.Log;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 
@@ -16,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.cherish.busstracker.lib.threads.ServerThread;
 import com.cherish.busstracker.parser.ParserFactory;
 import com.cherish.busstracker.parser.objects.Bus;
 import com.cherish.busstracker.parser.objects.ParsedObject;
@@ -31,14 +33,12 @@ import com.cherish.busstracker.parser.objects.Stop;
 public class ServerConnector{
 
     private static ServerConnector connector;
+    private static ServerThread updater;
     private DefaultHttpClient client;
     private Map<String, HttpPost> httpPosts;
     private ParserFactory parser;
     // Thread to manage server requests
     private Thread requester;
-    // Used to notify main thread once route data is received
-    private Object syncObject = null;
-
     // Parsed objects
     private Route[] routes;
     private Stop[] stops;
@@ -83,66 +83,27 @@ public class ServerConnector{
     public static ServerConnector getServerConnector() {
         if (connector == null)
             connector = new ServerConnector();
+        updater = new ServerThread(connector);
         return connector;
     }
 
+    /* Used to notify main thread once route data is received */
     public void setSyncObject(Object sync) {
-        this.syncObject = sync;
+        updater.setSyncObject(sync);
     }
 
     /* Create the server polling thread */
-    // TODO move this out to threads
     public void start() {
-        requester = new Thread(new Runnable() {
-            private volatile boolean active = true;
-
-            @Override
-            public void run() {
-                // Continue polling until stopped
-                while(active) {
-                    try {
-                        update();
-                    } catch (Exception e) {
-                        Log.e("Thread error", "Thread failed to update");
-                        e.printStackTrace();
-                    }
-                    try {
-                        Thread.sleep(POLLING_INTERVAL);
-                    // Kill thread if interrupted
-                    } catch(InterruptedException e) {
-                        Log.i("Thread interrupted", "Exiting thread");
-                        return;
-                    } catch (Exception e) {
-                        Log.e("Thread error", "Thread failed to sleep");
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            public void stop() {
-                active = false;
-            }
-        });
-        requester.start();
-    }
-
-    /* Stop server polling */
-    public void stop() {
-        if(requester != null)
-            requester.interrupt();
+        updater.start();
     }
 
     /* Create server requests and set resulting data */
     public void update() {
         // Fetch routes only once
-        if (this.routes == null) {
-            this.routes = (Route[]) sendRequest(ParserFactory.PARSER_ROUTES);
-            // Notify main thread
-            if (syncObject != null) {
-                synchronized(syncObject) {
-                    syncObject.notify();
-                }
-            }
+        if (routes == null) {
+            routes = (Route[]) sendRequest(ParserFactory.PARSER_ROUTES);
+            // Notify main thread of route information
+            updater.onNotify();
         }
         // Update stops and buses each interval
         this.stops = (Stop[])sendRequest(ParserFactory.PARSER_STOPS);
@@ -159,6 +120,10 @@ public class ServerConnector{
         try {
             HttpResponse response = client.execute(post);
             stream = response.getEntity().getContent();
+        } catch (HttpHostConnectException e) {
+            Log.e("Connection error", "Unable to connect to server");
+            e.printStackTrace();
+            return null;
         } catch (UnsupportedEncodingException e) {
             Log.e("Encoding error", "Encoding is unsupported");
             e.printStackTrace();

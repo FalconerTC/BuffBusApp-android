@@ -43,6 +43,7 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     public static final LatLng CU_LATLNG = new LatLng(40.001894, -105.260184);
     public static final int DEFAULT_MAP_TYPE = GoogleMap.MAP_TYPE_NORMAL;
     public static final int DEFAULT_ZOOM_LEVEL = 14;
+    public static final String TAG = "MapController";
 
     /* Objects */
     private DataController model;
@@ -91,7 +92,7 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     /* Called on create to add route information */
     //TODO change marker z-indexes to be consistent
     public void initializeData() {
-        Log.i("MapController", "Initializing data");
+        Log.i(TAG, "Initializing data");
 
         // Draw the polyline for the current route
         int route = model.getRoute().id;
@@ -139,6 +140,7 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     /* Draw all running buses to the map */
     //TODO look into animating the bus transition maybe ?
     private void drawBuses() {
+        Log.i(TAG, "Drawing bus location");
         // Add updated markers
         ArrayList<Bus> buses = model.getBuses();
         if (buses != null && map != null) {
@@ -164,7 +166,7 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     }
 
     @Override
-    //TODO add a real return type
+    //TODO remove reference to stopSelector
     public boolean onMarkerClick(Marker marker) {
         // Ignore clicks on buses
         if (! marker.getTitle().equals("Bus")) {
@@ -174,9 +176,7 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
                 String[] stops = stopSelector.getDisplayedValues();
                 for (int i = 0; i < stops.length; i++) {
                     if (marker.getTitle().equals(stops[i])) {
-                        System.out.println("THINGS ARE HAPPENING");
                         ((DisplayActivity)original).updateSelector(i);
-                        //stopSelector.setValue(i);
                     }
                 }
             }
