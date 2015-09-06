@@ -57,7 +57,7 @@ public class UIController implements OnValueChangeListener {
 
         // Create event listener
         stopSelector.setOnValueChangedListener(this);
-        updateTimes();
+        update();
     }
 
     @Override
@@ -69,11 +69,11 @@ public class UIController implements OnValueChangeListener {
     public void changeSelectedStop(int newVal) {
         stopSelector.setValue(newVal);
         selectedStop = stops[newVal];
-        updateTimes();
+        update();
     }
 
     /* Updates the current time display */
-    public void updateTimes() {
+    public void update() {
         // Do nothing if the route is already known to be inactive
         if (controller.getRouteActive() == Boolean.FALSE) {
             return;

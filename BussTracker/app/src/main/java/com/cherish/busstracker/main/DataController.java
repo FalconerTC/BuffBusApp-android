@@ -73,7 +73,7 @@ public class DataController {
                 break;
             }
         }
-        updateStopData();
+        update();
         // Load stop names
         int len = stops.length;
         this.stopNames = new String[len];
@@ -84,7 +84,7 @@ public class DataController {
 
     //TODO Make this more efficient with SparseArray
     /* Update the stops based on the current route */
-    public void updateStopData() {
+    public void update() {
         // Add relevant buses
         Bus[] bussArr = connector.getBuses();
         this.buses = new ArrayList<>();

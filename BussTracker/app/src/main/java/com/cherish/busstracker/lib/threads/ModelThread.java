@@ -15,7 +15,7 @@ public class ModelThread extends GenericThread{
     }
 
     public void onRun() {
-        controller.updateStopData();
+        controller.update();
     }
 
 }
