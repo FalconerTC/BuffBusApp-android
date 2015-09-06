@@ -1,7 +1,7 @@
 package com.cherish.busstracker.main;
 
 import android.app.Activity;
-import android.util.Log;
+
 import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnValueChangeListener;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.cherish.busstracker.R;
 import com.cherish.busstracker.lib.threads.UIThread;
+import com.cherish.busstracker.lib.Log;
 
 // TODO change DisplayActivity to a static Singleton, move out UIThread (?)
 public class UIController implements OnValueChangeListener {

@@ -1,6 +1,5 @@
 package com.cherish.busstracker.parser;
 
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -8,6 +7,7 @@ import org.json.JSONObject;
 
 import com.cherish.busstracker.parser.objects.ParsedObject;
 import com.cherish.busstracker.parser.objects.Route;
+import com.cherish.busstracker.lib.Log;
 
 /**
  * Created by Falcon on 8/14/2015.

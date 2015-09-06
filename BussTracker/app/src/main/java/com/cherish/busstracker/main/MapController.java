@@ -3,7 +3,6 @@ package com.cherish.busstracker.main;
 import android.app.Activity;
 import android.graphics.Color;
 import android.location.Location;
-import android.util.Log;
 import android.widget.NumberPicker;
 
 import com.cherish.busstracker.activity.DisplayActivity;
@@ -26,6 +25,7 @@ import com.cherish.busstracker.R;
 import com.cherish.busstracker.lib.Polylines;
 import com.cherish.busstracker.parser.objects.Bus;
 import com.cherish.busstracker.parser.objects.Stop;
+import com.cherish.busstracker.lib.Log;
 
 /**
  * Created by Falcon on 8/29/2015.

@@ -8,7 +8,6 @@ import android.content.IntentSender;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -25,6 +24,8 @@ import com.cherish.busstracker.main.DataController;
 import com.cherish.busstracker.main.MapController;
 import com.cherish.busstracker.main.ServerConnector;
 import com.cherish.busstracker.main.UIController;
+import com.cherish.busstracker.lib.Log;
+
 
 /*
   Simple class to maintain GoogleAPIClient and display controllers, built from the following

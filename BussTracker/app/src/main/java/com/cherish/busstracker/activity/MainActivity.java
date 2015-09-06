@@ -2,7 +2,6 @@ package com.cherish.busstracker.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +15,7 @@ import com.cherish.busstracker.R;
 import com.cherish.busstracker.main.DataController;
 import com.cherish.busstracker.main.ServerConnector;
 import com.cherish.busstracker.parser.objects.Route;
+import com.cherish.busstracker.lib.Log;
 
 public class MainActivity extends AppCompatActivity {
 

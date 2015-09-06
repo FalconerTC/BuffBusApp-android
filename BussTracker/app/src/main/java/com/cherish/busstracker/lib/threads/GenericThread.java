@@ -1,6 +1,6 @@
 package com.cherish.busstracker.lib.threads;
 
-import android.util.Log;
+import com.cherish.busstracker.lib.Log;
 
 /**
  * Created by Falcon on 8/29/2015.

@@ -1,7 +1,5 @@
 package com.cherish.busstracker.main;
 
-import android.util.Log;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
@@ -23,6 +21,7 @@ import com.cherish.busstracker.parser.objects.Bus;
 import com.cherish.busstracker.parser.objects.ParsedObject;
 import com.cherish.busstracker.parser.objects.Route;
 import com.cherish.busstracker.parser.objects.Stop;
+import com.cherish.busstracker.lib.Log;
 
 /**
  * Created by Falcon on 8/13/2015.
