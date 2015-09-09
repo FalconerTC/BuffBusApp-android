@@ -33,14 +33,14 @@ public class DataController {
     private ArrayList<Bus> buses;
 
     // Maintains 3-way state of route (including "unknown" null)
-    private Boolean routeActive;
+//    private Boolean routeActive;
 
     public Route getRoute() { return route; }
     public String[] getStopNames() { return stopNames; }
     public Stop[] getStops() { return stops; }
     public ArrayList<Bus> getBuses() { return buses; }
-    public Boolean getRouteActive(){ return routeActive; }
-    public void setRouteActive(Boolean routeActive) { this.routeActive = routeActive; }
+/*    public Boolean getRouteActive(){ return routeActive; }
+    public void setRouteActive(Boolean routeActive) { this.routeActive = routeActive; }*/
 
     private DataController(Activity original) {
         this.original = original;
@@ -63,7 +63,7 @@ public class DataController {
     /* Set the current route based on the user selection */
     public void setRoute(String selectedRoute) {
         // Reset route switch
-        this.routeActive = null;
+        //this.routeActive = null;
         // Load route from name
         Route[] routes = this.connector.getRoutes();
         int routeLen = routes.length;

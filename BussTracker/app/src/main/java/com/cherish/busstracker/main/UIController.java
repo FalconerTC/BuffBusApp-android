@@ -3,8 +3,10 @@ package com.cherish.busstracker.main;
 import android.app.Activity;
 
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnValueChangeListener;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cherish.busstracker.R;
@@ -22,6 +24,7 @@ public class UIController implements OnValueChangeListener {
 
     private String[] stops;
     private String selectedStop;
+    private int activeRoutes;
 
     public UIController(Activity activity, DataController model, MapController map) {
         Log.i("DisplayActivity", "Creating DisplayActivity");
@@ -29,6 +32,7 @@ public class UIController implements OnValueChangeListener {
         this.original = activity;
         this.controller = model;
         this.map = map;
+        this.activeRoutes = -1;
 
         stopSelector = (NumberPicker)original.findViewById(R.id.stopPicker);
 
@@ -48,7 +52,6 @@ public class UIController implements OnValueChangeListener {
     public void initializeSelector() {
         stops = controller.getStopNames();
         selectedStop = stops[getStartingValue()];
-        setTimesDisplay(true);
         stopSelector.setMaxValue(stops.length - 1);
         stopSelector.setDisplayedValues(stops);
         stopSelector.setValue(getStartingValue());
@@ -57,7 +60,7 @@ public class UIController implements OnValueChangeListener {
 
         // Create event listener
         stopSelector.setOnValueChangedListener(this);
-        update();
+        //update();
     }
 
     @Override
@@ -65,46 +68,81 @@ public class UIController implements OnValueChangeListener {
         changeSelectedStop(newVal);
     }
 
+    /* Fetch stop ID from stop name and call overloaded method */
+    public void changeSelectedStop(String stop) {
+        if (stopSelector != null) {
+            String[] stops = stopSelector.getDisplayedValues();
+            for (int i = 0; i < stops.length; i++) {
+                if (stop.equals(stops[i])) {
+                    changeSelectedStop(i);
+                }
+            }
+        }
+    }
+
     /* Change current stop and update UI */
     public void changeSelectedStop(int newVal) {
         stopSelector.setValue(newVal);
         selectedStop = stops[newVal];
-        update();
+        update(false);
+    }
+
+    /* Update map and time display. Called by UIThread per interval */
+    public void update(boolean calledByInterval) {
+        map.onUpdate(selectedStop, calledByInterval);
+        updateTimeDisplay();
     }
 
     /* Updates the current time display */
-    public void update() {
-        // Do nothing if the route is already known to be inactive
-        if (controller.getRouteActive() == Boolean.FALSE) {
-            return;
-        }
+    public void updateTimeDisplay() {
+        int newRoutes = 0;
 
         int[] times = controller.getNextTimes(selectedStop);
         if (times != null) {
-            String value1 = times[0] == 0 ? "Now" : (times[0] + " minute" + (times[0] == 1 ? "" : "s"));
+            String value1 = (times[0] == 0 ? "Now" : (times[0] + " minute" + (times[0] == 1 ? "" : "s")));
             ((TextView)original.findViewById(R.id.time_1)).setText(value1);
+            newRoutes = 1;
             // Some buses have two next times
-            // TODO fix support for showing only one time
             if (times.length > 1) {
-                String value2 = times[1] == 0 ? "Now" : (times[1] + " minute" + (times[1] == 1 ? "" : "s"));
+                String value2 = (times[1] == 0 ? "Now" : (times[1] + " minute" + (times[1] == 1 ? "" : "s")));
                 ((TextView)original.findViewById(R.id.time_2)).setText(value2);
+                newRoutes = 2;
             }
-        } else {
-            // TODO make sure "no buses" event can't false trigger and lock out times
-            controller.setRouteActive(Boolean.FALSE);
-            setTimesDisplay(false);
         }
-
-        //TODO only re-draw buses if triggered by interval
-        map.onUpdate(selectedStop);
-
+        // Cache the current number of routes
+        if (this.activeRoutes != newRoutes) {
+            this.activeRoutes = newRoutes;
+            setTimesDisplay(newRoutes);
+        }
     }
 
-    /* Change which set of TextViews are visible */
-    private void setTimesDisplay(boolean active) {
-        original.findViewById(R.id.time_display).setVisibility(active ? View.VISIBLE : View.GONE);
-        original.findViewById(R.id.time_1).setVisibility(active ? View.VISIBLE : View.GONE);
-        original.findViewById(R.id.time_2).setVisibility(active ? View.VISIBLE : View.GONE);
-        original.findViewById(R.id.time_inactive).setVisibility(active ? View.GONE : View.VISIBLE);
+    /* Change which set of TextViews are visible along with some layout params
+    *  Takes the number of active times [0-2] to show
+    */
+    private void setTimesDisplay(int active) {
+        // Toggle view types
+        if (active == 0) {
+            original.findViewById(R.id.time_display).setVisibility(View.GONE);
+            original.findViewById(R.id.time_1).setVisibility(View.GONE);
+            original.findViewById(R.id.time_2).setVisibility(View.GONE);
+            original.findViewById(R.id.time_inactive).setVisibility(View.VISIBLE);
+        } else {
+            original.findViewById(R.id.time_display).setVisibility(View.VISIBLE);
+            original.findViewById(R.id.time_1).setVisibility(View.VISIBLE);
+            original.findViewById(R.id.time_inactive).setVisibility(View.GONE);
+
+            View timeDisplay = original.findViewById(R.id.time_1);
+            RelativeLayout.LayoutParams params =
+                    (RelativeLayout.LayoutParams)timeDisplay.getLayoutParams();
+            // Show only one bus time indicator and center is
+            if (active == 1) {
+                original.findViewById(R.id.time_2).setVisibility(View.GONE);
+                params.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+            } else {
+                original.findViewById(R.id.time_2).setVisibility(View.VISIBLE);
+                params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            }
+            timeDisplay.setLayoutParams(params);
+        }
     }
 }

@@ -21,13 +21,12 @@
         android:id="@+id/time_1"
         android:text="X minutes"
         android:layout_toRightOf="@id/time_display"
+        android:layout_centerVertical="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="30sp"
         android:textSize="24sp"
         android:textColor="@color/primary_dark_material_dark"
-
-        android:visibility="visible"
-        android:layout_centerVertical="false" />
+        android:visibility="visible" />
 
     <TextView
         android:layout_width="wrap_content"

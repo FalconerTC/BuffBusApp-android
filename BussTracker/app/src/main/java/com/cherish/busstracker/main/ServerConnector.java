@@ -48,9 +48,6 @@ public class ServerConnector{
     public static final String STOPS_ADDR = SERVER_ADDR + ParserFactory.PARSER_STOPS;
     public static final String BUSES_ADDR = SERVER_ADDR + ParserFactory.PARSER_BUSES;
 
-    public static final long POLLING_INTERVAL = 5 * 1000; //5 seconds
-    public static final long FASTEST_INTERVAL = POLLING_INTERVAL / 2;
-
     public Route[] getRoutes() { return routes;}
     public Stop[] getStops() { return stops;}
     public Bus[] getBuses() { return buses;}

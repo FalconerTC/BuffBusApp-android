@@ -3,7 +3,6 @@ package com.cherish.busstracker.main;
 import android.app.Activity;
 import android.graphics.Color;
 import android.location.Location;
-import android.widget.NumberPicker;
 
 import com.cherish.busstracker.activity.DisplayActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -48,7 +47,6 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     /* Objects */
     private DataController model;
     private Activity original;
-    private NumberPicker stopSelector;
     public GoogleMap map;
 
     private String lastStop;
@@ -59,7 +57,6 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     public MapController(Activity activity, DataController model) {
         this.model = model;
         this.original = activity;
-        stopSelector = (NumberPicker)original.findViewById(R.id.stopPicker);
 
         this.lastStop = "";
         this.currentLocation = null;
@@ -120,8 +117,10 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
         }
     }
 
-    /* Called by UI thread by interval or stop change */
-    public void onUpdate(String stop) {
+    /* Called by UI thread by interval or stop change
+    *  Takes a boolean to indicate if it should redraw buses (ie if it was called by interval)
+    */
+    public void onUpdate(String stop, boolean redrawBuses) {
         // Simulate click for selected stop only if the stop is new
         if (! lastStop.equals(stop) && stopMarkers != null) {
             lastStop = stop;
@@ -134,11 +133,11 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
             }
         }
         // Draw updated bus locations
-        drawBuses();
+        if (redrawBuses)
+            drawBuses();
     }
 
     /* Draw all running buses to the map */
-    //TODO look into animating the bus transition maybe ?
     private void drawBuses() {
         Log.i(TAG, "Drawing bus location");
         // Add updated markers
@@ -166,20 +165,14 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     }
 
     @Override
-    //TODO remove reference to stopSelector
     public boolean onMarkerClick(Marker marker) {
         // Ignore clicks on buses
         if (! marker.getTitle().equals("Bus")) {
             marker.showInfoWindow();
             map.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()), 250, null);
-            if (stopSelector != null) {
-                String[] stops = stopSelector.getDisplayedValues();
-                for (int i = 0; i < stops.length; i++) {
-                    if (marker.getTitle().equals(stops[i])) {
-                        ((DisplayActivity)original).updateSelector(i);
-                    }
-                }
-            }
+
+            ((DisplayActivity)original).updateSelector(marker.getTitle());
+
         }
         // Return true to always override the default listener
         return true;

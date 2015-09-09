@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
+import com.cherish.busstracker.lib.threads.GenericThread;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -33,6 +34,8 @@ import com.cherish.busstracker.lib.Log;
  */
 public class DisplayActivity extends FragmentActivity implements
         ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
+
+    public static final long FASTEST_INTERVAL = GenericThread.POLLING_INTERVAL / 2;
 
     /* Error codes */
     // Request code to use when launching the resolution activity
@@ -96,7 +99,7 @@ public class DisplayActivity extends FragmentActivity implements
     }
 
     /* Proxy update requests to the UIController */
-    public void updateSelector(int selectedStop) {
+    public void updateSelector(String selectedStop) {
         display.changeSelectedStop(selectedStop);
 
     }
@@ -115,9 +118,9 @@ public class DisplayActivity extends FragmentActivity implements
     protected void createLocationRequest() {
         locationRequest = new LocationRequest();
         // Desired interval for polling
-        locationRequest.setInterval(ServerConnector.POLLING_INTERVAL);
+        locationRequest.setInterval(GenericThread.POLLING_INTERVAL);
         // Fastest possible time it can poll
-        locationRequest.setFastestInterval(ServerConnector.FASTEST_INTERVAL);
+        locationRequest.setFastestInterval(FASTEST_INTERVAL);
 
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }

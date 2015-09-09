@@ -21,7 +21,7 @@ public class UIThread extends GenericThread {
         original.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                controller.update();
+                controller.update(true);
             }
         });
     }
