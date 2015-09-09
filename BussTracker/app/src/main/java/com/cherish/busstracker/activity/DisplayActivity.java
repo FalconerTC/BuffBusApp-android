@@ -66,6 +66,9 @@ public class DisplayActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
 
+        Intent intent = getIntent();
+        String route = intent.getStringExtra(MainActivity.SELECTED_ROUTE);
+
         requestingLocationUpdates = true;
 
         // Update values from saved bundle
@@ -75,7 +78,7 @@ public class DisplayActivity extends FragmentActivity implements
         buildGoogleApiClient();
 
         // Initialize data model
-        model = DataController.getDataController();
+        model = new DataController(route);
 
         // Initialize map
         map = new MapController(this, model);

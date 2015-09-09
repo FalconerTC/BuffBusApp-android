@@ -20,9 +20,7 @@ import com.cherish.busstracker.lib.threads.ModelThread;
 //TODO refactor naming to Model, reconsider singleton usage
 public class DataController {
 
-    private static DataController controller;
     private static ModelThread updater;
-    private Activity original;
     public Intent map;
     private ServerConnector connector;
 
@@ -32,38 +30,22 @@ public class DataController {
     private String[] stopNames;
     private ArrayList<Bus> buses;
 
-    // Maintains 3-way state of route (including "unknown" null)
-//    private Boolean routeActive;
-
     public Route getRoute() { return route; }
     public String[] getStopNames() { return stopNames; }
     public Stop[] getStops() { return stops; }
     public ArrayList<Bus> getBuses() { return buses; }
-/*    public Boolean getRouteActive(){ return routeActive; }
-    public void setRouteActive(Boolean routeActive) { this.routeActive = routeActive; }*/
 
-    private DataController(Activity original) {
-        this.original = original;
+
+    public DataController(String route) {
         this.connector = ServerConnector.getServerConnector();
-        //this.updater = new ControllerThread();
-    }
-
-    public static DataController getDataController(Activity original) {
-        if (controller == null)
-            controller = new DataController(original);
-        updater = new ModelThread(controller);
-        //updater = new GenericThread();
-        return controller;
-    }
-
-    public static DataController getDataController() {
-        return controller;
+        setRoute(route);
+        updater = new ModelThread(this);
+        updater.start();
     }
 
     /* Set the current route based on the user selection */
     public void setRoute(String selectedRoute) {
         // Reset route switch
-        //this.routeActive = null;
         // Load route from name
         Route[] routes = this.connector.getRoutes();
         int routeLen = routes.length;
@@ -126,25 +108,5 @@ public class DataController {
                 return stops[i].busTimes.get(id);
         return null;
     }
-
-    /* Transition from the route view to the bus view */
-    public void loadMap(String selectedRoute) {
-        setRoute(selectedRoute);
-        // Activate thread
-        if (!updater.isAlive()) {
-            System.out.println("Starting updater thread");
-            updater.start();
-        }
-        else if (updater.isPaused())
-            updater.onResume();
-
-        //TODO resume activities instead of recreating
-        if (map == null) {
-            map = new Intent(original, DisplayActivity.class);
-            map.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        }
-        original.startActivity(map);
-    }
-
 
 }

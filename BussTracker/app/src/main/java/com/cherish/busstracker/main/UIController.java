@@ -3,7 +3,6 @@ package com.cherish.busstracker.main;
 import android.app.Activity;
 
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnValueChangeListener;
 import android.widget.RelativeLayout;

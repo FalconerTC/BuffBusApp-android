@@ -1,5 +1,6 @@
 package com.cherish.busstracker.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -12,23 +13,25 @@ import android.widget.RelativeLayout;
 import java.util.ArrayList;
 
 import com.cherish.busstracker.R;
-import com.cherish.busstracker.main.DataController;
 import com.cherish.busstracker.main.ServerConnector;
 import com.cherish.busstracker.parser.objects.Route;
 import com.cherish.busstracker.lib.Log;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
-    public DataController controller;
+    public final static String SELECTED_ROUTE = "com.cherish.busstracker.selected_route";
+    public final static String TAG =  "MainActivity";
+
     public ServerConnector listener;
+    public Intent display;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG, "Creating MainActivity");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         listener = ServerConnector.getServerConnector();
-        controller = DataController.getDataController(MainActivity.this);
         blockUntilReady();
 
         Route[] routes = listener.getRoutes();
@@ -49,6 +52,30 @@ public class MainActivity extends AppCompatActivity {
             }
             setContentView(layout);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+       Log.i(TAG, "Starting");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG, "Resuming");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i(TAG, "Pausing");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i(TAG, "Stopping");
     }
 
     /* Block main thread until route information is retrieved */
@@ -126,20 +153,38 @@ public class MainActivity extends AppCompatActivity {
         btn.setText(text);
         btn.setId(id);
         btn.setLayoutParams(relativeParams);
-        btn.setOnClickListener(routeClick(btn));
+        btn.setOnClickListener(this);
 
         return btn;
     }
     /* Called on click for each button in route selector */
-    View.OnClickListener routeClick(final Button button) {
+
+/*    View.OnClickListener routeClick(final Button button) {
         return new View.OnClickListener() {
             public void onClick(View v) {
                 String selectedRoute = ((Button)v).getText().toString();
                 // TODO reimplement this in MainActivity,
                 // change DataController to not be a singleton
                 controller.loadMap(selectedRoute);
+                if (display == null) {
+                    display = new Intent(this, DisplayActivity.class);
+                    display.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                }
             }
         };
+    }*/
+
+    @Override
+    public void onClick(View v) {
+        String selectedRoute = ((Button)v).getText().toString();
+        //controller.loadMap(selectedRoute);
+        if (display == null) {
+            Log.i(TAG, "Recreating DisplayActivity");
+            display = new Intent(this, DisplayActivity.class);
+            display.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        }
+        display.putExtra(SELECTED_ROUTE, selectedRoute);
+        startActivity(display);
     }
 
     @Override

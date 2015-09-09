@@ -6,7 +6,7 @@ package com.cherish.busstracker.lib;
  * Taken from http://stackoverflow.com/questions/2446248/remove-all-debug-logging-calls-before-publishing-are-there-tools-to-do-this
  */
 public class Log {
-    static final boolean LOG = false;
+    static final boolean LOG = true;
 
     public static void i(String tag, String string) {
         if (LOG) android.util.Log.i(tag, string);
