@@ -1,4 +1,4 @@
-package com.cherish.busstracker.main;
+package com.cherish.busstracker.main.view;
 
 import android.app.Activity;
 
@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.cherish.busstracker.R;
 import com.cherish.busstracker.lib.Log;
+import com.cherish.busstracker.main.DataModel;
 
 public class UIController implements OnValueChangeListener {
 
@@ -47,6 +48,7 @@ public class UIController implements OnValueChangeListener {
 
     /* Set initial values for selector */
     public void initializeSelector() {
+        System.out.println("Initializing selector");
         stops = controller.getStopNames();
         selectedStop = stops[getStartingValue()];
         stopSelector.setMaxValue(stops.length - 1);
@@ -86,8 +88,10 @@ public class UIController implements OnValueChangeListener {
 
     /* Update map and time display. Called by UIThread per interval */
     public void update(boolean calledByInterval) {
-        map.onUpdate(selectedStop, calledByInterval);
-        updateTimeDisplay();
+        if (selectedStop != null) {
+            map.onUpdate(selectedStop, calledByInterval);
+            updateTimeDisplay();
+        }
     }
 
     /* Updates the current time display */

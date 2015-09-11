@@ -1,5 +1,6 @@
 package com.cherish.busstracker.lib.threads;
 
+import com.cherish.busstracker.lib.Log;
 import com.cherish.busstracker.main.ServerConnector;
 
 /**
@@ -17,6 +18,7 @@ public class ServerThread extends GenericThread{
     }
 
     public void onRun() {
+        Log.i("ServerThread", "Executing...");
         connector.update();
     }
 

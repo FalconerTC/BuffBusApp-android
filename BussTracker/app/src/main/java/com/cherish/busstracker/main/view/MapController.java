@@ -1,10 +1,11 @@
-package com.cherish.busstracker.main;
+package com.cherish.busstracker.main.view;
 
 import android.app.Activity;
 import android.graphics.Color;
 import android.location.Location;
 
 import com.cherish.busstracker.activity.DisplayActivity;
+import com.cherish.busstracker.main.DataModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
@@ -30,7 +31,6 @@ import com.cherish.busstracker.lib.Log;
  * Created by Falcon on 8/29/2015.
  */
 
-//TODO rethink when to use singletons
 public class MapController implements OnMapReadyCallback, OnMarkerClickListener {
 
     /* Map constants */

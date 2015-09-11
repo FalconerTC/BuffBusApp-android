@@ -15,7 +15,7 @@ import com.cherish.busstracker.lib.threads.ModelThread;
 
 public class DataModel {
 
-    private static ModelThread updater;
+    //private static ModelThread updater;
     private ServerConnector connector;
 
     private Route route;
@@ -33,8 +33,8 @@ public class DataModel {
     public DataModel(String route) {
         this.connector = ServerConnector.getServerConnector();
         setRoute(route);
-        updater = new ModelThread(this);
-        updater.start();
+  /*      updater = new ModelThread(this);
+        updater.start();*/
     }
 
     /* Set the current route based on the user selection */
@@ -52,6 +52,7 @@ public class DataModel {
         update();
         // Load stop names
         int len = stops.length;
+        System.out.println("Setting stop names");
         this.stopNames = new String[len];
         for (int i = 0; i < len; i++) {
             this.stopNames[i] = stops[i].name;
@@ -101,14 +102,6 @@ public class DataModel {
             if (stops[i].name.equals(selectedStop))
                 return stops[i].busTimes.get(id);
         return null;
-    }
-
-    public void onPause() {
-
-    }
-
-    public void onResume() {
-
     }
 
 }

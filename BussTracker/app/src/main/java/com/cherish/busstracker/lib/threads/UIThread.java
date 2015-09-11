@@ -1,7 +1,9 @@
 package com.cherish.busstracker.lib.threads;
 
 import android.app.Activity;
-import com.cherish.busstracker.main.UIController;
+
+import com.cherish.busstracker.lib.Log;
+import com.cherish.busstracker.main.view.UIController;
 
 /**
  * Created by Falcon on 9/5/2015.
@@ -9,6 +11,7 @@ import com.cherish.busstracker.main.UIController;
 public class UIThread extends GenericThread {
     private Activity original;
     private UIController controller;
+    public static final String TAG = "UIThread";
 
     public UIThread(UIController controller, Activity original) {
         super();
@@ -18,6 +21,7 @@ public class UIThread extends GenericThread {
 
     /* Run UI updates on main thread */
     public void onRun() {
+        Log.i(TAG, "Executing...");
         original.runOnUiThread(new Runnable() {
             @Override
             public void run() {

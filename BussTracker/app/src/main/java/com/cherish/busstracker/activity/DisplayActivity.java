@@ -11,8 +11,8 @@ import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
 import com.cherish.busstracker.lib.threads.GenericThread;
-import com.cherish.busstracker.lib.threads.ModelThread;
 import com.cherish.busstracker.lib.threads.UIThread;
+import com.cherish.busstracker.main.ThreadManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -24,8 +24,8 @@ import com.google.android.gms.location.LocationListener;
 
 import com.cherish.busstracker.R;
 import com.cherish.busstracker.main.DataModel;
-import com.cherish.busstracker.main.MapController;
-import com.cherish.busstracker.main.UIController;
+import com.cherish.busstracker.main.view.MapController;
+import com.cherish.busstracker.main.view.UIController;
 import com.cherish.busstracker.lib.Log;
 
 
@@ -51,7 +51,8 @@ public class DisplayActivity extends FragmentActivity implements
     /* Objects */
     private GoogleApiClient apiClient;
     private MapController map;
-    private UIThread updater;
+    private ThreadManager manager;
+    //private UIThread updater;
     //private ModelThread updater;
     private UIController display;
     private DataModel model;
@@ -73,7 +74,7 @@ public class DisplayActivity extends FragmentActivity implements
         Intent intent = getIntent();
         String route = intent.getStringExtra(MainActivity.SELECTED_ROUTE);
 
-        requestingLocationUpdates = true;
+        this.requestingLocationUpdates = true;
 
         // Update values from saved bundle
         updateValuesFromBundle(savedInstanceState);
@@ -81,18 +82,21 @@ public class DisplayActivity extends FragmentActivity implements
         // Create a GoogleApiClient instance
         buildGoogleApiClient();
 
+        // Create manager for threads
+        manager = new ThreadManager(this);
+
         // Initialize data model
         model = new DataModel(route);
+        manager.createModelThread(model);
 
         // Initialize map
         map = new MapController(this, model);
 
         // Initialize display controller and map
         display = new UIController(this, model, map);
+        manager.createUIThread(display);
 
-        // Initialize UI thread
-        updater = new UIThread(display, this);
-        updater.start();
+
     }
 
     /* Updates fields based on stored data passed on create */
@@ -164,6 +168,7 @@ public class DisplayActivity extends FragmentActivity implements
         if (apiClient.isConnected() && requestingLocationUpdates) {
             startLocationUpdates();
         }
+        manager.onResume();
     }
 
     @Override
@@ -174,8 +179,7 @@ public class DisplayActivity extends FragmentActivity implements
         if (apiClient.isConnected()) {
             stopLocationUpdates();
         }
-        updater.onPause();
-
+        manager.onPause();
     }
 
     @Override
@@ -184,7 +188,6 @@ public class DisplayActivity extends FragmentActivity implements
         Log.i(TAG, "Stopping");
 
         apiClient.disconnect();
-
     }
 
     @Override

@@ -64,12 +64,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onResume() {
         super.onResume();
         Log.i(TAG, "Resuming");
+        //listener.getUpdater().onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         Log.i(TAG, "Pausing");
+        //listener.getUpdater().onPause();
     }
 
     @Override

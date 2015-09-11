@@ -31,13 +31,12 @@ import com.cherish.busstracker.lib.Log;
  */
 public class ServerConnector{
 
+    //TODO find better solution for managing ServerThread
     private static ServerConnector connector;
     private static ServerThread updater;
     private DefaultHttpClient client;
     private Map<String, HttpPost> httpPosts;
     private ParserFactory parser;
-    // Thread to manage server requests
-    private Thread requester;
     // Parsed objects
     private Route[] routes;
     private Stop[] stops;
@@ -51,6 +50,7 @@ public class ServerConnector{
     public Route[] getRoutes() { return routes;}
     public Stop[] getStops() { return stops;}
     public Bus[] getBuses() { return buses;}
+    public ServerThread getUpdater() { return updater; }
 
 
     private ServerConnector() {

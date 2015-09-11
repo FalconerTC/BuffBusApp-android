@@ -13,6 +13,10 @@ public abstract class GenericThread extends Thread implements Runnable {
     // Records whether thread is running
     private volatile boolean active;
 
+    public boolean isPaused() {
+        return paused;
+    }
+
     // Time for threads to sleep
     public static final long POLLING_INTERVAL = 5 * 1000; //5 seconds
     public static final String TAG = "GenericThread";
@@ -37,7 +41,7 @@ public abstract class GenericThread extends Thread implements Runnable {
                         // Wait until signalled
                         lock.wait();
                     } catch (InterruptedException e) {
-                        Log.i(TAG, "Exiting controller thread");
+                        Log.i(TAG, "Exiting thread");
                         return;
                     }
                 }
@@ -63,11 +67,6 @@ public abstract class GenericThread extends Thread implements Runnable {
         }
     }
 
-    // Kill the thread
-    public void onStop() {
-        active = false;
-    }
-
     // Pause thread execution
     public void onPause() {
         synchronized (lock) {
@@ -83,7 +82,9 @@ public abstract class GenericThread extends Thread implements Runnable {
         }
     }
 
-    public boolean isPaused() {
-        return paused;
+    // Kill the thread
+    public void onStop() {
+        active = false;
     }
+
 }
