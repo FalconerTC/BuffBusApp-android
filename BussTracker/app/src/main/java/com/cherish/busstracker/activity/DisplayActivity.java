@@ -11,6 +11,8 @@ import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
 import com.cherish.busstracker.lib.threads.GenericThread;
+import com.cherish.busstracker.lib.threads.ModelThread;
+import com.cherish.busstracker.lib.threads.UIThread;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -21,9 +23,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationListener;
 
 import com.cherish.busstracker.R;
-import com.cherish.busstracker.main.DataController;
+import com.cherish.busstracker.main.DataModel;
 import com.cherish.busstracker.main.MapController;
-import com.cherish.busstracker.main.ServerConnector;
 import com.cherish.busstracker.main.UIController;
 import com.cherish.busstracker.lib.Log;
 
@@ -36,6 +37,7 @@ public class DisplayActivity extends FragmentActivity implements
         ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
 
     public static final long FASTEST_INTERVAL = GenericThread.POLLING_INTERVAL / 2;
+    public static final String TAG = "DisplayActivity";
 
     /* Error codes */
     // Request code to use when launching the resolution activity
@@ -49,8 +51,10 @@ public class DisplayActivity extends FragmentActivity implements
     /* Objects */
     private GoogleApiClient apiClient;
     private MapController map;
+    private UIThread updater;
+    //private ModelThread updater;
     private UIController display;
-    private DataController model;
+    private DataModel model;
     private LocationRequest locationRequest;
     private Location currentLocation;
 
@@ -78,13 +82,17 @@ public class DisplayActivity extends FragmentActivity implements
         buildGoogleApiClient();
 
         // Initialize data model
-        model = new DataController(route);
+        model = new DataModel(route);
 
         // Initialize map
         map = new MapController(this, model);
 
         // Initialize display controller and map
         display = new UIController(this, model, map);
+
+        // Initialize UI thread
+        updater = new UIThread(display, this);
+        updater.start();
     }
 
     /* Updates fields based on stored data passed on create */
@@ -141,6 +149,8 @@ public class DisplayActivity extends FragmentActivity implements
     @Override
     protected void onStart() {
         super.onStart();
+        Log.i(TAG, "Starting");
+
         if (!resolvingError) {
             apiClient.connect();
         }
@@ -149,6 +159,7 @@ public class DisplayActivity extends FragmentActivity implements
     @Override
     public void onResume() {
         super.onResume();
+        Log.i(TAG, "Resuming");
 
         if (apiClient.isConnected() && requestingLocationUpdates) {
             startLocationUpdates();
@@ -158,28 +169,42 @@ public class DisplayActivity extends FragmentActivity implements
     @Override
     protected void onPause() {
         super.onPause();
+        Log.i(TAG, "Pausing");
 
         if (apiClient.isConnected()) {
             stopLocationUpdates();
         }
+        updater.onPause();
+
     }
 
     @Override
     protected void onStop() {
-        apiClient.disconnect();
         super.onStop();
+        Log.i(TAG, "Stopping");
+
+        apiClient.disconnect();
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.i(TAG, "Back button pressed");
+        //moveTaskToBack(true);
+
+        Intent a = new Intent(this, MainActivity.class);
+        a.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivity(a);
     }
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        Log.i(this.getLocalClassName(), "Connected to GoogleApiClient");
+        Log.i(TAG, "Connected to GoogleApiClient");
 
         if (currentLocation == null) {
             currentLocation = LocationServices.FusedLocationApi.getLastLocation(
                     apiClient);
         }
-        System.out.println("Lat: "+ String.valueOf(currentLocation.getLatitude()));
-        System.out.println("Long: " + String.valueOf(currentLocation.getLongitude()));
 
         if (requestingLocationUpdates) {
             startLocationUpdates();
@@ -188,7 +213,6 @@ public class DisplayActivity extends FragmentActivity implements
 
     @Override
     public void onLocationChanged(Location location) {
-        map.setLocation(location);
         currentLocation = location;
         System.out.println("Location changed");
         Toast.makeText(this, getResources().getString(R.string.location_updated_message),
@@ -197,7 +221,7 @@ public class DisplayActivity extends FragmentActivity implements
 
     @Override
     public void onConnectionSuspended(int cause) {
-        Log.i(this.getLocalClassName(), "Connection suspended");
+        Log.i(TAG, "Connection suspended");
     }
 
     @Override

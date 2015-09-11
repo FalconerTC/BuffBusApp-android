@@ -9,14 +9,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cherish.busstracker.R;
-import com.cherish.busstracker.lib.threads.UIThread;
 import com.cherish.busstracker.lib.Log;
 
-// TODO change DisplayActivity to a static Singleton, move out UIThread (?)
 public class UIController implements OnValueChangeListener {
 
-    private DataController controller;
-    private UIThread updater;
+    private DataModel controller;
+    //private UIThread updater;
     private MapController map;
     private Activity original;
     private NumberPicker stopSelector;
@@ -25,7 +23,7 @@ public class UIController implements OnValueChangeListener {
     private String selectedStop;
     private int activeRoutes;
 
-    public UIController(Activity activity, DataController model, MapController map) {
+    public UIController(Activity activity, DataModel model, MapController map) {
         Log.i("DisplayActivity", "Creating DisplayActivity");
 
         this.original = activity;
@@ -35,8 +33,8 @@ public class UIController implements OnValueChangeListener {
 
         stopSelector = (NumberPicker)original.findViewById(R.id.stopPicker);
 
-        updater = new UIThread(this, original);
-        updater.start();
+/*        updater = new UIThread(this, original);
+        updater.start();*/
 
         initializeSelector();
     }

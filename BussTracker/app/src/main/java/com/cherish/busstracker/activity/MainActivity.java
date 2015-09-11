@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
-       Log.i(TAG, "Starting");
+        Log.i(TAG, "Starting");
     }
 
     @Override
@@ -157,22 +157,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         return btn;
     }
-    /* Called on click for each button in route selector */
-
-/*    View.OnClickListener routeClick(final Button button) {
-        return new View.OnClickListener() {
-            public void onClick(View v) {
-                String selectedRoute = ((Button)v).getText().toString();
-                // TODO reimplement this in MainActivity,
-                // change DataController to not be a singleton
-                controller.loadMap(selectedRoute);
-                if (display == null) {
-                    display = new Intent(this, DisplayActivity.class);
-                    display.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                }
-            }
-        };
-    }*/
 
     @Override
     public void onClick(View v) {

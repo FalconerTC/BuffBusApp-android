@@ -45,21 +45,20 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     public static final String TAG = "MapController";
 
     /* Objects */
-    private DataController model;
+    private DataModel model;
     private Activity original;
     public GoogleMap map;
 
     private String lastStop;
-    private Location currentLocation;
+    //private Location currentLocation;
     private Marker[] stopMarkers;
     private Marker[] busMarkers;
 
-    public MapController(Activity activity, DataController model) {
+    public MapController(Activity activity, DataModel model) {
         this.model = model;
         this.original = activity;
 
         this.lastStop = "";
-        this.currentLocation = null;
         this.stopMarkers = null;
 
 
@@ -68,7 +67,7 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
         mapFragment.getMapAsync(this);
     }
 
-    public void setLocation(Location location) { this.currentLocation = location; }
+    //public void setLocation(Location location) { this.currentLocation = location; }
 
     /* Initialize map */
     @Override
@@ -87,7 +86,6 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     }
 
     /* Called on create to add route information */
-    //TODO change marker z-indexes to be consistent
     public void initializeData() {
         Log.i(TAG, "Initializing data");
 

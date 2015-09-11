@@ -28,7 +28,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.cherish.busstracker.activity.DisplayActivity" >
+            android:name="com.cherish.busstracker.activity.DisplayActivity"
+            android:parentActivityName="com.cherish.busstracker.activity.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.cherish.busstracker.activity.MainActivity" />
         </activity>
 
         <meta-data

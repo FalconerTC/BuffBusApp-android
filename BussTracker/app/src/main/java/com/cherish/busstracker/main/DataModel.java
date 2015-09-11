@@ -1,13 +1,9 @@
 package com.cherish.busstracker.main;
 
-import android.app.Activity;
-import android.content.Intent;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.cherish.busstracker.activity.DisplayActivity;
 import com.cherish.busstracker.parser.objects.Bus;
 import com.cherish.busstracker.parser.objects.Route;
 import com.cherish.busstracker.parser.objects.Stop;
@@ -17,11 +13,9 @@ import com.cherish.busstracker.lib.threads.ModelThread;
  * Created by Falcon on 8/9/2015.
  */
 
-//TODO refactor naming to Model, reconsider singleton usage
-public class DataController {
+public class DataModel {
 
     private static ModelThread updater;
-    public Intent map;
     private ServerConnector connector;
 
     private Route route;
@@ -36,7 +30,7 @@ public class DataController {
     public ArrayList<Bus> getBuses() { return buses; }
 
 
-    public DataController(String route) {
+    public DataModel(String route) {
         this.connector = ServerConnector.getServerConnector();
         setRoute(route);
         updater = new ModelThread(this);
@@ -107,6 +101,14 @@ public class DataController {
             if (stops[i].name.equals(selectedStop))
                 return stops[i].busTimes.get(id);
         return null;
+    }
+
+    public void onPause() {
+
+    }
+
+    public void onResume() {
+
     }
 
 }
