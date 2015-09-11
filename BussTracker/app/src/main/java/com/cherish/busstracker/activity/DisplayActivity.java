@@ -191,6 +191,12 @@ public class DisplayActivity extends FragmentActivity implements
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "Destroying");
+    }
+
+/*    @Override
     public void onBackPressed() {
         Log.i(TAG, "Back button pressed");
         //moveTaskToBack(true);
@@ -198,7 +204,7 @@ public class DisplayActivity extends FragmentActivity implements
         Intent a = new Intent(this, MainActivity.class);
         a.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(a);
-    }
+    }*/
 
     @Override
     public void onConnected(Bundle connectionHint) {
