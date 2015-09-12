@@ -218,7 +218,7 @@ public class DisplayActivity extends FragmentActivity implements
         Log.i(TAG, "Location changed");
         Toast t = Toast.makeText(this, getResources().getString(R.string.location_updated_message),
                 Toast.LENGTH_SHORT);
-        t.setGravity(Gravity.BOTTOM, 0, 0);
+        t.setGravity(Gravity.BOTTOM|Gravity.RIGHT, 0, 0);
         t.show();
         String closestID = findClosestStop();
         map.setClosestStop(closestID);
@@ -273,14 +273,14 @@ public class DisplayActivity extends FragmentActivity implements
     /* Finds the name for the stop closest to the current location */
     public String findClosestStop() {
         Stop[] stops = model.getStops();
-        double x = currentLocation.getLongitude();
-        double y = currentLocation.getLatitude();
-        double closestDistance = Double.MAX_VALUE;
+        float closestDistance = Float.MAX_VALUE;
         String closestStop = "";
         int len = (stops != null) ? stops.length : 0;
         for (int i = 0; i < len; i++) {
-            double distance =
-                    Math.hypot(x - stops[i].longitude, y - stops[i].latitude);
+            Location loc = new Location("");
+            loc.setLongitude(stops[i].longitude);
+            loc.setLatitude(stops[i].latitude);
+            float distance = currentLocation.distanceTo(loc);
             if (distance < closestDistance){
                 closestDistance = distance;
                 closestStop = stops[i].name;
