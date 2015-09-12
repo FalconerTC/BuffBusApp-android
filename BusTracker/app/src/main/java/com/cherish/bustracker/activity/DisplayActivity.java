@@ -217,10 +217,9 @@ public class DisplayActivity extends FragmentActivity implements
         Log.i(TAG, "Location changed");
         Toast t = Toast.makeText(this, getResources().getString(R.string.location_updated_message),
                 Toast.LENGTH_SHORT);
-        t.setGravity(Gravity.BOTTOM|Gravity.RIGHT, 0, 0);
+        t.setGravity(Gravity.BOTTOM|Gravity.RIGHT, 10, 10);
         t.show();
-        String closestID = findClosestStop();
-        map.setClosestStop(closestID);
+        map.setClosestStop(findClosestStop());
     }
 
     @Override

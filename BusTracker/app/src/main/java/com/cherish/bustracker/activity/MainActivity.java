@@ -1,6 +1,7 @@
 package com.cherish.bustracker.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -19,8 +21,9 @@ import com.cherish.bustracker.lib.Log;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
-    public final static String SELECTED_ROUTE = "com.cherish.busstracker.selected_route";
+    public final static String SELECTED_ROUTE = "com.cherish.bustracker.selected_route";
     public final static String TAG =  "MainActivity";
+    public final static String FEEDBACK_EMAIL = "cherishdevapps@gmail.com";
 
     public ServerConnector listener;
     public Intent display;
@@ -50,14 +53,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 layout.addView(btn);
                 parentElem = (i + 1);
             }
+            // Setup feedback button
+            //TODO look into changing apps instead of starting new activity
+            TextView feedback = (TextView)findViewById(R.id.feedback);
+            feedback.setOnClickListener(new TextView.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(android.content.Intent.ACTION_SEND);
+
+                    i.setType("plain/text");
+                    i.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{FEEDBACK_EMAIL});
+                    i.putExtra(android.content.Intent.EXTRA_SUBJECT, "Android CU BusTracker Feedback!");
+                    i.putExtra(android.content.Intent.EXTRA_TEXT, "");
+                    startActivity(Intent.createChooser(i, "Send mail"));
+                }
+            });
+
             setContentView(layout);
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.i(TAG, "Starting");
     }
 
     @Override
@@ -72,12 +85,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onPause();
         Log.i(TAG, "Pausing");
         //listener.getUpdater().onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.i(TAG, "Stopping");
     }
 
     /* Block main thread until route information is retrieved */

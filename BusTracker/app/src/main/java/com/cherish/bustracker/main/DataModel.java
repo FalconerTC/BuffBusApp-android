@@ -62,11 +62,11 @@ public class DataModel {
     /* Update the stops based on the current route */
     public void update() {
         // Add relevant buses
-        Bus[] bussArr = connector.getBuses();
+        Bus[] busArr = connector.getBuses();
         this.buses = new ArrayList<>();
-        for (int i = 0; i < bussArr.length; i++) {
-            if (bussArr[i].id == route.id)
-                buses.add(bussArr[i]);
+        for (int i = 0; i < busArr.length; i++) {
+            if (busArr[i].id == route.id)
+                buses.add(busArr[i]);
         }
 
 

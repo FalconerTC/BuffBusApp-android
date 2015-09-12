@@ -15,7 +15,6 @@ import com.cherish.bustracker.main.DataModel;
 public class UIController implements OnValueChangeListener {
 
     private DataModel controller;
-    //private UIThread updater;
     private MapController map;
     private Activity original;
     private NumberPicker stopSelector;
@@ -33,9 +32,6 @@ public class UIController implements OnValueChangeListener {
         this.activeRoutes = -1;
 
         stopSelector = (NumberPicker)original.findViewById(R.id.stopPicker);
-
-/*        updater = new UIThread(this, original);
-        updater.start();*/
 
         initializeSelector();
     }

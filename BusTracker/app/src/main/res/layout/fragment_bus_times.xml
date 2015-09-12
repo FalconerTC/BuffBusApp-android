@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="75sp"
-    tools:context="com.cherish.butracker.activity.fragments.BusTimesFragment">
+    tools:context="com.cherish.bustracker.activity.fragments.BusTimesFragment">
 
     <TextView
         android:layout_width="wrap_content"

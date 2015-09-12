@@ -1,21 +1,18 @@
 <resources>
-    <string name="app_name">BussTracker</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">BusTracker</string>
     <string name="action_settings">Settings</string>
 
     <!-- Activity text -->
-    <string name="main_activity">BussTracker</string>
-    <string name="main_title">Boulder Bus Tracker</string>
+    <string name="main_activity">BusTracker</string>
+    <string name="main_title">CU Bus Tracker</string>
     <string name="main_subtitle">Select A Route</string>
+    <string name="send_feedback">Send Feedback</string>
+
+    <!-- Location text -->
     <string name="location_updated_message">Location was updated</string>
 
-    <!-- Routes -->
+    <!-- Display text -->
     <string name="route_1">Buff Bus</string>
-    <string name="sample">sample</string>
-    <string name="title_activity_map">MapActivity</string>
-
-    <string name="title_activity_display">display</string>
-
     <string name="bus_times_display">Next Times:</string>
     <string name="bus_inactive">No Buses Currently Running</string>
 
