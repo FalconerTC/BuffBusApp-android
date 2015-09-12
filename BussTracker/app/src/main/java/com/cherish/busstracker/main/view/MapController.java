@@ -38,6 +38,8 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
             = BitmapDescriptorFactory.fromResource(R.drawable.bus);
     public static final BitmapDescriptor BUS_INDICATOR_ICON
             = BitmapDescriptorFactory.fromResource(R.drawable.bus_indicator_border);
+    public static final BitmapDescriptor BUS_CLOSEST_ICON
+            = BitmapDescriptorFactory.fromResource(R.drawable.nearest_stop_indicator);
 
     public static final LatLng CU_LATLNG = new LatLng(40.001894, -105.260184);
     public static final int DEFAULT_MAP_TYPE = GoogleMap.MAP_TYPE_NORMAL;
@@ -50,9 +52,10 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     public GoogleMap map;
 
     private String lastStop;
-    //private Location currentLocation;
     private Marker[] stopMarkers;
     private Marker[] busMarkers;
+    private String closestStop;
+    private String oldClosestStop;
 
     public MapController(Activity activity, DataModel model) {
         this.model = model;
@@ -60,6 +63,7 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
 
         this.lastStop = "";
         this.stopMarkers = null;
+        this.closestStop = "";
 
 
         MapFragment mapFragment = (MapFragment) original.getFragmentManager()
@@ -67,7 +71,9 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
         mapFragment.getMapAsync(this);
     }
 
-    //public void setLocation(Location location) { this.currentLocation = location; }
+    public void setClosestStop(String stopID) {
+        this.closestStop = stopID;
+    }
 
     /* Initialize map */
     @Override
@@ -107,7 +113,6 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
             MarkerOptions options = new MarkerOptions()
                     .position(pos)
                     .title(stops[i].name)
-                    //.snippet("Go buffs")
                     .icon(BUS_INDICATOR_ICON)
                     .anchor(0.5f, 0.5f);
 
@@ -133,6 +138,22 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
         // Draw updated bus locations
         if (redrawBuses)
             drawBuses();
+        System.out.println("Closest stop: "+closestStop);
+        if ((!closestStop.equals(oldClosestStop)) && stopMarkers != null) {
+            int len = stopMarkers.length;
+            // Change icon of closest stop, reset old closest stop
+            for (int i = 0; i < len; i++) {
+                if (stopMarkers[i].getTitle().equals(oldClosestStop)) {
+                    stopMarkers[i].setSnippet("");
+                    stopMarkers[i].setIcon(BUS_INDICATOR_ICON);
+                } else if (stopMarkers[i].getTitle().equals(closestStop)) {
+                    stopMarkers[i].setSnippet("Closest stop");
+                    stopMarkers[i].setIcon(BUS_CLOSEST_ICON);
+                }
+            }
+            oldClosestStop = closestStop;
+        }
+
     }
 
     /* Draw all running buses to the map */

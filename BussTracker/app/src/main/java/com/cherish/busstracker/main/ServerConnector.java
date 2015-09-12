@@ -72,7 +72,7 @@ public class ServerConnector{
         httpPosts.put(ParserFactory.PARSER_BUSES, busesPost);
 
         client = new DefaultHttpClient(new BasicHttpParams());
-        Log.i("ParserFactory", "Parser factory initialized");
+
     }
 
     /* Initialize and fetch ServerConnector singleton */

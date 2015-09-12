@@ -8,11 +8,13 @@ import android.content.IntentSender;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.Gravity;
 import android.widget.Toast;
 
 import com.cherish.busstracker.lib.threads.GenericThread;
 import com.cherish.busstracker.lib.threads.UIThread;
 import com.cherish.busstracker.main.ThreadManager;
+import com.cherish.busstracker.parser.objects.Stop;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -52,8 +54,6 @@ public class DisplayActivity extends FragmentActivity implements
     private GoogleApiClient apiClient;
     private MapController map;
     private ThreadManager manager;
-    //private UIThread updater;
-    //private ModelThread updater;
     private UIController display;
     private DataModel model;
     private LocationRequest locationRequest;
@@ -96,7 +96,6 @@ public class DisplayActivity extends FragmentActivity implements
         display = new UIController(this, model, map);
         manager.createUIThread(display);
 
-
     }
 
     /* Updates fields based on stored data passed on create */
@@ -116,7 +115,6 @@ public class DisplayActivity extends FragmentActivity implements
     /* Proxy update requests to the UIController */
     public void updateSelector(String selectedStop) {
         display.changeSelectedStop(selectedStop);
-
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -190,12 +188,6 @@ public class DisplayActivity extends FragmentActivity implements
         apiClient.disconnect();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.i(TAG, "Destroying");
-    }
-
 /*    @Override
     public void onBackPressed() {
         Log.i(TAG, "Back button pressed");
@@ -223,9 +215,13 @@ public class DisplayActivity extends FragmentActivity implements
     @Override
     public void onLocationChanged(Location location) {
         currentLocation = location;
-        System.out.println("Location changed");
-        Toast.makeText(this, getResources().getString(R.string.location_updated_message),
-                Toast.LENGTH_SHORT).show();
+        Log.i(TAG, "Location changed");
+        Toast t = Toast.makeText(this, getResources().getString(R.string.location_updated_message),
+                Toast.LENGTH_SHORT);
+        t.setGravity(Gravity.BOTTOM, 0, 0);
+        t.show();
+        String closestID = findClosestStop();
+        map.setClosestStop(closestID);
     }
 
     @Override
@@ -272,6 +268,25 @@ public class DisplayActivity extends FragmentActivity implements
         outState.putBoolean(STATE_RESOLVING_ERROR, resolvingError);
         outState.putParcelable(LOCATION_KEY, currentLocation);
         super.onSaveInstanceState(outState);
+    }
+
+    /* Finds the name for the stop closest to the current location */
+    public String findClosestStop() {
+        Stop[] stops = model.getStops();
+        double x = currentLocation.getLongitude();
+        double y = currentLocation.getLatitude();
+        double closestDistance = Double.MAX_VALUE;
+        String closestStop = "";
+        int len = (stops != null) ? stops.length : 0;
+        for (int i = 0; i < len; i++) {
+            double distance =
+                    Math.hypot(x - stops[i].longitude, y - stops[i].latitude);
+            if (distance < closestDistance){
+                closestDistance = distance;
+                closestStop = stops[i].name;
+            }
+        }
+        return closestStop;
     }
 
     // The rest of this code is all about building the error dialog
