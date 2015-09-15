@@ -78,7 +78,7 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     @Override
     public void onMapReady(GoogleMap map) {
         this.map = map;
-        System.out.println("Initializing map");
+        Log.i(TAG, "Initializing map");
 
         map.setMapType(DEFAULT_MAP_TYPE);
         map.setMyLocationEnabled(true);
@@ -143,6 +143,7 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
             // Change icon of closest stop, reset old closest stop
             for (int i = 0; i < len; i++) {
                 if (stopMarkers[i].getTitle().equals(oldClosestStop)) {
+		    // TODO remove snippet (remake marker instead of modifying)
                     stopMarkers[i].setSnippet("");
                     stopMarkers[i].setIcon(BUS_INDICATOR_ICON);
                 } else if (stopMarkers[i].getTitle().equals(closestStop)) {
