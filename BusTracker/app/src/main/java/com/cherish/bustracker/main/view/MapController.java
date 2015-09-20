@@ -137,15 +137,19 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
         // Draw updated bus locations
         if (redrawBuses)
             drawBuses();
-        System.out.println("Closest stop: "+closestStop);
         if ((!closestStop.equals(oldClosestStop)) && stopMarkers != null) {
             int len = stopMarkers.length;
             // Change icon of closest stop, reset old closest stop
             for (int i = 0; i < len; i++) {
                 if (stopMarkers[i].getTitle().equals(oldClosestStop)) {
-		    // TODO remove snippet (remake marker instead of modifying)
-                    stopMarkers[i].setSnippet("");
-                    stopMarkers[i].setIcon(BUS_INDICATOR_ICON);
+                    // Remove and recreate marker to avoid showing an empty snippet
+                    MarkerOptions options = new MarkerOptions()
+                            .position(stopMarkers[i].getPosition())
+                            .title(stopMarkers[i].getTitle())
+                            .icon(BUS_INDICATOR_ICON)
+                            .anchor(0.5f, 0.5f);
+                    stopMarkers[i].remove();
+                    stopMarkers[i] = map.addMarker(options);
                 } else if (stopMarkers[i].getTitle().equals(closestStop)) {
                     stopMarkers[i].setSnippet("Closest stop");
                     stopMarkers[i].setIcon(BUS_CLOSEST_ICON);
@@ -153,7 +157,6 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
             }
             oldClosestStop = closestStop;
         }
-
     }
 
     /* Draw all running buses to the map */

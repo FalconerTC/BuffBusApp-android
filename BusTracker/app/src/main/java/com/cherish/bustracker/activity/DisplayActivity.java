@@ -221,13 +221,18 @@ public class DisplayActivity extends FragmentActivity implements
 
     @Override
     public void onLocationChanged(Location location) {
-        currentLocation = location;
-        Log.i(TAG, "Location changed");
-        Toast t = Toast.makeText(this, getResources().getString(R.string.location_updated_message),
-                Toast.LENGTH_SHORT);
-        t.setGravity(Gravity.BOTTOM|Gravity.RIGHT, 10, 10);
-        t.show();
-        map.setClosestStop(findClosestStop());
+        // Only indicate there was an update if location changed
+        // Getting the same location constantly implies no network connection
+        if (currentLocation != null &&
+                currentLocation.getLongitude() != location.getLongitude() &&
+                currentLocation.getLatitude() != location.getLatitude()) {
+            currentLocation = location;
+            Toast t = Toast.makeText(this, getResources().getString(R.string.location_updated_message),
+                    Toast.LENGTH_SHORT);
+            t.setGravity(Gravity.BOTTOM | Gravity.RIGHT, 10, 10);
+            t.show();
+            map.setClosestStop(findClosestStop());
+        }
     }
 
     @Override
