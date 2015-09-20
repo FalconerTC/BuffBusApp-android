@@ -3,6 +3,7 @@ package com.cherish.bustracker.main;
 import android.app.Activity;
 
 import com.cherish.bustracker.lib.threads.ModelThread;
+import com.cherish.bustracker.lib.threads.ServerThread;
 import com.cherish.bustracker.lib.threads.UIThread;
 import com.cherish.bustracker.main.view.UIController;
 
@@ -13,6 +14,7 @@ public class ThreadManager {
 
     private UIThread UIUpdater;
     private ModelThread modelUpdater;
+    private ServerThread serverUpdater;
     private Activity original;
 
     public ThreadManager(Activity original) {
@@ -20,8 +22,8 @@ public class ThreadManager {
     }
 
     // Initialize UI thread
-    public void createUIThread(UIController display) {
-        UIUpdater = new UIThread(display, original);
+    public void createUIThread(UIController view) {
+        UIUpdater = new UIThread(view, original);
         UIUpdater.start();
     }
 
@@ -31,12 +33,20 @@ public class ThreadManager {
         modelUpdater.start();
     }
 
+    // Initialize Server thread
+    public void createServerThread(ServerConnector controller) {
+        serverUpdater = new ServerThread(controller);
+        serverUpdater.start();
+    }
+
     /* Resume thread execution */
     public void onResume() {
         if (UIUpdater != null && UIUpdater.isAlive())
             UIUpdater.onResume();
         if (modelUpdater != null && modelUpdater.isAlive())
             modelUpdater.onResume();
+        if (serverUpdater != null && serverUpdater.isAlive())
+            serverUpdater.onResume();
     }
 
     /* Pause thread execution */
@@ -45,6 +55,8 @@ public class ThreadManager {
             UIUpdater.onPause();
         if (modelUpdater != null && modelUpdater.isAlive())
             modelUpdater.onPause();
+        if (serverUpdater != null && serverUpdater.isAlive())
+            serverUpdater.onPause();
     }
 
     /* Stop threads */
@@ -53,5 +65,7 @@ public class ThreadManager {
             UIUpdater.onStop();
         if (modelUpdater != null && modelUpdater.isAlive())
             modelUpdater.onStop();
+        if (serverUpdater != null && serverUpdater.isAlive())
+            serverUpdater.onStop();
     }
 }

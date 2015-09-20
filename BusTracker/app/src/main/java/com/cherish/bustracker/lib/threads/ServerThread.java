@@ -1,5 +1,8 @@
 package com.cherish.bustracker.lib.threads;
 
+import android.app.Activity;
+
+import com.cherish.bustracker.activity.MainActivity;
 import com.cherish.bustracker.lib.Log;
 import com.cherish.bustracker.main.ServerConnector;
 
@@ -7,27 +10,32 @@ import com.cherish.bustracker.main.ServerConnector;
  * Created by Falcon on 9/5/2015.
  */
 public class ServerThread extends GenericThread{
-    private Object syncObject;
-    private ServerConnector connector;
+    public static final String TAG = "ServerThread";
 
-    public void setSyncObject(Object sync) { this.syncObject = sync; }
+    private MainActivity original;
+    private ServerConnector connector;
 
     public ServerThread(ServerConnector connector) {
         super();
         this.connector = connector;
     }
 
-    public void onRun() {
-        Log.i("ServerThread", "Executing...");
-        connector.update();
+    public ServerThread(ServerConnector connector, Activity original) {
+        super();
+        this.connector = connector;
+        this.original = (MainActivity)original;
     }
 
-    /* Notify waiting object in MainActivity */
-    public void onNotify() {
-        if (syncObject != null) {
-            synchronized(syncObject) {
-                syncObject.notify();
-            }
-        }
+    public void onRun() {
+        Log.i(TAG, "Executing...");
+        connector.update();
+        // Notify activity if it exists
+        if(original != null)
+            original.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    original.onNotify();
+                }
+            });
     }
 }

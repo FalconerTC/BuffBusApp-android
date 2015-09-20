@@ -12,6 +12,7 @@ import android.view.Gravity;
 import android.widget.Toast;
 
 import com.cherish.bustracker.lib.threads.GenericThread;
+import com.cherish.bustracker.main.ServerConnector;
 import com.cherish.bustracker.main.ThreadManager;
 import com.cherish.bustracker.parser.objects.Stop;
 import com.google.android.gms.common.ConnectionResult;
@@ -52,9 +53,12 @@ public class DisplayActivity extends FragmentActivity implements
     /* Objects */
     private GoogleApiClient apiClient;
     private MapController map;
+
     private ThreadManager manager;
+    private ServerConnector connector;
     private UIController display;
     private DataModel model;
+
     private LocationRequest locationRequest;
     private Location currentLocation;
 
@@ -84,8 +88,12 @@ public class DisplayActivity extends FragmentActivity implements
         // Create manager for threads
         manager = new ThreadManager(this);
 
+        // Initialize server connector
+        connector = ServerConnector.getServerConnector();
+        manager.createServerThread(connector);
+
         // Initialize data model
-        model = new DataModel(route);
+        model = new DataModel(connector, route);
         manager.createModelThread(model);
 
         // Initialize map

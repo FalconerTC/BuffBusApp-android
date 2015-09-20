@@ -30,28 +30,24 @@ import com.cherish.bustracker.lib.Log;
  *
  */
 public class ServerConnector{
-
-    //TODO find better solution for managing ServerThread
-    private static ServerConnector connector;
-    private static ServerThread updater;
-    private DefaultHttpClient client;
-    private Map<String, HttpPost> httpPosts;
-    private ParserFactory parser;
-    // Parsed objects
-    private Route[] routes;
-    private Stop[] stops;
-    private Bus[] buses;
-
     public static final String SERVER_ADDR = "http://104.131.176.10:8080/";
     public static final String ROUTES_ADDR = SERVER_ADDR + ParserFactory.PARSER_ROUTES;
     public static final String STOPS_ADDR = SERVER_ADDR + ParserFactory.PARSER_STOPS;
     public static final String BUSES_ADDR = SERVER_ADDR + ParserFactory.PARSER_BUSES;
 
+    private static ServerConnector connector;
+    private DefaultHttpClient client;
+    private Map<String, HttpPost> httpPosts;
+    private ParserFactory parser;
+
+    // Parsed objects
+    private Route[] routes;
+    private Stop[] stops;
+    private Bus[] buses;
+
     public Route[] getRoutes() { return routes;}
     public Stop[] getStops() { return stops;}
     public Bus[] getBuses() { return buses;}
-    public ServerThread getUpdater() { return updater; }
-
 
     private ServerConnector() {
         parser = new ParserFactory();
@@ -72,25 +68,13 @@ public class ServerConnector{
         httpPosts.put(ParserFactory.PARSER_BUSES, busesPost);
 
         client = new DefaultHttpClient(new BasicHttpParams());
-
     }
 
     /* Initialize and fetch ServerConnector singleton */
     public static ServerConnector getServerConnector() {
         if (connector == null)
             connector = new ServerConnector();
-        updater = new ServerThread(connector);
         return connector;
-    }
-
-    /* Used to notify main thread once route data is received */
-    public void setSyncObject(Object sync) {
-        updater.setSyncObject(sync);
-    }
-
-    /* Create the server polling thread */
-    public void start() {
-        updater.start();
     }
 
     /* Create server requests and set resulting data */
@@ -98,8 +82,6 @@ public class ServerConnector{
         // Fetch routes only once
         if (routes == null) {
             routes = (Route[]) sendRequest(ParserFactory.PARSER_ROUTES);
-            // Notify main thread of route information
-            updater.onNotify();
         }
         // Update stops and buses each interval
         this.stops = (Stop[])sendRequest(ParserFactory.PARSER_STOPS);
@@ -152,5 +134,4 @@ public class ServerConnector{
         ParsedObject[] objects = parser.parse(type, result);
         return objects;
     }
-
 }

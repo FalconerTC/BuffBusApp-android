@@ -1,7 +1,6 @@
 package com.cherish.bustracker.activity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -15,16 +14,20 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import com.cherish.bustracker.R;
+import com.cherish.bustracker.lib.threads.ServerThread;
 import com.cherish.bustracker.main.ServerConnector;
 import com.cherish.bustracker.parser.objects.Route;
 import com.cherish.bustracker.lib.Log;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
-
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    public final static String TAG = "MainActivity";
     public final static String SELECTED_ROUTE = "com.cherish.bustracker.selected_route";
-    public final static String TAG =  "MainActivity";
-    public final static String FEEDBACK_EMAIL = "cherishdevapps@gmail.com";
 
+    public final static String FEEDBACK_EMAIL = "cherishdevapps@gmail.com";
+    public final static String FEEDBACK_SUBJECT = "Android CU BusTracker Feedback!";
+
+    private ServerThread updater;
+    private Button[] buttons;
     public ServerConnector listener;
     public Intent display;
 
@@ -34,43 +37,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        listener = ServerConnector.getServerConnector();
-        blockUntilReady();
-
-        Route[] routes = listener.getRoutes();
-        if (routes != null) {
-            // Change route order
-            routes = modifyRoutes(routes);
-            //listener.stop();
-
-            RelativeLayout layout = (RelativeLayout) findViewById(R.id.mainLayout);
-            // Hide template button
-            findViewById(R.id.route_template).setVisibility(View.GONE);
-            int parentElem = R.id.textView_Subtitle;
-            // Create route buttons
-            for (int i = 0; i < routes.length; i++) {
-                Button btn = createRouteButton(parentElem, routes[i].name, (i + 1));
-                layout.addView(btn);
-                parentElem = (i + 1);
+        // Setup feedback button
+        TextView feedback = (TextView) findViewById(R.id.feedback);
+        feedback.setOnClickListener(new TextView.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(android.content.Intent.ACTION_SEND);
+                i.setType("plain/text");
+                i.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{FEEDBACK_EMAIL});
+                i.putExtra(android.content.Intent.EXTRA_SUBJECT, FEEDBACK_SUBJECT);
+                i.putExtra(android.content.Intent.EXTRA_TEXT, "");
+                startActivity(Intent.createChooser(i, "Send mail"));
             }
-            // Setup feedback button
-            //TODO look into changing apps instead of starting new activity
-            TextView feedback = (TextView)findViewById(R.id.feedback);
-            feedback.setOnClickListener(new TextView.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent i = new Intent(android.content.Intent.ACTION_SEND);
+        });
+    }
 
-                    i.setType("plain/text");
-                    i.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{FEEDBACK_EMAIL});
-                    i.putExtra(android.content.Intent.EXTRA_SUBJECT, "Android CU BusTracker Feedback!");
-                    i.putExtra(android.content.Intent.EXTRA_TEXT, "");
-                    startActivity(Intent.createChooser(i, "Send mail"));
-                }
-            });
-
-            setContentView(layout);
-        }
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.i(TAG, "Starting");
+        // Run a server request to get route information
+        listener = ServerConnector.getServerConnector();
+        updater = new ServerThread(listener, this);
+        updater.start();
     }
 
     @Override
@@ -87,26 +76,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //listener.getUpdater().onPause();
     }
 
-    /* Block main thread until route information is retrieved */
-    // TODO fix blocking to not show a black screen, but to just not spawn buttons yet
-    private void blockUntilReady() {
-        Log.i("Blocking main thread", "Waiting for route information...");
-        Object syncObject = new Object();
-        listener.setSyncObject(syncObject);
-        // Start polling the server for updates
-        listener.start();
-        synchronized(syncObject) {
-            try {
-                // Wait for notify from ServerConnection
-                syncObject.wait();
-                Log.i("Unblocking main thread", "Route info received");
-            } catch (InterruptedException e) {
-                Log.i("Thread interrupted", "Unblocking main thread");
-                return;
-            } catch (Exception e) {
-                Log.e("Sync error", "Something unexpected happened");
-                e.printStackTrace();
+    public void onNotify() {
+        Log.i(TAG, "Received route info");
+        // Create buttons
+        Route[] routes = listener.getRoutes();
+        if (routes != null) {
+            RelativeLayout layout = (RelativeLayout) findViewById(R.id.mainLayout);
+            // Change route order
+            routes = modifyRoutes(routes);
+            // Create route buttons
+            int len = routes.length;
+            int parentElem = R.id.textView_Subtitle;
+            this.buttons = new Button[len];
+            for (int i = 0; i < len; i++) {
+                buttons[i] = createRouteButton(parentElem, routes[i].name, (i + 1));
+                layout.addView(buttons[i]);
+                parentElem = (i + 1);
             }
+            setContentView(layout);
+
+            // Remove unnecessary objects
+            updater.onStop();
+            updater = null;
         }
     }
 
@@ -123,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int j = 0;
         for (int i = 0; i < len; i++) {
             // Check exclusion list
-            if(!(excludedRoutes.contains(routes[i].name))) {
+            if (!(excludedRoutes.contains(routes[i].name))) {
                 newRoutes[j] = routes[i];
                 j++;
             }
@@ -163,13 +154,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn.setId(id);
         btn.setLayoutParams(relativeParams);
         btn.setOnClickListener(this);
+        btn.setVisibility(View.VISIBLE);
 
         return btn;
     }
 
     @Override
     public void onClick(View v) {
-        String selectedRoute = ((Button)v).getText().toString();
+        String selectedRoute = ((Button) v).getText().toString();
         //controller.loadMap(selectedRoute);
         if (display == null) {
             Log.i(TAG, "Recreating DisplayActivity");

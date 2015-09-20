@@ -29,11 +29,9 @@ public class DataModel {
     public ArrayList<Bus> getBuses() { return buses; }
 
 
-    public DataModel(String route) {
-        this.connector = ServerConnector.getServerConnector();
+    public DataModel(ServerConnector connector, String route) {
+        this.connector = connector;
         setRoute(route);
-  /*      updater = new ModelThread(this);
-        updater.start();*/
     }
 
     /* Set the current route based on the user selection */
@@ -41,20 +39,22 @@ public class DataModel {
         // Reset route switch
         // Load route from name
         Route[] routes = this.connector.getRoutes();
-        int routeLen = routes.length;
-        for (int i = 0; i < routeLen; i++) {
-            if (routes[i].name.equals(selectedRoute)) {
-                this.route = routes[i];
-                break;
+        if (routes != null) {
+            int routeLen = routes.length;
+            for (int i = 0; i < routeLen; i++) {
+                if (routes[i].name.equals(selectedRoute)) {
+                    this.route = routes[i];
+                    break;
+                }
             }
-        }
-        update();
-        // Load stop names
-        int len = stops.length;
-        System.out.println("Setting stop names");
-        this.stopNames = new String[len];
-        for (int i = 0; i < len; i++) {
-            this.stopNames[i] = stops[i].name;
+            update();
+            // Load stop names
+            int len = stops.length;
+            System.out.println("Setting stop names");
+            this.stopNames = new String[len];
+            for (int i = 0; i < len; i++) {
+                this.stopNames[i] = stops[i].name;
+            }
         }
     }
 
@@ -68,7 +68,6 @@ public class DataModel {
             if (busArr[i].id == route.id)
                 buses.add(busArr[i]);
         }
-
 
         Stop[] stops = connector.getStops();
         // Convert stops int[] to list
