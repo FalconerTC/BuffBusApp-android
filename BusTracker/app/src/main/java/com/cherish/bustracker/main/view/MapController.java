@@ -2,6 +2,7 @@ package com.cherish.bustracker.main.view;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.location.Location;
 
 import com.cherish.bustracker.activity.DisplayActivity;
 import com.cherish.bustracker.main.DataModel;
@@ -55,6 +56,12 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     private Marker[] busMarkers;
     private String closestStop;
     private String oldClosestStop;
+    private Location currentLocation;
+
+    public void setCurrentLocation(Location location) {
+        this.currentLocation = location;
+        System.out.println("Received location: "+location);
+    }
 
     public MapController(Activity activity, DataModel model) {
         this.model = model;
@@ -63,7 +70,6 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
         this.lastStop = "";
         this.stopMarkers = null;
         this.closestStop = "";
-
 
         MapFragment mapFragment = (MapFragment) original.getFragmentManager()
                 .findFragmentById(R.id.map);
@@ -180,6 +186,7 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
                         .position(pos)
                         .title("Bus")
                         .icon(BUS_ICON)
+                        .flat(false)
                         .anchor(0.5f, 0.5f);
                 busMarkers[i] = map.addMarker(options);
             }

@@ -13,7 +13,7 @@
 
     <!-- Display text -->
     <string name="route_1">Buff Bus</string>
-    <string name="bus_times_display">Next Times:</string>
+    <string name="bus_times_display">Arriving in:</string>
     <string name="bus_inactive">No Buses Currently Running</string>
 
 </resources>

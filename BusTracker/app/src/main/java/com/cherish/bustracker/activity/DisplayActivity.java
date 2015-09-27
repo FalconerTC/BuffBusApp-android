@@ -70,7 +70,7 @@ public class DisplayActivity extends FragmentActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i(this.getLocalClassName(), "Creating GoogleApiClient");
+        Log.i(TAG, "Creating GoogleApiClient");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
 
@@ -80,7 +80,8 @@ public class DisplayActivity extends FragmentActivity implements
         this.requestingLocationUpdates = true;
 
         // Update values from saved bundle
-        updateValuesFromBundle(savedInstanceState);
+        System.out.println("Updating values from bundle");
+        this.updateValuesFromBundle(savedInstanceState);
 
         // Create a GoogleApiClient instance
         buildGoogleApiClient();
@@ -102,11 +103,12 @@ public class DisplayActivity extends FragmentActivity implements
         // Initialize display controller and map
         display = new UIController(this, model, map);
         manager.createUIThread(display);
-
     }
 
     /* Updates fields based on stored data passed on create */
     private void updateValuesFromBundle(Bundle savedInstanceState) {
+        System.out.println("Retrieving data: ");
+        System.out.println((savedInstanceState != null));
         if (savedInstanceState != null) {
 
             if (savedInstanceState.keySet().contains(STATE_RESOLVING_ERROR)) {
@@ -231,6 +233,7 @@ public class DisplayActivity extends FragmentActivity implements
                     Toast.LENGTH_SHORT);
             t.setGravity(Gravity.BOTTOM | Gravity.RIGHT, 10, 10);
             t.show();
+            map.setCurrentLocation(location);
             map.setClosestStop(findClosestStop());
         }
     }
@@ -276,6 +279,7 @@ public class DisplayActivity extends FragmentActivity implements
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        System.out.println("RECOVERING");
         outState.putBoolean(STATE_RESOLVING_ERROR, resolvingError);
         outState.putParcelable(LOCATION_KEY, currentLocation);
         super.onSaveInstanceState(outState);

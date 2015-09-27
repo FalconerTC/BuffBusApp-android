@@ -18,7 +18,7 @@ public abstract class GenericThread extends Thread implements Runnable {
     }
 
     // Time for threads to sleep
-    public static final long POLLING_INTERVAL = 5 * 1000; //5 seconds
+    public static final long POLLING_INTERVAL = 10 * 1000; //10 seconds
     public static final String TAG = "GenericThread";
 
     public GenericThread() {
