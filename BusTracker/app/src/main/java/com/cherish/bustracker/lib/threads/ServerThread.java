@@ -34,7 +34,7 @@ public class ServerThread extends GenericThread{
             original.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    original.onNotify();
+                    original.onNotify(connector.getRoutes());
                 }
             });
     }

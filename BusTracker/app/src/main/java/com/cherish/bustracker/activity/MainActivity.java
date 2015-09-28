@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ServerThread updater;
     private Button[] buttons;
-    public ServerConnector listener;
     public Intent display;
 
     @Override
@@ -52,34 +51,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.i(TAG, "Starting");
-        // Run a server request to get route information
-        listener = ServerConnector.getServerConnector();
-        updater = new ServerThread(listener, this);
-        updater.start();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.i(TAG, "Resuming");
-        //listener.getUpdater().onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.i(TAG, "Pausing");
-        //listener.getUpdater().onPause();
-    }
-
-    public void onNotify() {
+    public void onNotify(Route[] routes) {
         Log.i(TAG, "Received route info");
         // Create buttons
-        Route[] routes = listener.getRoutes();
+        //Route[] routes = listener.getRoutes();
         if (routes != null) {
             RelativeLayout layout = (RelativeLayout) findViewById(R.id.mainLayout);
             // Change route order
@@ -192,5 +167,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /* Activity actions */
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.i(TAG, "Starting");
+
+        // Run a server request to get route information
+        ServerConnector listener = ServerConnector.getServerConnector();
+        updater = new ServerThread(listener, this);
+        updater.start();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG, "Resuming");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i(TAG, "Pausing");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i(TAG, "Stopping");
     }
 }

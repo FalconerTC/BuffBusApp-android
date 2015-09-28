@@ -13,6 +13,7 @@ import com.cherish.bustracker.lib.Log;
 import com.cherish.bustracker.main.DataModel;
 
 public class UIController implements OnValueChangeListener {
+    public static final String TAG = "UIController";
 
     private DataModel controller;
     private MapController map;
@@ -24,7 +25,7 @@ public class UIController implements OnValueChangeListener {
     private int activeRoutes;
 
     public UIController(Activity activity, DataModel model, MapController map) {
-        Log.i("DisplayActivity", "Creating DisplayActivity");
+        Log.i(TAG, "Creating DisplayActivity");
 
         this.original = activity;
         this.controller = model;
@@ -39,6 +40,7 @@ public class UIController implements OnValueChangeListener {
     /* Returns the closest stop as the starting value */
     private int getStartingValue() {
         // Default to 0 until "nearest stop" logic is in place
+        Log.i(TAG, "Setting closest value");
         return 0;
     }
 
@@ -46,10 +48,11 @@ public class UIController implements OnValueChangeListener {
     public void initializeSelector() {
         System.out.println("Initializing selector");
         stops = controller.getStopNames();
-        selectedStop = stops[getStartingValue()];
+        int startingStop = getStartingValue();
+        selectedStop = stops[startingStop];
         stopSelector.setMaxValue(stops.length - 1);
         stopSelector.setDisplayedValues(stops);
-        stopSelector.setValue(getStartingValue());
+        stopSelector.setValue(startingStop);
         stopSelector.setWrapSelectorWheel(true);
         stopSelector.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 

@@ -56,12 +56,6 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     private Marker[] busMarkers;
     private String closestStop;
     private String oldClosestStop;
-    private Location currentLocation;
-
-    public void setCurrentLocation(Location location) {
-        this.currentLocation = location;
-        System.out.println("Received location: "+location);
-    }
 
     public MapController(Activity activity, DataModel model) {
         this.model = model;
@@ -78,6 +72,9 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
 
     public void setClosestStop(String stopID) {
         this.closestStop = stopID;
+        if ((!closestStop.equals(oldClosestStop)) && stopMarkers != null) {
+            drawClosestStop();
+        }
     }
 
     /* Initialize map */
@@ -143,26 +140,29 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
         // Draw updated bus locations
         if (redrawBuses)
             drawBuses();
-        if ((!closestStop.equals(oldClosestStop)) && stopMarkers != null) {
-            int len = stopMarkers.length;
-            // Change icon of closest stop, reset old closest stop
-            for (int i = 0; i < len; i++) {
-                if (stopMarkers[i].getTitle().equals(oldClosestStop)) {
-                    // Remove and recreate marker to avoid showing an empty snippet
-                    MarkerOptions options = new MarkerOptions()
-                            .position(stopMarkers[i].getPosition())
-                            .title(stopMarkers[i].getTitle())
-                            .icon(BUS_INDICATOR_ICON)
-                            .anchor(0.5f, 0.5f);
-                    stopMarkers[i].remove();
-                    stopMarkers[i] = map.addMarker(options);
-                } else if (stopMarkers[i].getTitle().equals(closestStop)) {
-                    stopMarkers[i].setSnippet("Closest stop");
-                    stopMarkers[i].setIcon(BUS_CLOSEST_ICON);
-                }
+    }
+
+    /* Replace the closest stop marker with a green marker */
+    public void drawClosestStop() {
+        int len = stopMarkers.length;
+        for (int i = 0; i < len; i++) {
+            // Reset old stop icon
+            if (stopMarkers[i].getTitle().equals(oldClosestStop)) {
+                // Remove and recreate marker to avoid showing an empty snippet
+                MarkerOptions options = new MarkerOptions()
+                        .position(stopMarkers[i].getPosition())
+                        .title(stopMarkers[i].getTitle())
+                        .icon(BUS_INDICATOR_ICON)
+                        .anchor(0.5f, 0.5f);
+                stopMarkers[i].remove();
+                stopMarkers[i] = map.addMarker(options);
+            // Set new closest stop icon
+            } else if (stopMarkers[i].getTitle().equals(closestStop)) {
+                stopMarkers[i].setSnippet("Closest stop");
+                stopMarkers[i].setIcon(BUS_CLOSEST_ICON);
             }
-            oldClosestStop = closestStop;
         }
+        oldClosestStop = closestStop;
     }
 
     /* Draw all running buses to the map */

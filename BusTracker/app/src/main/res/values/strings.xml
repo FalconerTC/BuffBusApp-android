@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">BusTracker</string>
+    <string name="app_name">CU Bus Tracker</string>
     <string name="action_settings">Settings</string>
 
     <!-- Activity text -->
-    <string name="main_activity">BusTracker</string>
+    <string name="main_activity">Route Selector</string>
     <string name="main_title">CU Bus Tracker</string>
     <string name="main_subtitle">Select A Route</string>
     <string name="send_feedback">Send Feedback</string>

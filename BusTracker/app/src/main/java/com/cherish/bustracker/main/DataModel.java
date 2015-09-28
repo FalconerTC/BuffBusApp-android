@@ -71,26 +71,28 @@ public class DataModel {
             }
 
             Stop[] stops = connector.getStops();
-            // Convert stops int[] to list
-            int[] stopsPrimitive = this.route.stops;
-            List<Integer> stopIDs = new ArrayList<>();
-            for (int i = 0; i < stopsPrimitive.length; i++)
-                stopIDs.add(stopsPrimitive[i]);
+            if (stops != null) {
+                // Convert stops int[] to list
+                int[] stopsPrimitive = this.route.stops;
+                List<Integer> stopIDs = new ArrayList<>();
+                for (int i = 0; i < stopsPrimitive.length; i++)
+                    stopIDs.add(stopsPrimitive[i]);
 
-            int len = stops.length;
-            ArrayList<Stop> currentStops = new ArrayList<>();
-            for (int i = 0; i < stopsPrimitive.length; i++)
-                currentStops.add(i, null);
-            // Match stopIDs with actual stops
-            for (int i = 0; i < len; i++) {
-                int index = stopIDs.indexOf(stops[i].id);
-                if (index >= 0) {
-                    currentStops.set(index, stops[i]);
+                int len = stops.length;
+                ArrayList<Stop> currentStops = new ArrayList<>();
+                for (int i = 0; i < stopsPrimitive.length; i++)
+                    currentStops.add(i, null);
+                // Match stopIDs with actual stops
+                for (int i = 0; i < len; i++) {
+                    int index = stopIDs.indexOf(stops[i].id);
+                    if (index >= 0) {
+                        currentStops.set(index, stops[i]);
+                    }
                 }
+                // Check for nulls (when a route quotes a stop that does not exist)
+                currentStops.removeAll(Collections.singleton(null));
+                this.stops = currentStops.toArray(new Stop[currentStops.size()]);
             }
-            // Check for nulls (when a route quotes a stop that does not exist)
-            currentStops.removeAll(Collections.singleton(null));
-            this.stops = currentStops.toArray(new Stop[currentStops.size()]);
         }
     }
 
