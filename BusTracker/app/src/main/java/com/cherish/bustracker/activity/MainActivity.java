@@ -71,7 +71,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             setContentView(layout);
 
             // Remove unnecessary objects
-            updater.onStop();
+            if (updater != null)
+                updater.onStop();
             updater = null;
         }
     }

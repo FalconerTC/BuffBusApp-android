@@ -14,7 +14,6 @@ import com.cherish.bustracker.R;
 import com.cherish.bustracker.activity.DisplayActivity;
 import com.cherish.bustracker.lib.Log;
 import com.cherish.bustracker.lib.threads.GenericThread;
-import com.cherish.bustracker.parser.objects.Stop;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -33,12 +32,13 @@ public class LocationManager implements
     /* Error codes */
     // Request code to use when launching the resolution activity
     public static final int REQUEST_RESOLVE_ERROR = 1001;
-    public static final String DIALOG_ERROR = "dialog_error";
+    public static final String DIALOG_ERROR = "error";
 
     private static LocationManager manager;
     private static Activity original;
-    public GoogleApiClient apiClient;
     private LocationRequest locationRequest;
+
+    public GoogleApiClient apiClient;
     public Location currentLocation;
 
     // Bool to track whether the app is already resolving an error
@@ -128,8 +128,6 @@ public class LocationManager implements
             t.show();
             // Update map, selector
             ((DisplayActivity) original).updateLocation(currentLocation);
-            //map.setCurrentLocation(location);
-            //map.setClosestStop(findClosestStop(currentLocation));
         }
     }
 
@@ -157,7 +155,6 @@ public class LocationManager implements
             resolvingError = true;
         }
     }
-
 
     // The rest of this code is all about building the error dialog
 

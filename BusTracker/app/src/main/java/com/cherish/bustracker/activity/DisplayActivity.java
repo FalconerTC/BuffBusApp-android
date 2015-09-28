@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.Gravity;
+import android.widget.Toast;
 
 import com.cherish.bustracker.main.LocationManager;
 import com.cherish.bustracker.main.ServerConnector;
@@ -29,6 +31,7 @@ public class DisplayActivity extends FragmentActivity {
     private ServerConnector connector;
     private UIController display;
     private DataModel model;
+    private Toast routeInformer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,12 @@ public class DisplayActivity extends FragmentActivity {
 
         Intent intent = getIntent();
         String route = intent.getStringExtra(MainActivity.SELECTED_ROUTE);
+
+        // Show pop-up with their selected route
+        routeInformer = Toast.makeText(getApplicationContext(),
+                "Route selected: "+route, Toast.LENGTH_SHORT);
+        routeInformer.show();
+
 
         // Create a GoogleApiClient instance
         locManager = LocationManager.getLocationManager(this);
@@ -136,6 +145,7 @@ public class DisplayActivity extends FragmentActivity {
         if (locManager.apiClient.isConnected()) {
             locManager.stopLocationUpdates();
         }
+        routeInformer.cancel();
         threads.onPause();
     }
 
