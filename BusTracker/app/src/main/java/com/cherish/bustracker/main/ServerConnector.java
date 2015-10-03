@@ -24,11 +24,10 @@ import java.util.Map;
 
 /**
  * Created by Falcon on 8/13/2015.
- *
+ * <p/>
  * References http://stackoverflow.com/questions/9605913/how-to-parse-json-in-android
- *
  */
-public class ServerConnector{
+public class ServerConnector {
     public static final String SERVER_ADDR = "http://104.131.176.10:8080/";
     public static final String ROUTES_ADDR = SERVER_ADDR + ParserFactory.PARSER_ROUTES;
     public static final String STOPS_ADDR = SERVER_ADDR + ParserFactory.PARSER_STOPS;
@@ -43,10 +42,6 @@ public class ServerConnector{
     private Route[] routes;
     private Stop[] stops;
     private Bus[] buses;
-
-    public Route[] getRoutes() { return routes;}
-    public Stop[] getStops() { return stops;}
-    public Bus[] getBuses() { return buses;}
 
     private ServerConnector() {
         parser = new ParserFactory();
@@ -77,6 +72,18 @@ public class ServerConnector{
         return connector;
     }
 
+    public Route[] getRoutes() {
+        return routes;
+    }
+
+    public Stop[] getStops() {
+        return stops;
+    }
+
+    public Bus[] getBuses() {
+        return buses;
+    }
+
     /* Create server requests and set resulting data */
     public void update() {
         // Fetch routes only once
@@ -84,8 +91,8 @@ public class ServerConnector{
             routes = (Route[]) sendRequest(ParserFactory.PARSER_ROUTES);
         }
         // Update stops and buses each interval
-        this.stops = (Stop[])sendRequest(ParserFactory.PARSER_STOPS);
-        this.buses = (Bus[])sendRequest(ParserFactory.PARSER_BUSES);
+        this.stops = (Stop[]) sendRequest(ParserFactory.PARSER_STOPS);
+        this.buses = (Bus[]) sendRequest(ParserFactory.PARSER_BUSES);
     }
 
     /* Request an update from the server and parse it to a usable object */
@@ -108,7 +115,7 @@ public class ServerConnector{
         } catch (ClientProtocolException e) {
             Log.e("Protocol error", "Error sending request");
             e.printStackTrace();
-        } catch(IOException e) {
+        } catch (IOException e) {
             Log.e("IO error", "Error reading data");
             e.printStackTrace();
         } catch (Exception e) {
@@ -126,7 +133,7 @@ public class ServerConnector{
                     sb.append(line + "\n");
                 stream.close();
                 result = sb.toString();
-            } catch(Exception e) {
+            } catch (Exception e) {
                 Log.e("JSON error", "Error converting result " + e.toString());
             }
         }

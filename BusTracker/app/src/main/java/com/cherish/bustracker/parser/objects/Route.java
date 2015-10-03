@@ -3,7 +3,7 @@ package com.cherish.bustracker.parser.objects;
 /**
  * Created by Falcon on 8/13/2015.
  */
-public class Route implements ParsedObject{
+public class Route implements ParsedObject {
 
     public int id;
     public String name;

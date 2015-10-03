@@ -14,24 +14,20 @@ import java.util.List;
 
 public class DataModel {
 
-    //private static ModelThread updater;
     private ServerConnector connector;
-
     private Route route;
     //TODO change stops to be an arraylist ?
     private Stop[] stops;
     private String[] stopNames;
     private ArrayList<Bus> buses;
 
-    public Route getRoute() { return route; }
-    public String[] getStopNames() { return stopNames; }
-    public Stop[] getStops() { return stops; }
-    public ArrayList<Bus> getBuses() { return buses; }
-
-
     public DataModel(ServerConnector connector, String route) {
         this.connector = connector;
         setRoute(route);
+    }
+
+    public Route getRoute() {
+        return route;
     }
 
     /* Set the current route based on the user selection */
@@ -56,6 +52,18 @@ public class DataModel {
                 this.stopNames[i] = stops[i].name;
             }
         }
+    }
+
+    public String[] getStopNames() {
+        return stopNames;
+    }
+
+    public Stop[] getStops() {
+        return stops;
+    }
+
+    public ArrayList<Bus> getBuses() {
+        return buses;
     }
 
     //TODO Make this more efficient with SparseArray

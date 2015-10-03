@@ -41,7 +41,7 @@ public class DisplayActivity extends FragmentActivity {
 
         // Show pop-up with their selected route
         routeInformer = Toast.makeText(getApplicationContext(),
-                "Route selected: "+route, Toast.LENGTH_SHORT);
+                "Route selected: " + route, Toast.LENGTH_SHORT);
         routeInformer.show();
 
 
@@ -97,7 +97,7 @@ public class DisplayActivity extends FragmentActivity {
             loc.setLongitude(stops[i].longitude);
             loc.setLatitude(stops[i].latitude);
             float distance = currentLocation.distanceTo(loc);
-            if (distance < closestDistance){
+            if (distance < closestDistance) {
                 closestDistance = distance;
                 closestStop = stops[i].name;
             }

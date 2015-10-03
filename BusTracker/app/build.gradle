@@ -1,4 +1,5 @@
 import groovy.swing.SwingBuilder
+
 apply plugin: 'com.android.application'
 
 /* Groovy function to prompt for keystore credentials on build
@@ -6,7 +7,7 @@ apply plugin: 'com.android.application'
  * and https://github.com/Newbilius/longtext_sharer/blob/master/longtextsharer/build.gradle
  */
 gradle.taskGraph.whenReady { taskGraph ->
-    if(taskGraph.hasTask(':app:assembleRelease')) {
+    if (taskGraph.hasTask(':app:assembleRelease')) {
         def pass = ''
         if (System.console() == null) {
             new SwingBuilder().edt {

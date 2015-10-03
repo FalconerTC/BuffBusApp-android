@@ -6,6 +6,11 @@ import com.cherish.bustracker.lib.Log;
  * Created by Falcon on 8/29/2015.
  */
 public abstract class GenericThread extends Thread implements Runnable {
+    public static final String TAG = "GenericThread";
+
+    // Time for threads to sleep
+    public static final long POLLING_INTERVAL = 10 * 1000; //10 seconds
+
     // Generic object used to synchronize pausing
     private Object lock;
     // Records whether thread is paused
@@ -13,18 +18,14 @@ public abstract class GenericThread extends Thread implements Runnable {
     // Records whether thread is running
     private volatile boolean active;
 
-    public boolean isPaused() {
-        return paused;
-    }
-
-    // Time for threads to sleep
-    public static final long POLLING_INTERVAL = 10 * 1000; //10 seconds
-    public static final String TAG = "GenericThread";
-
     public GenericThread() {
         this.lock = new Object();
         this.paused = false;
         this.active = true;
+    }
+
+    public boolean isPaused() {
+        return paused;
     }
 
     // Implemented method for actions performed every interval
@@ -56,7 +57,7 @@ public abstract class GenericThread extends Thread implements Runnable {
             try {
                 // Sleep for the polling interval
                 Thread.sleep(POLLING_INTERVAL);
-            // Kill thread if interrupted
+                // Kill thread if interrupted
             } catch (InterruptedException e) {
                 Log.i(TAG, "Thread interrupted. Exiting...");
                 return;

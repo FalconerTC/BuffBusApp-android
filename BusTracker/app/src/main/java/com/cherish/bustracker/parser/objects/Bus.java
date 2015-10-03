@@ -3,7 +3,7 @@ package com.cherish.bustracker.parser.objects;
 /**
  * Created by Falcon on 8/13/2015.
  */
-public class Bus implements ParsedObject{
+public class Bus implements ParsedObject {
 
     public int id;
     public double latitude;

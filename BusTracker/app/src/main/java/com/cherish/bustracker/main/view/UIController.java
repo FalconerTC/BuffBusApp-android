@@ -43,7 +43,7 @@ public class UIController implements OnValueChangeListener {
     public void initializeSelector() {
         stops = model.getStopNames();
         if (stops != null) {
-            stopSelector = (NumberPicker)original.findViewById(R.id.stopPicker);
+            stopSelector = (NumberPicker) original.findViewById(R.id.stopPicker);
             int startingStop = getStartingValue();
             selectedStop = stops[startingStop];
             stopSelector.setMaxValue(stops.length - 1);
@@ -105,12 +105,12 @@ public class UIController implements OnValueChangeListener {
         int[] times = model.getNextTimes(selectedStop);
         if (times != null) {
             String value1 = (times[0] == 0 ? "Now" : (times[0] + " minute" + (times[0] == 1 ? "" : "s")));
-            ((TextView)original.findViewById(R.id.time_1)).setText(value1);
+            ((TextView) original.findViewById(R.id.time_1)).setText(value1);
             newRoutes = 1;
             // Some buses have two next times
             if (times.length > 1) {
                 String value2 = (times[1] == 0 ? "Now" : (times[1] + " minute" + (times[1] == 1 ? "" : "s")));
-                ((TextView)original.findViewById(R.id.time_2)).setText(value2);
+                ((TextView) original.findViewById(R.id.time_2)).setText(value2);
                 newRoutes = 2;
             }
         }
@@ -138,7 +138,7 @@ public class UIController implements OnValueChangeListener {
 
             View timeDisplay = original.findViewById(R.id.time_1);
             RelativeLayout.LayoutParams params =
-                    (RelativeLayout.LayoutParams)timeDisplay.getLayoutParams();
+                    (RelativeLayout.LayoutParams) timeDisplay.getLayoutParams();
             // Show only one bus time indicator and center it
             if (active == 1) {
                 original.findViewById(R.id.time_2).setVisibility(View.GONE);

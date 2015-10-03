@@ -9,9 +9,9 @@ import com.cherish.bustracker.main.view.UIController;
  * Created by Falcon on 9/5/2015.
  */
 public class UIThread extends GenericThread {
+    public static final String TAG = "UIThread";
     private Activity original;
     private UIController controller;
-    public static final String TAG = "UIThread";
 
     public UIThread(UIController controller, Activity original) {
         super();

@@ -50,7 +50,7 @@ public class StopParser implements Parser {
                                     timesArr[j] = times.getInt(j);
                                 stops[i].busTimes.put(key, timesArr);
                             }
-                        } catch(Exception e) {
+                        } catch (Exception e) {
                             Log.e("Error", "Something happened while parsing nextBusTimes object");
                             e.printStackTrace();
                         }

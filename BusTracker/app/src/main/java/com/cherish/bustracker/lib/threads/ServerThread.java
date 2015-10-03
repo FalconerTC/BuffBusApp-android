@@ -9,7 +9,7 @@ import com.cherish.bustracker.main.ServerConnector;
 /**
  * Created by Falcon on 9/5/2015.
  */
-public class ServerThread extends GenericThread{
+public class ServerThread extends GenericThread {
     public static final String TAG = "ServerThread";
 
     private MainActivity original;
@@ -23,14 +23,14 @@ public class ServerThread extends GenericThread{
     public ServerThread(ServerConnector connector, Activity original) {
         super();
         this.connector = connector;
-        this.original = (MainActivity)original;
+        this.original = (MainActivity) original;
     }
 
     public void onRun() {
         Log.i(TAG, "Executing...");
         connector.update();
         // Notify activity if it exists
-        if(original != null)
+        if (original != null)
             original.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

@@ -12,7 +12,7 @@ import org.json.JSONObject;
 /**
  * Created by Falcon on 8/14/2015.
  */
-public class RouteParser implements Parser{
+public class RouteParser implements Parser {
 
     String data;
 

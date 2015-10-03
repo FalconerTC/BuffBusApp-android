@@ -45,10 +45,9 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     public static final int DEFAULT_ZOOM_LEVEL = 14;
 
     /* Objects */
+    public GoogleMap map;
     private DataModel model;
     private Activity original;
-    public GoogleMap map;
-
     private String lastStop;
     private Marker[] stopMarkers;
     private Marker[] busMarkers;
@@ -125,7 +124,7 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     */
     public void onUpdate(String stop, boolean redrawBuses) {
         // Simulate click for selected stop only if the stop is new
-        if (! lastStop.equals(stop) && stopMarkers != null) {
+        if (!lastStop.equals(stop) && stopMarkers != null) {
             lastStop = stop;
             int len = stopMarkers.length;
             for (int i = 0; i < len; i++) {
@@ -154,7 +153,7 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
                         .anchor(0.5f, 0.5f);
                 stopMarkers[i].remove();
                 stopMarkers[i] = map.addMarker(options);
-            // Set new closest stop icon
+                // Set new closest stop icon
             } else if (stopMarkers[i].getTitle().equals(closestStop)) {
                 stopMarkers[i].setSnippet(original.getResources()
                         .getString(R.string.closest_stop_message));
@@ -177,7 +176,7 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
                     busMarkers[i].remove();
             }
 
-           int len = buses.size();
+            int len = buses.size();
             busMarkers = new Marker[len];
             for (int i = 0; i < len; i++) {
                 LatLng pos = new LatLng(buses.get(i).latitude, buses.get(i).longitude);
@@ -195,11 +194,11 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     @Override
     public boolean onMarkerClick(Marker marker) {
         // Ignore clicks on buses
-        if (! marker.getTitle().equals("Bus")) {
+        if (!marker.getTitle().equals("Bus")) {
             marker.showInfoWindow();
             map.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()), 250, null);
 
-            ((DisplayActivity)original).updateSelector(marker.getTitle());
+            ((DisplayActivity) original).updateSelector(marker.getTitle());
         }
         // Return true to always override the default listener
         return true;

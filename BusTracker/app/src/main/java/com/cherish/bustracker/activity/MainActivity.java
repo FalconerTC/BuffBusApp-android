@@ -27,10 +27,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public final static String FEEDBACK_EMAIL = "cherishdevapps@gmail.com";
     public final static String FEEDBACK_SUBJECT = "Android CU BusTracker Feedback!";
-
+    public Intent display;
     private ServerThread updater;
     private Button[] buttons;
-    public Intent display;
+
+    /* Efficient swap helper
+    * http://stackoverflow.com/questions/13766209/effective-swapping-of-elements-of-an-array-in-java
+    * */
+    public static final <T> void swap(T[] a, int i, int j) {
+        T t = a[i];
+        a[i] = a[j];
+        a[j] = t;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,15 +117,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Set "Late Night Silver" to index 6
         swap(newRoutes, 5, 6);
         return newRoutes;
-    }
-
-    /* Efficient swap helper
-    * http://stackoverflow.com/questions/13766209/effective-swapping-of-elements-of-an-array-in-java
-    * */
-    public static final <T> void swap(T[] a, int i, int j) {
-        T t = a[i];
-        a[i] = a[j];
-        a[j] = t;
     }
 
     /* Create a button for route-selection, based on the template */

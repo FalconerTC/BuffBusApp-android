@@ -11,7 +11,7 @@ import org.json.JSONObject;
 /**
  * Created by Falcon on 8/13/2015.
  */
-public class BusParser implements Parser{
+public class BusParser implements Parser {
 
     String data;
 

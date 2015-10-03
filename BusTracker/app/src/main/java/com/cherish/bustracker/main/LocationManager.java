@@ -37,14 +37,13 @@ public class LocationManager implements
 
     private static LocationManager manager;
     private static Activity original;
-    private LocationRequest locationRequest;
     public GoogleApiClient apiClient;
     public Location currentLocation;
-
     // Bool to track whether the app is already resolving an error
     public boolean resolvingError = false;
     // Bool to track if we are requesting location updates
     public boolean requestingLocationUpdates;
+    private LocationRequest locationRequest;
 
     private LocationManager() {
         this.requestingLocationUpdates = true;
@@ -84,7 +83,7 @@ public class LocationManager implements
     }
 
     public void startLocationUpdates() {
-        Log.i(TAG, "Starting location updates. Current location: "+currentLocation);
+        Log.i(TAG, "Starting location updates. Current location: " + currentLocation);
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 apiClient, locationRequest, this);
         if (currentLocation != null) {
