@@ -1,4 +1,4 @@
-package com.cherish.bustracker.main;
+package com.cherish.bustracker.main.view;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -13,7 +13,7 @@ import android.widget.Toast;
 import com.cherish.bustracker.R;
 import com.cherish.bustracker.activity.DisplayActivity;
 import com.cherish.bustracker.lib.Log;
-import com.cherish.bustracker.lib.threads.GenericThread;
+import com.cherish.bustracker.util.threads.GenericThread;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;

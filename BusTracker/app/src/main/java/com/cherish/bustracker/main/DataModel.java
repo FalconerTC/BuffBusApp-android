@@ -1,8 +1,8 @@
 package com.cherish.bustracker.main;
 
-import com.cherish.bustracker.parser.objects.Bus;
-import com.cherish.bustracker.parser.objects.Route;
-import com.cherish.bustracker.parser.objects.Stop;
+import com.cherish.bustracker.util.parser.objects.Bus;
+import com.cherish.bustracker.util.parser.objects.Route;
+import com.cherish.bustracker.util.parser.objects.Stop;
 
 import java.util.ArrayList;
 import java.util.Collections;

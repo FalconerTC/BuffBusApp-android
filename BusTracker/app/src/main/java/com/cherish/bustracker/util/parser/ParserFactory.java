@@ -1,6 +1,6 @@
-package com.cherish.bustracker.parser;
+package com.cherish.bustracker.util.parser;
 
-import com.cherish.bustracker.parser.objects.ParsedObject;
+import com.cherish.bustracker.util.parser.objects.ParsedObject;
 
 /**
  * Created by Falcon on 8/14/2015.

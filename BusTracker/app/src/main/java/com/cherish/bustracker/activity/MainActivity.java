@@ -13,9 +13,9 @@ import android.widget.TextView;
 
 import com.cherish.bustracker.R;
 import com.cherish.bustracker.lib.Log;
-import com.cherish.bustracker.lib.threads.ServerThread;
+import com.cherish.bustracker.util.threads.ServerThread;
 import com.cherish.bustracker.main.ServerConnector;
-import com.cherish.bustracker.parser.objects.Route;
+import com.cherish.bustracker.util.parser.objects.Route;
 
 import java.util.ArrayList;
 
@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public final static String SELECTED_ROUTE = "com.cherish.bustracker.selected_route";
 
     public final static String FEEDBACK_EMAIL = "cherishdevapps@gmail.com";
-    public final static String FEEDBACK_SUBJECT = "Android CU BusTracker Feedback!";
+    public final static String FEEDBACK_SUBJECT = "Android CU Bus Tracker Feedback!";
     public Intent display;
     private ServerThread updater;
     private Button[] buttons;

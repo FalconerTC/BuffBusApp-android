@@ -1,11 +1,11 @@
 package com.cherish.bustracker.main;
 
 import com.cherish.bustracker.lib.Log;
-import com.cherish.bustracker.parser.ParserFactory;
-import com.cherish.bustracker.parser.objects.Bus;
-import com.cherish.bustracker.parser.objects.ParsedObject;
-import com.cherish.bustracker.parser.objects.Route;
-import com.cherish.bustracker.parser.objects.Stop;
+import com.cherish.bustracker.util.parser.ParserFactory;
+import com.cherish.bustracker.util.parser.objects.Bus;
+import com.cherish.bustracker.util.parser.objects.ParsedObject;
+import com.cherish.bustracker.util.parser.objects.Route;
+import com.cherish.bustracker.util.parser.objects.Stop;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;

@@ -1,8 +1,8 @@
-package com.cherish.bustracker.parser;
+package com.cherish.bustracker.util.parser;
 
 import com.cherish.bustracker.lib.Log;
-import com.cherish.bustracker.parser.objects.Bus;
-import com.cherish.bustracker.parser.objects.ParsedObject;
+import com.cherish.bustracker.util.parser.objects.Bus;
+import com.cherish.bustracker.util.parser.objects.ParsedObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,7 +14,6 @@ import org.json.JSONObject;
 public class BusParser implements Parser {
 
     String data;
-
     public BusParser(String data) {
         this.data = data;
     }

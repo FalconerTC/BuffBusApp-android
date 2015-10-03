@@ -1,11 +1,13 @@
-package com.cherish.bustracker.main;
+package com.cherish.bustracker.util.threads;
 
 import android.app.Activity;
 
-import com.cherish.bustracker.lib.threads.ModelThread;
-import com.cherish.bustracker.lib.threads.ServerThread;
-import com.cherish.bustracker.lib.threads.UIThread;
+import com.cherish.bustracker.main.DataModel;
+import com.cherish.bustracker.main.ServerConnector;
 import com.cherish.bustracker.main.view.UIController;
+import com.cherish.bustracker.util.threads.ModelThread;
+import com.cherish.bustracker.util.threads.ServerThread;
+import com.cherish.bustracker.util.threads.UIThread;
 
 /**
  * Created by Falcon on 9/10/2015.

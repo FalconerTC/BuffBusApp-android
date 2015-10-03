@@ -9,12 +9,12 @@ import android.widget.Toast;
 import com.cherish.bustracker.R;
 import com.cherish.bustracker.lib.Log;
 import com.cherish.bustracker.main.DataModel;
-import com.cherish.bustracker.main.LocationManager;
+import com.cherish.bustracker.main.view.LocationManager;
 import com.cherish.bustracker.main.ServerConnector;
-import com.cherish.bustracker.main.ThreadManager;
+import com.cherish.bustracker.util.threads.ThreadManager;
 import com.cherish.bustracker.main.view.MapController;
 import com.cherish.bustracker.main.view.UIController;
-import com.cherish.bustracker.parser.objects.Stop;
+import com.cherish.bustracker.util.parser.objects.Stop;
 
 /*
   Simple class to maintain GoogleAPIClient and display controllers, built from the following

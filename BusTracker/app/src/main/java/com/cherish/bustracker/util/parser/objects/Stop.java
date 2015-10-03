@@ -1,4 +1,4 @@
-package com.cherish.bustracker.parser.objects;
+package com.cherish.bustracker.util.parser.objects;
 
 import java.util.HashMap;
 import java.util.Map;

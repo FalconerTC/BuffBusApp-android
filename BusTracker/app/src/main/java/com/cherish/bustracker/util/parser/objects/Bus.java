@@ -1,4 +1,4 @@
-package com.cherish.bustracker.parser.objects;
+package com.cherish.bustracker.util.parser.objects;
 
 /**
  * Created by Falcon on 8/13/2015.
