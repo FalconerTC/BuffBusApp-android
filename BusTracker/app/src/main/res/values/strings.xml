@@ -3,13 +3,14 @@
     <string name="action_settings">Settings</string>
 
     <!-- Activity text -->
-    <string name="main_activity">Route Selector</string>
+    <string name="main_activity">CU Bus Tracker</string>
     <string name="main_title">CU Bus Tracker</string>
     <string name="main_subtitle">Select A Route</string>
     <string name="send_feedback">Send Feedback</string>
 
     <!-- Location text -->
     <string name="location_updated_message">Location was updated</string>
+    <string name="closest_stop_message">Closest stop</string>
 
     <!-- Display text -->
     <string name="route_1">Buff Bus</string>

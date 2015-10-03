@@ -2,10 +2,14 @@ package com.cherish.bustracker.main.view;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.location.Location;
 
+import com.cherish.bustracker.R;
 import com.cherish.bustracker.activity.DisplayActivity;
+import com.cherish.bustracker.lib.Log;
+import com.cherish.bustracker.lib.Polylines;
 import com.cherish.bustracker.main.DataModel;
+import com.cherish.bustracker.parser.objects.Bus;
+import com.cherish.bustracker.parser.objects.Stop;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
@@ -21,17 +25,12 @@ import com.google.maps.android.PolyUtil;
 
 import java.util.ArrayList;
 
-import com.cherish.bustracker.R;
-import com.cherish.bustracker.lib.Polylines;
-import com.cherish.bustracker.parser.objects.Bus;
-import com.cherish.bustracker.parser.objects.Stop;
-import com.cherish.bustracker.lib.Log;
-
 /**
  * Created by Falcon on 8/29/2015.
  */
 
 public class MapController implements OnMapReadyCallback, OnMarkerClickListener {
+    public static final String TAG = "MapController";
 
     /* Map constants */
     public static final BitmapDescriptor BUS_ICON
@@ -44,7 +43,6 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     public static final LatLng CU_LATLNG = new LatLng(40.001894, -105.260184);
     public static final int DEFAULT_MAP_TYPE = GoogleMap.MAP_TYPE_NORMAL;
     public static final int DEFAULT_ZOOM_LEVEL = 14;
-    public static final String TAG = "MapController";
 
     /* Objects */
     private DataModel model;
@@ -123,7 +121,7 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     }
 
     /* Called by UI thread by interval or stop change
-    *  Takes a boolean to indicate if it should redraw buses (ie if it was called by interval)
+    *  Takes a boolean to indicate if it should redraw buses (if it was called by interval)
     */
     public void onUpdate(String stop, boolean redrawBuses) {
         // Simulate click for selected stop only if the stop is new
@@ -158,7 +156,8 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
                 stopMarkers[i] = map.addMarker(options);
             // Set new closest stop icon
             } else if (stopMarkers[i].getTitle().equals(closestStop)) {
-                stopMarkers[i].setSnippet("Closest stop");
+                stopMarkers[i].setSnippet(original.getResources()
+                        .getString(R.string.closest_stop_message));
                 stopMarkers[i].setIcon(BUS_CLOSEST_ICON);
             }
         }
@@ -201,7 +200,6 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
             map.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()), 250, null);
 
             ((DisplayActivity)original).updateSelector(marker.getTitle());
-
         }
         // Return true to always override the default listener
         return true;

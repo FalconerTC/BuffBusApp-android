@@ -27,6 +27,7 @@ import com.google.android.gms.location.LocationServices;
 public class LocationManager implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     public static final String TAG = "LocationManager";
+
     public static final long FASTEST_INTERVAL = GenericThread.POLLING_INTERVAL / 2;
 
     /* Error codes */
@@ -37,7 +38,6 @@ public class LocationManager implements
     private static LocationManager manager;
     private static Activity original;
     private LocationRequest locationRequest;
-
     public GoogleApiClient apiClient;
     public Location currentLocation;
 
@@ -88,7 +88,7 @@ public class LocationManager implements
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 apiClient, locationRequest, this);
         if (currentLocation != null) {
-            ((DisplayActivity) original).updateLocation(currentLocation);
+            ((DisplayActivity) original).updateLocation(currentLocation, true);
         }
     }
 
@@ -121,13 +121,14 @@ public class LocationManager implements
                 currentLocation.getLatitude() != location.getLatitude()) {
             currentLocation = location;
             // Show popup indicating an update
-            Toast t = Toast.makeText(original.getApplicationContext(), original.getResources().getString(R.string.location_updated_message),
+            Toast t = Toast.makeText(original.getApplicationContext(),
+                    original.getResources().getString(R.string.location_updated_message),
                     Toast.LENGTH_SHORT);
 
             t.setGravity(Gravity.BOTTOM | Gravity.RIGHT, 10, 10);
             t.show();
             // Update map, selector
-            ((DisplayActivity) original).updateLocation(currentLocation);
+            ((DisplayActivity) original).updateLocation(currentLocation, false);
         }
     }
 

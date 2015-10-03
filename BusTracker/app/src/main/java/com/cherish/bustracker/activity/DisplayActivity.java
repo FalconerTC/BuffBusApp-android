@@ -4,19 +4,17 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.view.Gravity;
 import android.widget.Toast;
 
+import com.cherish.bustracker.R;
+import com.cherish.bustracker.lib.Log;
+import com.cherish.bustracker.main.DataModel;
 import com.cherish.bustracker.main.LocationManager;
 import com.cherish.bustracker.main.ServerConnector;
 import com.cherish.bustracker.main.ThreadManager;
-import com.cherish.bustracker.parser.objects.Stop;
-
-import com.cherish.bustracker.R;
-import com.cherish.bustracker.main.DataModel;
 import com.cherish.bustracker.main.view.MapController;
 import com.cherish.bustracker.main.view.UIController;
-import com.cherish.bustracker.lib.Log;
+import com.cherish.bustracker.parser.objects.Stop;
 
 /*
   Simple class to maintain GoogleAPIClient and display controllers, built from the following
@@ -108,11 +106,12 @@ public class DisplayActivity extends FragmentActivity {
     }
 
     /* Send new stop information to map and selector */
-    public void updateLocation(Location currentLocation) {
+    public void updateLocation(Location currentLocation, boolean initialLoad) {
         Log.i(TAG, "Sending updated location");
         String closestStop = findClosestStop(currentLocation);
         map.setClosestStop(closestStop);
-        updateSelector(closestStop);
+        if (initialLoad)
+            updateSelector(closestStop);
     }
 
     /* Activity actions */
@@ -123,7 +122,6 @@ public class DisplayActivity extends FragmentActivity {
         if (!locManager.resolvingError) {
             locManager.apiClient.connect();
         }
-
     }
 
     @Override

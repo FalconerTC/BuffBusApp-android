@@ -1,5 +1,12 @@
 package com.cherish.bustracker.main;
 
+import com.cherish.bustracker.lib.Log;
+import com.cherish.bustracker.parser.ParserFactory;
+import com.cherish.bustracker.parser.objects.Bus;
+import com.cherish.bustracker.parser.objects.ParsedObject;
+import com.cherish.bustracker.parser.objects.Route;
+import com.cherish.bustracker.parser.objects.Stop;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
@@ -14,14 +21,6 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.cherish.bustracker.lib.threads.ServerThread;
-import com.cherish.bustracker.parser.ParserFactory;
-import com.cherish.bustracker.parser.objects.Bus;
-import com.cherish.bustracker.parser.objects.ParsedObject;
-import com.cherish.bustracker.parser.objects.Route;
-import com.cherish.bustracker.parser.objects.Stop;
-import com.cherish.bustracker.lib.Log;
 
 /**
  * Created by Falcon on 8/13/2015.
@@ -51,7 +50,8 @@ public class ServerConnector{
 
     private ServerConnector() {
         parser = new ParserFactory();
-        httpPosts = new HashMap<String, HttpPost>();
+        httpPosts = new HashMap<>();
+
         // Post to /routes
         HttpPost routesPost = new HttpPost(ROUTES_ADDR);
         routesPost.setHeader("Content-type", "application/json");

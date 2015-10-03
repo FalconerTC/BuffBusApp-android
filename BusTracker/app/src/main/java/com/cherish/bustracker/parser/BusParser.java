@@ -1,12 +1,12 @@
 package com.cherish.bustracker.parser;
 
+import com.cherish.bustracker.lib.Log;
+import com.cherish.bustracker.parser.objects.Bus;
+import com.cherish.bustracker.parser.objects.ParsedObject;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.cherish.bustracker.parser.objects.Bus;
-import com.cherish.bustracker.parser.objects.ParsedObject;
-import com.cherish.bustracker.lib.Log;
 
 /**
  * Created by Falcon on 8/13/2015.

@@ -1,7 +1,6 @@
 package com.cherish.bustracker.main.view;
 
 import android.app.Activity;
-
 import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnValueChangeListener;
@@ -15,7 +14,7 @@ import com.cherish.bustracker.main.DataModel;
 public class UIController implements OnValueChangeListener {
     public static final String TAG = "UIController";
 
-    private DataModel controller;
+    private DataModel model;
     private MapController map;
     private Activity original;
     private NumberPicker stopSelector;
@@ -26,42 +25,40 @@ public class UIController implements OnValueChangeListener {
 
     public UIController(Activity activity, DataModel model, MapController map) {
         Log.i(TAG, "Creating DisplayActivity");
-
         this.original = activity;
-        this.controller = model;
+        this.model = model;
         this.map = map;
         this.activeRoutes = -1;
-
-        stopSelector = (NumberPicker)original.findViewById(R.id.stopPicker);
 
         initializeSelector();
     }
 
-    /* Returns the closest stop as the starting value */
+    /* Returns the first stop as the starting value */
     private int getStartingValue() {
-        // Default to 0 until "nearest stop" logic is in place
-        Log.i(TAG, "Setting closest value");
+        // Default to 0 until I find a reason to default to something else
         return 0;
     }
 
     /* Set initial values for selector */
     public void initializeSelector() {
-        System.out.println("Initializing selector");
-        stops = controller.getStopNames();
-        int startingStop = getStartingValue();
-        selectedStop = stops[startingStop];
-        stopSelector.setMaxValue(stops.length - 1);
-        stopSelector.setDisplayedValues(stops);
-        stopSelector.setValue(startingStop);
-        stopSelector.setWrapSelectorWheel(true);
-        stopSelector.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        stops = model.getStopNames();
+        if (stops != null) {
+            stopSelector = (NumberPicker)original.findViewById(R.id.stopPicker);
+            int startingStop = getStartingValue();
+            selectedStop = stops[startingStop];
+            stopSelector.setMaxValue(stops.length - 1);
+            stopSelector.setDisplayedValues(stops);
+            stopSelector.setValue(startingStop);
+            stopSelector.setWrapSelectorWheel(true);
+            stopSelector.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+            // Create event listener
+            stopSelector.setOnValueChangedListener(this);
+        }
 
-        // Create event listener
-        stopSelector.setOnValueChangedListener(this);
-        //update();
     }
 
     @Override
+    /* Stop selector event */
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
         changeSelectedStop(newVal);
     }
@@ -75,14 +72,22 @@ public class UIController implements OnValueChangeListener {
                     changeSelectedStop(i);
                 }
             }
+        } else {
+            // Attempt to reinitialize selector
+            initializeSelector();
         }
     }
 
     /* Change current stop and update UI */
     public void changeSelectedStop(int newVal) {
-        stopSelector.setValue(newVal);
-        selectedStop = stops[newVal];
-        update(false);
+        if (stopSelector != null) {
+            stopSelector.setValue(newVal);
+            selectedStop = stops[newVal];
+            update(false);
+        } else {
+            // Attempt to reinitialize selector
+            initializeSelector();
+        }
     }
 
     /* Update map and time display. Called by UIThread per interval */
@@ -97,7 +102,7 @@ public class UIController implements OnValueChangeListener {
     public void updateTimeDisplay() {
         int newRoutes = 0;
 
-        int[] times = controller.getNextTimes(selectedStop);
+        int[] times = model.getNextTimes(selectedStop);
         if (times != null) {
             String value1 = (times[0] == 0 ? "Now" : (times[0] + " minute" + (times[0] == 1 ? "" : "s")));
             ((TextView)original.findViewById(R.id.time_1)).setText(value1);
@@ -134,7 +139,7 @@ public class UIController implements OnValueChangeListener {
             View timeDisplay = original.findViewById(R.id.time_1);
             RelativeLayout.LayoutParams params =
                     (RelativeLayout.LayoutParams)timeDisplay.getLayoutParams();
-            // Show only one bus time indicator and center is
+            // Show only one bus time indicator and center it
             if (active == 1) {
                 original.findViewById(R.id.time_2).setVisibility(View.GONE);
                 params.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);

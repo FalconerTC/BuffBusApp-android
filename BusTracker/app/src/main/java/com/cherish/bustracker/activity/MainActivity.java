@@ -11,16 +11,18 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import com.cherish.bustracker.R;
+import com.cherish.bustracker.lib.Log;
 import com.cherish.bustracker.lib.threads.ServerThread;
 import com.cherish.bustracker.main.ServerConnector;
 import com.cherish.bustracker.parser.objects.Route;
-import com.cherish.bustracker.lib.Log;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     public final static String TAG = "MainActivity";
+
+    /* Tag for Extra when starting DisplayActivity*/
     public final static String SELECTED_ROUTE = "com.cherish.bustracker.selected_route";
 
     public final static String FEEDBACK_EMAIL = "cherishdevapps@gmail.com";
@@ -51,10 +53,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    /* Called by the ServerThread once it received route info
+     * This method then creates the buttons based on route info
+     *  then destroys the server thread
+     * */
     public void onNotify(Route[] routes) {
         Log.i(TAG, "Received route info");
         // Create buttons
-        //Route[] routes = listener.getRoutes();
         if (routes != null) {
             RelativeLayout layout = (RelativeLayout) findViewById(R.id.mainLayout);
             // Change route order
@@ -138,9 +143,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         String selectedRoute = ((Button) v).getText().toString();
-        //controller.loadMap(selectedRoute);
+
         if (display == null) {
-            Log.i(TAG, "Recreating DisplayActivity");
             display = new Intent(this, DisplayActivity.class);
             display.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         }
