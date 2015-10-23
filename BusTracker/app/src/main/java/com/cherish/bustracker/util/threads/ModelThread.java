@@ -8,16 +8,16 @@ import com.cherish.bustracker.main.DataModel;
  */
 public class ModelThread extends GenericThread {
     public static final String TAG = "ModelThread";
-    private DataModel controller;
+    private DataModel model;
 
-    public ModelThread(DataModel controller) {
+    public ModelThread(DataModel model) {
         super();
-        this.controller = controller;
+        this.model = model;
     }
 
     public void onRun() {
         Log.i(TAG, "Executing...");
-        controller.update();
+        model.update();
     }
 
 }

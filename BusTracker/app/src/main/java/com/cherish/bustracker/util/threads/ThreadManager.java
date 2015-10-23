@@ -5,9 +5,6 @@ import android.app.Activity;
 import com.cherish.bustracker.main.DataModel;
 import com.cherish.bustracker.main.ServerConnector;
 import com.cherish.bustracker.main.view.UIController;
-import com.cherish.bustracker.util.threads.ModelThread;
-import com.cherish.bustracker.util.threads.ServerThread;
-import com.cherish.bustracker.util.threads.UIThread;
 
 /**
  * Created by Falcon on 9/10/2015.
@@ -36,8 +33,8 @@ public class ThreadManager {
     }
 
     // Initialize Server thread
-    public void createServerThread(ServerConnector controller) {
-        serverUpdater = new ServerThread(controller);
+    public void createServerThread(ServerConnector controller, DataModel model, UIController view) {
+        serverUpdater = new ServerThread(controller, model, view);
         serverUpdater.start();
     }
 

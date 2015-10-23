@@ -28,6 +28,7 @@ import java.util.Map;
  * References http://stackoverflow.com/questions/9605913/how-to-parse-json-in-android
  */
 public class ServerConnector {
+    //TODO add DNS redundancy
     public static final String SERVER_ADDR = "http://104.131.176.10:8080/";
     public static final String ROUTES_ADDR = SERVER_ADDR + ParserFactory.PARSER_ROUTES;
     public static final String STOPS_ADDR = SERVER_ADDR + ParserFactory.PARSER_STOPS;
@@ -42,6 +43,16 @@ public class ServerConnector {
     private Route[] routes;
     private Stop[] stops;
     private Bus[] buses;
+
+    public Route[] getRoutes() {
+        return routes;
+    }
+    public Stop[] getStops() {
+        return stops;
+    }
+    public Bus[] getBuses() {
+        return buses;
+    }
 
     private ServerConnector() {
         parser = new ParserFactory();
@@ -70,18 +81,6 @@ public class ServerConnector {
         if (connector == null)
             connector = new ServerConnector();
         return connector;
-    }
-
-    public Route[] getRoutes() {
-        return routes;
-    }
-
-    public Stop[] getStops() {
-        return stops;
-    }
-
-    public Bus[] getBuses() {
-        return buses;
     }
 
     /* Create server requests and set resulting data */
