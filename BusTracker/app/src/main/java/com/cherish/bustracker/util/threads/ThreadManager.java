@@ -34,7 +34,7 @@ public class ThreadManager {
 
     // Initialize Server thread
     public void createServerThread(ServerConnector controller, DataModel model, UIController view) {
-        serverUpdater = new ServerThread(controller, model, view);
+        serverUpdater = new ServerThread(controller, model, view, original);
         serverUpdater.start();
     }
 

@@ -23,7 +23,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="30sp"
         android:layout_toRightOf="@id/time_display"
-        android:text="X minutes"
+        android:text="@string/default_eta"
         android:textColor="@color/primary_dark_material_dark"
         android:textSize="24sp"
         android:visibility="visible" />
@@ -35,7 +35,7 @@
         android:layout_alignLeft="@+id/time_1"
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@id/time_display"
-        android:text="X minutes"
+        android:text="@string/default_eta"
         android:textColor="@color/primary_dark_material_dark"
         android:textSize="24sp"
         android:visibility="visible" />
