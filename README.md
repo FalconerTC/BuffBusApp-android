@@ -14,7 +14,7 @@ Bus routes that are tracked:
 &nbsp;&nbsp;Late Night Transit Routes
   
 ## App link
-  (pending publication)
+  https://play.google.com/store/apps/details?id=com.cherish.BusTracker
 
   TODO:
   * Add DNS record and IP redundency
