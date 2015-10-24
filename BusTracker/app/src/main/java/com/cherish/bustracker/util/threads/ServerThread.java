@@ -36,31 +36,40 @@ public class ServerThread extends GenericThread {
         this.controller = controller;
         this.original = original;
         this.fullUpdate = false;
+        // Start with rapid polling until a server response is received
+        this.currentPollingInterval = POLLING_INTERVAL / 5;
     }
 
     public void onRun() {
         Log.i(TAG, "Executing...");
+        boolean result;
         // Send server request
-        controller.update();
+        result = controller.update();
 
-        // Notify activity if it exists
-        if (!fullUpdate)
-            original.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ((MainActivity)original).onNotify(controller.getRoutes());
+        if (result) {
+            // Slow to standard polling interval
+            this.currentPollingInterval = POLLING_INTERVAL;
+            // Notify activity if it exists
+            if (!fullUpdate)
+                original.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((MainActivity) original).onNotify(controller.getRoutes());
+                    }
+                });
+            else {
+                // Process data
+                result = model.update();
+                if (result) {
+                    // Update view
+                    original.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            view.update(true);
+                        }
+                    });
                 }
-            });
-        else {
-            // Process data
-            model.update();
-            // Update view
-            original.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    view.update(true);
-                }
-            });
+            }
         }
     }
 }

@@ -44,17 +44,22 @@ public class UIController implements OnValueChangeListener {
         stops = model.getStopNames();
         if (stops != null) {
             stopSelector = (NumberPicker) original.findViewById(R.id.stopPicker);
+
             int startingStop = getStartingValue();
             selectedStop = stops[startingStop];
             stopSelector.setMaxValue(stops.length - 1);
             stopSelector.setDisplayedValues(stops);
             stopSelector.setValue(startingStop);
             stopSelector.setWrapSelectorWheel(true);
-            stopSelector.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+            // Cycle visibility to adjust width to new values
+            stopSelector.setVisibility(View.GONE);
+            stopSelector.setVisibility(View.VISIBLE);
             // Create event listener
             stopSelector.setOnValueChangedListener(this);
-        }
 
+            // Update UI
+            update(true);
+        }
     }
 
     @Override
@@ -92,9 +97,13 @@ public class UIController implements OnValueChangeListener {
 
     /* Update map and time display. Called by UIThread per interval */
     public void update(boolean calledByInterval) {
-        if (selectedStop != null) {
-            map.onUpdate(selectedStop, calledByInterval);
+        if (stopSelector != null && selectedStop != null) {
+            if (map.map != null)
+                map.onUpdate(selectedStop, calledByInterval);
             updateTimeDisplay();
+        } else {
+            // Attempt to reinitialize selector
+            initializeSelector();
         }
     }
 

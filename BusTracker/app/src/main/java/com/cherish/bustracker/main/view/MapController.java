@@ -95,27 +95,33 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
         Log.i(TAG, "Initializing data");
 
         // Draw the polyline for the current route
-        int route = model.getRoute().id;
-        String line_data = Polylines.POLYLINE_MAP.get(route);
-        if (line_data != null) {
-            map.addPolyline(new PolylineOptions()
-                    .addAll(PolyUtil.decode(line_data))
-                    .width(20)
-                    .color(Color.BLACK));
-        }
+        int route = (model.getRoute() != null ? model.getRoute().id : -1);
+        if (route >= 0) {
+            // Draw route polyline
+            String line_data = Polylines.POLYLINE_MAP.get(route);
+            if (line_data != null) {
+                map.addPolyline(new PolylineOptions()
+                        .addAll(PolyUtil.decode(line_data))
+                        .width(20)
+                        .color(Color.BLACK));
+            }
 
-        Stop[] stops = model.getStops();
-        int len = stops.length;
-        stopMarkers = new Marker[len];
-        for (int i = 0; i < len; i++) {
-            LatLng pos = new LatLng(stops[i].latitude, stops[i].longitude);
-            MarkerOptions options = new MarkerOptions()
-                    .position(pos)
-                    .title(stops[i].name)
-                    .icon(BUS_INDICATOR_ICON)
-                    .anchor(0.5f, 0.5f);
+            Stop[] stops = model.getStops();
+            if (stops != null) {
+                // Draw stops
+                int len = stops.length;
+                stopMarkers = new Marker[len];
+                for (int i = 0; i < len; i++) {
+                    LatLng pos = new LatLng(stops[i].latitude, stops[i].longitude);
+                    MarkerOptions options = new MarkerOptions()
+                            .position(pos)
+                            .title(stops[i].name)
+                            .icon(BUS_INDICATOR_ICON)
+                            .anchor(0.5f, 0.5f);
 
-            stopMarkers[i] = map.addMarker(options);
+                    stopMarkers[i] = map.addMarker(options);
+                }
+            }
         }
     }
 
@@ -133,6 +139,9 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
                     break;
                 }
             }
+        } else if (stopMarkers == null) {
+            // Reattempt data initialization
+            initializeData();
         }
         // Draw updated bus locations
         if (redrawBuses)

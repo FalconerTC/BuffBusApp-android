@@ -25,3 +25,4 @@ Bus routes that are tracked:
   * Make buttons more responsive
   * Set default zoom on location click
   * Evaluate reported craches (fix threading logic)
+  * Add loading indicator

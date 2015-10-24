@@ -84,14 +84,15 @@ public class ServerConnector {
     }
 
     /* Create server requests and set resulting data */
-    public void update() {
+    public boolean update() {
         // Fetch routes only once
         if (routes == null) {
             routes = (Route[]) sendRequest(ParserFactory.PARSER_ROUTES);
         }
         // Update stops and buses each interval
-        this.stops = (Stop[]) sendRequest(ParserFactory.PARSER_STOPS);
-        this.buses = (Bus[]) sendRequest(ParserFactory.PARSER_BUSES);
+        stops = (Stop[]) sendRequest(ParserFactory.PARSER_STOPS);
+        buses = (Bus[]) sendRequest(ParserFactory.PARSER_BUSES);
+        return (stops == null || buses == null || routes == null) ? false : true;
     }
 
     /* Request an update from the server and parse it to a usable object */
@@ -134,10 +135,12 @@ public class ServerConnector {
                 result = sb.toString();
             } catch (Exception e) {
                 Log.e("JSON error", "Error converting result " + e.toString());
+                return null;
             }
+            // Parse JSON response
+            ParsedObject[] objects = parser.parse(type, result);
+            return objects;
         }
-        // Parse JSON response
-        ParsedObject[] objects = parser.parse(type, result);
-        return objects;
+        return null;
     }
 }

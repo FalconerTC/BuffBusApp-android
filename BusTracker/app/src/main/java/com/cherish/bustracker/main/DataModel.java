@@ -20,21 +20,23 @@ public class DataModel {
     private Stop[] stops;
     private String[] stopNames;
     private ArrayList<Bus> buses;
+    private String selectedRoute;
+
+    public Route getRoute() { return route; }
+    public String[] getStopNames() { return stopNames; }
+    public Stop[] getStops() { return stops; }
+    public ArrayList<Bus> getBuses() { return buses; }
 
     public DataModel(ServerConnector connector, String route) {
         this.connector = connector;
+        this.selectedRoute = route;
         setRoute(route);
-    }
-
-    public Route getRoute() {
-        return route;
     }
 
     /* Set the current route based on the user selection */
     public void setRoute(String selectedRoute) {
-        // Reset route switch
         // Load route from name
-        Route[] routes = this.connector.getRoutes();
+        Route[] routes = connector.getRoutes();
         if (routes != null) {
             int routeLen = routes.length;
             for (int i = 0; i < routeLen; i++) {
@@ -44,31 +46,15 @@ public class DataModel {
                 }
             }
             update();
-            // Load stop names
-            int len = stops.length;
-            System.out.println("Setting stop names");
-            this.stopNames = new String[len];
-            for (int i = 0; i < len; i++) {
-                this.stopNames[i] = stops[i].name;
-            }
         }
-    }
-
-    public String[] getStopNames() {
-        return stopNames;
-    }
-
-    public Stop[] getStops() {
-        return stops;
-    }
-
-    public ArrayList<Bus> getBuses() {
-        return buses;
     }
 
     //TODO Make this more efficient with SparseArray
     /* Update the stops based on the current route */
-    public void update() {
+    public boolean update() {
+        if (this.route == null) {
+            setRoute(selectedRoute);
+        }
         // Add relevant buses
         Bus[] busArr = connector.getBuses();
         if (busArr != null) {
@@ -100,8 +86,20 @@ public class DataModel {
                 // Check for nulls (when a route quotes a stop that does not exist)
                 currentStops.removeAll(Collections.singleton(null));
                 this.stops = currentStops.toArray(new Stop[currentStops.size()]);
+
+                // Create once an array of stop names
+                if (this.stopNames == null) {
+                    len = this.stops.length;
+                    this.stopNames = new String[len];
+                    for (int i = 0; i < len; i++) {
+                        this.stopNames[i] = this.stops[i].name;
+                    }
+                }
+                if (this.stops != null && this.stopNames != null)
+                    return true;
             }
         }
+        return false;
     }
 
     /* Get the next bus times for the given stop */
