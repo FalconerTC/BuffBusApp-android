@@ -26,7 +26,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     public final static String TAG = "MainActivity";
 
-    public static final int MAX_ROUTES = 8;
+    public static final int MAX_ROUTES = 7;
     /* Tag for Extra when starting DisplayActivity*/
     public final static String SELECTED_ROUTE = "com.cherish.bustracker.selected_route";
 
@@ -71,13 +71,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * This method then creates the buttons based on route info
      *  then destroys the server thread
      * */
-    public void onNotify(Route[] routes) {
+    public void onNotify(ServerConnector connector) {
         Log.i(TAG, "Received route info");
+        Route[] routes = connector.getRoutes();
         // Create buttons
         if (routes != null) {
             RelativeLayout layout = (RelativeLayout) findViewById(R.id.mainLayout);
             // Change route order
-            routes = modifyRoutes(routes);
+            routes = modifyRoutes(connector);
             // Create route buttons
             int len = (routes.length <= MAX_ROUTES ? routes.length : MAX_ROUTES);
             int parentElem = R.id.textView_Subtitle;
@@ -97,12 +98,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /* This applies several hard-coded changes to what routes we show and in what order
-     * This function serves to mimic the route list as it is defined in the iOS version */
-    public Route[] modifyRoutes(Route[] routes) {
+     * This function serves to mimic the route list as it is defined in the iOS version
+     * TODO rewrite this to be more reliable
+     */
+    public Route[] modifyRoutes(ServerConnector connector) {
+        Route[] routes = connector.getRoutes();
         int len = routes.length;
         ArrayList<String> excludedRoutes = new ArrayList<>();
-        excludedRoutes.add("Will Vill Football");
-        excludedRoutes.add("Will Vill Basketball");
+        excludedRoutes.add("Football Extension");
 
         Route[] newRoutes = new Route[len - excludedRoutes.size()];
         // New routes index
@@ -114,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 j++;
             }
         }
+
         // Set "Hop Clockwise" to index 1
         swap(newRoutes, 1, 2);
         // Set "Athens Court Shuttle" to index 3
@@ -122,6 +126,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         swap(newRoutes, 4, 5);
         // Set "Late Night Silver" to index 6
         swap(newRoutes, 5, 6);
+
+        // Replace BuffBus slot if no buses are running
+        boolean routeActive = connector.isRouteActive("Buff Bus");
+        if (!routeActive) {
+            if (connector.isRouteActive("Will Vill Football"))
+                swap(newRoutes, 0, connector.getRouteId("Will Vill Football"));
+            else
+                swap(newRoutes, 0, connector.getRouteId("Will Vill Basketball"));
+        }
+
         return newRoutes;
     }
 

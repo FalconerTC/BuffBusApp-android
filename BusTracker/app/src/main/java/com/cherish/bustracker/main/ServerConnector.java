@@ -29,6 +29,7 @@ import java.util.Map;
  */
 public class ServerConnector {
     //TODO add DNS redundancy
+    public static final String TAG = "ServerConnector";
     public static final String SERVER_ADDR = "http://104.131.176.10:8080/";
     public static final String ROUTES_ADDR = SERVER_ADDR + ParserFactory.PARSER_ROUTES;
     public static final String STOPS_ADDR = SERVER_ADDR + ParserFactory.PARSER_STOPS;
@@ -52,6 +53,32 @@ public class ServerConnector {
     }
     public Bus[] getBuses() {
         return buses;
+    }
+
+    /* Check if any bus is serving a given route */
+    public boolean isRouteActive(String route) {
+        if (buses != null) {
+            int len = buses.length;
+            int routeId = getRouteId(route);
+
+            for (int i = 0; i < len; i++)
+                if (buses[i].id == routeId)
+                    return true;
+        }
+        return false;
+    }
+
+    /* Gets the route ID for a given route name */
+    public int getRouteId(String route) {
+        if (routes != null) {
+            int len = routes.length;
+            for(int i = 0; i < len; i++)
+                if (routes[i].name.equals(route)) {
+                    Log.i(TAG, routes[i].name + " "+routes[i].id);
+                    return routes[i].id;
+                }
+        }
+        return 0;
     }
 
     private ServerConnector() {

@@ -54,7 +54,7 @@ public class ServerThread extends GenericThread {
                 original.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ((MainActivity) original).onNotify(controller.getRoutes());
+                        ((MainActivity) original).onNotify(controller);
                     }
                 });
             else {
