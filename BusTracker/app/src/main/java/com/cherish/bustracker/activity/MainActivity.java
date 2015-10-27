@@ -1,5 +1,6 @@
 package com.cherish.bustracker.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,12 +11,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cherish.bustracker.R;
 import com.cherish.bustracker.lib.Log;
 import com.cherish.bustracker.util.threads.ServerThread;
 import com.cherish.bustracker.main.ServerConnector;
 import com.cherish.bustracker.util.parser.objects.Route;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import java.util.ArrayList;
 
@@ -60,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(Intent.createChooser(i, "Send mail"));
             }
         });
+
     }
 
     /* Called by the ServerThread once it received route info
@@ -140,16 +145,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return btn;
     }
 
-    @Override
-    public void onClick(View v) {
-        String selectedRoute = ((Button) v).getText().toString();
-
-        if (display == null) {
-            display = new Intent(this, DisplayActivity.class);
-            display.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+    /* Detects if GooglePlayServices is available
+     * Reference: http://stackoverflow.com/questions/15401748/how-to-detect-if-google-play-is-installed-not-market
+     */
+    public static boolean checkPlayServices(Activity activity) {
+        int result = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
+        if (result != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(result)) {
+                GooglePlayServicesUtil.getErrorDialog(result, activity, result).show();
+            } else {
+                Toast.makeText(activity.getApplicationContext(), "This device is not supported.", Toast.LENGTH_LONG).show();
+                activity.finish();
+            }
+            return false;
         }
-        display.putExtra(SELECTED_ROUTE, selectedRoute);
-        startActivity(display);
+        return true;
+    }
+
+    @Override
+    /* onClick listener for generated buttons */
+    public void onClick(View v) {
+        /* PlayServices must be installed to continue */
+        if (checkPlayServices(this)) {
+            String selectedRoute = ((Button) v).getText().toString();
+
+            if (display == null) {
+                display = new Intent(this, DisplayActivity.class);
+                display.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            }
+            display.putExtra(SELECTED_ROUTE, selectedRoute);
+            startActivity(display);
+        }
     }
 
     @Override
