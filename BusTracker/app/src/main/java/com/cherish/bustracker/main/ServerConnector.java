@@ -74,7 +74,6 @@ public class ServerConnector {
             int len = routes.length;
             for(int i = 0; i < len; i++)
                 if (routes[i].name.equals(route)) {
-                    Log.i(TAG, routes[i].name + " "+routes[i].id);
                     return routes[i].id;
                 }
         }

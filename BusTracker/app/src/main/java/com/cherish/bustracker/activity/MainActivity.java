@@ -131,9 +131,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         boolean routeActive = connector.isRouteActive("Buff Bus");
         if (!routeActive) {
             if (connector.isRouteActive("Will Vill Football"))
-                swap(newRoutes, 0, connector.getRouteId("Will Vill Football"));
+                swap(newRoutes, 0, 7);
             else
-                swap(newRoutes, 0, connector.getRouteId("Will Vill Basketball"));
+                swap(newRoutes, 0, 8);
         }
 
         return newRoutes;
