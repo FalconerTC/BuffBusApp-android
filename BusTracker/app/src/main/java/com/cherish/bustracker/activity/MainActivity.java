@@ -26,7 +26,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     public final static String TAG = "MainActivity";
 
-    public static final int MAX_ROUTES = 7;
+    public static final int MAX_ROUTES = 8;
     /* Tag for Extra when starting DisplayActivity*/
     public final static String SELECTED_ROUTE = "com.cherish.bustracker.selected_route";
 
@@ -126,6 +126,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         swap(newRoutes, 4, 5);
         // Set "Late Night Silver" to index 6
         swap(newRoutes, 5, 6);
+        // Set "Discovery Express Loop" to index 7
+        swap(newRoutes, 9, 7);
 
         // Replace BuffBus slot if no buses are running
         boolean routeActive = connector.isRouteActive("Buff Bus");

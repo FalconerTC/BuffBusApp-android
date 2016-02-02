@@ -18,6 +18,7 @@ public class Polylines {
     public static final String HOPCOUNTER_ENCODED_POLYLINE = "}egsFrxlaSk@n@i@Ly@BiBCeARMDSGMmB@a@F[JQVWb@S\\URULSJi@BsA?{@Gk@OUuBA}BLkBBiA?w@@q@B}@B]BELALFr@NtAz@|GtApLdA|HN~@VrBj@`F\\~BTpBV|@tB`Q`BlNb@rDNxAlBnOj@rEp@pFd@fEBXCLaD~@KNAd@`@rDhBdOz@dGNPPHPBfCq@NAFFZlCVzBd@rDH`@RFh@?NA\\CnA_@~D_Aj@GT?~Df@x@Fb@Cb@GfAS|Ae@bCo@nCo@v@[n@g@ROXO\\OXIRE|E@|A?|D?N?FEB_@?}U?yM?}ABm@DKFAP@\\?ZI\\C|EBPA@QAyI?iBASQAOCc@?G?IIBSDQPg@\\y@FWAUG_@[[QWM]As@?}DAQSWGEIC[?aA?oC?wBAUEUUKUC[?_@AmJ?kDBqF@WBU?c@?y@A_@GI]C}C?_BAs@AYEc@I]Qq@a@{@m@_@Wg@Mq@QgAQoAM_AEoC?eEAkC@cBAuHEi@?GGCSAi@AgI?uB@oABuC@aC?_HBYZyA^{AAOIK]K_@Gc@E[?mC?wA?UBMH";
     public static final String BASKETBALL_ENCODED_POLYLINE = "wybsFtwkaSAVFFLJJHFL?JGPqBfE_@t@Ub@W^o@\\SBU@c@?]CW_@eACe@BU`@UHu@Bo@Fs@?s@ZBdCClBa@bPa@fKIpGPlEJjCFzBF~Aa@hAkAz@_F`Dy@f@iAlAm@bA{AbG_BjF_BxDiDpHu@zA_@b@UBSE[UOYCUAcFE[IIIKMGiC@wA?QAkB@]KKKGKGOEU?oE?cI?qC?oCHk@?wA@cD?aKBsC@_FHcD\\_IDeCDmAd@{Cz@yFHw@FkA@OFMjAc@j@Ij@GhC?nC?pCD|ABrBAxBIjB@jD?lBGhB@b@Et@?lBBlBAnCCV?VEZKXURYPa@Vq@l@qA|AcDRg@?OAKe@e@M?KJ";
     public static final String ATHENS_ENCODED_POLYLINE = "{~esFpyoaSARBHDFDDLCFU?uFESEA{I@[ACIC_d@@]?wCBIDGFElHG~ABz@DnBTj@Jx@XxChBjAZb@BxGBH@FPDl]BZDLJNJHRFlJ@DBRRDP?|EF\\DLj@l@L^ARwHtPk@r@mA|@mDxBeHbEUBOAKGGM?q@GcA?yLAi@E_@{@qBY]IGSG[AcG?GSAcECSEEMAGFCT";
+    public static final String DISCOVERY_ENCODED_POLYLINE = "emesFdyjaS@vB`AtF^hDfJIRDDdLNzCAvKEbC}AvLS~Eo@tMA`ZGzLTd@LwO?_MBmKLoBj@yOh@_DdAoHFsUIkc@e@}FsCZiB|@eAr@aAbAg@bA_@~@_@rC@N";
 
     public static final Map<Integer, String> POLYLINE_MAP;
 
@@ -32,5 +33,6 @@ public class Polylines {
         POLYLINE_MAP.put(7, HOPCOUNTER_ENCODED_POLYLINE);
         POLYLINE_MAP.put(8, BASKETBALL_ENCODED_POLYLINE);
         POLYLINE_MAP.put(9, ATHENS_ENCODED_POLYLINE);
+        POLYLINE_MAP.put(11, DISCOVERY_ENCODED_POLYLINE);
     }
 }
