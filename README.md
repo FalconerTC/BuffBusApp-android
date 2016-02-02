@@ -18,11 +18,9 @@ Bus routes that are tracked:
 
   TODO:
   * Add DNS record and IP redundency
-  * Add support for football and basketball games?
   * Clean and document code
   * Diagrams!
   * Change ParsedObjets to use SparseArray over array
   * Make buttons more responsive
   * Set default zoom on location click
-  * Evaluate reported craches (fix threading logic)
-  * Add loading indicator
+  * Add loading indicator?
