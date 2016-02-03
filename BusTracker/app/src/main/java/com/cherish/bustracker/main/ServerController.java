@@ -14,9 +14,12 @@ import com.cherish.bustracker.utilities.parser.objects.Stop;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -40,6 +43,7 @@ public class ServerController {
     public static final String ROUTES_ADDR = SERVER_ADDR + ParserFactory.PARSER_ROUTES;
     public static final String STOPS_ADDR = SERVER_ADDR + ParserFactory.PARSER_STOPS;
     public static final String BUSES_ADDR = SERVER_ADDR + ParserFactory.PARSER_BUSES;
+    public static final int CONNECTION_TIMEOUT = 3000;
 
     private static ServerController controller;
     private ConnectivityManager networkManager;
@@ -84,7 +88,10 @@ public class ServerController {
         busesPost.setHeader("content-type", "application/json");
         httpPosts.put(ParserFactory.PARSER_BUSES, busesPost);
 
-        client = new DefaultHttpClient(new BasicHttpParams());
+        // Initialize HTTP client
+        HttpParams httpParams = new BasicHttpParams();
+        HttpConnectionParams.setConnectionTimeout(httpParams, CONNECTION_TIMEOUT);
+        client = new DefaultHttpClient(httpParams);
     }
 
     /* Initialize and fetch ServerConnector singleton */
@@ -154,22 +161,23 @@ public class ServerController {
         try {
             HttpResponse response = client.execute(post);
             stream = response.getEntity().getContent();
+        } catch (ConnectTimeoutException e) {
+            Log.e("Connection error", "Connection timed-out");
+            Log.printStackTrace(e);
+            reportNetworkError(0);
         } catch (HttpHostConnectException e) {
             Log.e("Connection error", "Unable to connect to server");
-            e.printStackTrace();
-            return null;
-        } catch (UnsupportedEncodingException e) {
-            Log.e("Encoding error", "Encoding is unsupported");
-            e.printStackTrace();
+            Log.printStackTrace(e);
+            reportNetworkError(1);
         } catch (ClientProtocolException e) {
             Log.e("Protocol error", "Error sending request");
-            e.printStackTrace();
+            Log.printStackTrace(e);
         } catch (IOException e) {
             Log.e("IO error", "Error reading data");
-            e.printStackTrace();
+            Log.printStackTrace(e);
         } catch (Exception e) {
             Log.e("Error", "Something broke");
-            e.printStackTrace();
+            Log.printStackTrace(e);
         }
 
         // Build JSON response
@@ -191,5 +199,18 @@ public class ServerController {
             return objects;
         }
         return null;
+    }
+
+    /* Show network errors to the user */
+    public void reportNetworkError(int error) {
+        switch(error) {
+            // Connection timed-out
+            case 0:
+                break;
+            // Unable to connect to server
+            case 1:
+                break;
+        }
+
     }
 }

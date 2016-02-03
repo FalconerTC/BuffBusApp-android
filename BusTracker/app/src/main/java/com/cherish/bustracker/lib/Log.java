@@ -27,4 +27,8 @@ public class Log {
     public static void w(String tag, String string) {
         if (LOG) android.util.Log.w(tag, string);
     }
+
+    public static void printStackTrace(Exception e) {
+        if (LOG) e.printStackTrace();
+    }
 }

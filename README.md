@@ -13,14 +13,17 @@ Bus routes that are tracked:
   
 &nbsp;&nbsp;Late Night Transit Routes
   
+&nbsp;&nbsp;Discovery Express Route
+  
 ## App link
   https://play.google.com/store/apps/details?id=com.cherish.BusTracker
 
   TODO:
+  * Show network information to the user
   * Add DNS record and IP redundency
-  * Clean and document code
-  * Diagrams!
-  * Change ParsedObjets to use SparseArray over array
   * Make buttons more responsive
   * Set default zoom on location click
   * Add loading indicator?
+  * Clean and document code
+  * Diagrams!
+  * Change ParsedObjets to use SparseArray over array?
