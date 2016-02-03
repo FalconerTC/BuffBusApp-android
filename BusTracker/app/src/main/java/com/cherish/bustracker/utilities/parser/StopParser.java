@@ -1,8 +1,8 @@
-package com.cherish.bustracker.util.parser;
+package com.cherish.bustracker.utilities.parser;
 
 import com.cherish.bustracker.lib.Log;
-import com.cherish.bustracker.util.parser.objects.ParsedObject;
-import com.cherish.bustracker.util.parser.objects.Stop;
+import com.cherish.bustracker.utilities.parser.objects.ParsedObject;
+import com.cherish.bustracker.utilities.parser.objects.Stop;
 
 import org.json.JSONArray;
 import org.json.JSONException;

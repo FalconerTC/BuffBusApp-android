@@ -1,4 +1,4 @@
-package com.cherish.bustracker.util.threads;
+package com.cherish.bustracker.utilities.updater;
 
 import com.cherish.bustracker.lib.Log;
 

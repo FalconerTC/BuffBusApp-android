@@ -15,9 +15,9 @@ import android.widget.Toast;
 
 import com.cherish.bustracker.R;
 import com.cherish.bustracker.lib.Log;
-import com.cherish.bustracker.util.threads.ServerThread;
-import com.cherish.bustracker.main.ServerConnector;
-import com.cherish.bustracker.util.parser.objects.Route;
+import com.cherish.bustracker.utilities.updater.ServerThread;
+import com.cherish.bustracker.main.ServerController;
+import com.cherish.bustracker.utilities.parser.objects.Route;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * This method then creates the buttons based on route info
      *  then destroys the server thread
      * */
-    public void onNotify(ServerConnector connector) {
+    public void onNotify(ServerController connector) {
         Log.i(TAG, "Received route info");
         Route[] routes = connector.getRoutes();
         // Create buttons
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * This function serves to mimic the route list as it is defined in the iOS version
      * TODO rewrite this to be more reliable
      */
-    public Route[] modifyRoutes(ServerConnector connector) {
+    public Route[] modifyRoutes(ServerController connector) {
         Route[] routes = connector.getRoutes();
         int len = routes.length;
         ArrayList<String> excludedRoutes = new ArrayList<>();
@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.i(TAG, "Starting");
 
         // Run a server request to get route information
-        ServerConnector listener = ServerConnector.getServerConnector(this);
+        ServerController listener = ServerController.getServerController(this);
         updater = new ServerThread(listener, this);
         updater.start();
     }

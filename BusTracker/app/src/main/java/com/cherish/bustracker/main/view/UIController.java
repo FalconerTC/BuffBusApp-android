@@ -15,7 +15,7 @@ public class UIController implements OnValueChangeListener {
     public static final String TAG = "UIController";
 
     private DataModel model;
-    private MapController map;
+    private MapManager map;
     private Activity original;
     private NumberPicker stopSelector;
 
@@ -23,7 +23,7 @@ public class UIController implements OnValueChangeListener {
     private String selectedStop;
     private int activeRoutes;
 
-    public UIController(Activity activity, DataModel model, MapController map) {
+    public UIController(Activity activity, DataModel model, MapManager map) {
         Log.i(TAG, "Creating DisplayActivity");
         this.original = activity;
         this.model = model;

@@ -8,8 +8,8 @@ import com.cherish.bustracker.activity.DisplayActivity;
 import com.cherish.bustracker.lib.Log;
 import com.cherish.bustracker.lib.Polylines;
 import com.cherish.bustracker.main.DataModel;
-import com.cherish.bustracker.util.parser.objects.Bus;
-import com.cherish.bustracker.util.parser.objects.Stop;
+import com.cherish.bustracker.utilities.parser.objects.Bus;
+import com.cherish.bustracker.utilities.parser.objects.Stop;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * Created by Falcon on 8/29/2015.
  */
 
-public class MapController implements OnMapReadyCallback, OnMarkerClickListener {
+public class MapManager implements OnMapReadyCallback, OnMarkerClickListener {
     public static final String TAG = "MapController";
 
     /* Map constants */
@@ -54,7 +54,7 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
     private String closestStop;
     private String oldClosestStop;
 
-    public MapController(Activity activity, DataModel model) {
+    public MapManager(Activity activity, DataModel model) {
         this.model = model;
         this.original = activity;
 

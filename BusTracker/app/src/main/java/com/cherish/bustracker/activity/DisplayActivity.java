@@ -10,11 +10,11 @@ import com.cherish.bustracker.R;
 import com.cherish.bustracker.lib.Log;
 import com.cherish.bustracker.main.DataModel;
 import com.cherish.bustracker.main.view.LocationManager;
-import com.cherish.bustracker.main.ServerConnector;
-import com.cherish.bustracker.util.threads.ThreadManager;
-import com.cherish.bustracker.main.view.MapController;
+import com.cherish.bustracker.main.ServerController;
+import com.cherish.bustracker.utilities.updater.UpdateManager;
+import com.cherish.bustracker.main.view.MapManager;
 import com.cherish.bustracker.main.view.UIController;
-import com.cherish.bustracker.util.parser.objects.Stop;
+import com.cherish.bustracker.utilities.parser.objects.Stop;
 
 /*
   Simple class to maintain GoogleAPIClient and display controllers, built from the following
@@ -23,10 +23,10 @@ import com.cherish.bustracker.util.parser.objects.Stop;
 public class DisplayActivity extends FragmentActivity {
     public static final String TAG = "DisplayActivity";
 
-    private MapController map;
-    private ThreadManager threads;
+    private MapManager map;
+    private UpdateManager updater;
     private LocationManager locManager;
-    private ServerConnector connector;
+    private ServerController connector;
     private UIController display;
     private DataModel model;
     private Toast routeInformer;
@@ -47,22 +47,19 @@ public class DisplayActivity extends FragmentActivity {
         // Create a GoogleApiClient instance
         locManager = LocationManager.getLocationManager(this);
 
-        // Create manager for threads
-        threads = new ThreadManager(this);
+        // Create manager for route data updates
+        updater = new UpdateManager(this);
 
         // Initialize server connector
-        connector = ServerConnector.getServerConnector(this);
+        connector = ServerController.getServerController(this);
 
-        // Initialize data model
         model = new DataModel(connector, route);
+        map = new MapManager(this, model);
 
-        // Initialize map
-        map = new MapController(this, model);
-
-        // Initialize display controller and map
+        // Initialize display controller
         display = new UIController(this, model, map);
 
-        threads.createServerThread(connector, model, display);
+        updater.createServerThread(connector, model, display);
     }
 
     /* Proxy update requests to the UIController */
@@ -130,7 +127,7 @@ public class DisplayActivity extends FragmentActivity {
         if (locManager.apiClient.isConnected() && locManager.requestingLocationUpdates) {
             locManager.startLocationUpdates();
         }
-        threads.onResume();
+        updater.resume();
     }
 
     @Override
@@ -142,7 +139,7 @@ public class DisplayActivity extends FragmentActivity {
             locManager.stopLocationUpdates();
         }
         routeInformer.cancel();
-        threads.onPause();
+        updater.pause();
     }
 
     @Override

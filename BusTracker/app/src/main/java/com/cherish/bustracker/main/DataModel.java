@@ -1,8 +1,8 @@
 package com.cherish.bustracker.main;
 
-import com.cherish.bustracker.util.parser.objects.Bus;
-import com.cherish.bustracker.util.parser.objects.Route;
-import com.cherish.bustracker.util.parser.objects.Stop;
+import com.cherish.bustracker.utilities.parser.objects.Bus;
+import com.cherish.bustracker.utilities.parser.objects.Route;
+import com.cherish.bustracker.utilities.parser.objects.Stop;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public class DataModel {
 
-    private ServerConnector connector;
+    private ServerController connector;
     private Route route;
     //TODO change stops to be an arraylist ?
     private Stop[] stops;
@@ -27,7 +27,7 @@ public class DataModel {
     public Stop[] getStops() { return stops; }
     public ArrayList<Bus> getBuses() { return buses; }
 
-    public DataModel(ServerConnector connector, String route) {
+    public DataModel(ServerController connector, String route) {
         this.connector = connector;
         this.selectedRoute = route;
         setRoute(route);

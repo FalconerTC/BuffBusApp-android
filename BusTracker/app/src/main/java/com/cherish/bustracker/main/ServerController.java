@@ -1,16 +1,15 @@
 package com.cherish.bustracker.main;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.cherish.bustracker.lib.Log;
-import com.cherish.bustracker.util.parser.ParserFactory;
-import com.cherish.bustracker.util.parser.objects.Bus;
-import com.cherish.bustracker.util.parser.objects.ParsedObject;
-import com.cherish.bustracker.util.parser.objects.Route;
-import com.cherish.bustracker.util.parser.objects.Stop;
+import com.cherish.bustracker.utilities.parser.ParserFactory;
+import com.cherish.bustracker.utilities.parser.objects.Bus;
+import com.cherish.bustracker.utilities.parser.objects.ParsedObject;
+import com.cherish.bustracker.utilities.parser.objects.Route;
+import com.cherish.bustracker.utilities.parser.objects.Stop;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -32,7 +31,7 @@ import java.util.Map;
  * <p/>
  * References http://stackoverflow.com/questions/9605913/how-to-parse-json-in-android
  */
-public class ServerConnector {
+public class ServerController {
     public static final String TAG = "ServerConnector";
 
     //TODO add DNS redundancy
@@ -42,7 +41,7 @@ public class ServerConnector {
     public static final String STOPS_ADDR = SERVER_ADDR + ParserFactory.PARSER_STOPS;
     public static final String BUSES_ADDR = SERVER_ADDR + ParserFactory.PARSER_BUSES;
 
-    private static ServerConnector connector;
+    private static ServerController controller;
     private ConnectivityManager networkManager;
     private DefaultHttpClient client;
     private Map<String, HttpPost> httpPosts;
@@ -63,7 +62,7 @@ public class ServerConnector {
         return buses;
     }
 
-    private ServerConnector(Context activity) {
+    private ServerController(Context activity) {
         networkManager = (ConnectivityManager)
                 activity.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -89,10 +88,10 @@ public class ServerConnector {
     }
 
     /* Initialize and fetch ServerConnector singleton */
-    public static ServerConnector getServerConnector(Context activity) {
-        if (connector == null)
-            connector = new ServerConnector(activity);
-        return connector;
+    public static ServerController getServerController(Context activity) {
+        if (controller == null)
+            controller = new ServerController(activity);
+        return controller;
     }
 
     /* Check if any bus is serving a given route */
