@@ -1,5 +1,10 @@
 package com.cherish.bustracker.main;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import com.cherish.bustracker.lib.Log;
 import com.cherish.bustracker.util.parser.ParserFactory;
 import com.cherish.bustracker.util.parser.objects.Bus;
@@ -28,14 +33,17 @@ import java.util.Map;
  * References http://stackoverflow.com/questions/9605913/how-to-parse-json-in-android
  */
 public class ServerConnector {
-    //TODO add DNS redundancy
     public static final String TAG = "ServerConnector";
+
+    //TODO add DNS redundancy
+    // Server constants
     public static final String SERVER_ADDR = "http://104.131.176.10:8080/";
     public static final String ROUTES_ADDR = SERVER_ADDR + ParserFactory.PARSER_ROUTES;
     public static final String STOPS_ADDR = SERVER_ADDR + ParserFactory.PARSER_STOPS;
     public static final String BUSES_ADDR = SERVER_ADDR + ParserFactory.PARSER_BUSES;
 
     private static ServerConnector connector;
+    private ConnectivityManager networkManager;
     private DefaultHttpClient client;
     private Map<String, HttpPost> httpPosts;
     private ParserFactory parser;
@@ -53,6 +61,38 @@ public class ServerConnector {
     }
     public Bus[] getBuses() {
         return buses;
+    }
+
+    private ServerConnector(Context activity) {
+        networkManager = (ConnectivityManager)
+                activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        parser = new ParserFactory();
+        httpPosts = new HashMap<>();
+
+        // Post to /routes
+        HttpPost routesPost = new HttpPost(ROUTES_ADDR);
+        routesPost.setHeader("Content-type", "application/json");
+        httpPosts.put(ParserFactory.PARSER_ROUTES, routesPost);
+
+        // Post to /stops
+        HttpPost stopsPost = new HttpPost(STOPS_ADDR);
+        stopsPost.setHeader("Content-type", "application/json");
+        httpPosts.put(ParserFactory.PARSER_STOPS, stopsPost);
+
+        // Post to /buses
+        HttpPost busesPost = new HttpPost(BUSES_ADDR);
+        busesPost.setHeader("content-type", "application/json");
+        httpPosts.put(ParserFactory.PARSER_BUSES, busesPost);
+
+        client = new DefaultHttpClient(new BasicHttpParams());
+    }
+
+    /* Initialize and fetch ServerConnector singleton */
+    public static ServerConnector getServerConnector(Context activity) {
+        if (connector == null)
+            connector = new ServerConnector(activity);
+        return connector;
     }
 
     /* Check if any bus is serving a given route */
@@ -80,37 +120,21 @@ public class ServerConnector {
         return 0;
     }
 
-    private ServerConnector() {
-        parser = new ParserFactory();
-        httpPosts = new HashMap<>();
-
-        // Post to /routes
-        HttpPost routesPost = new HttpPost(ROUTES_ADDR);
-        routesPost.setHeader("Content-type", "application/json");
-        httpPosts.put(ParserFactory.PARSER_ROUTES, routesPost);
-
-        // Post to /stops
-        HttpPost stopsPost = new HttpPost(STOPS_ADDR);
-        stopsPost.setHeader("Content-type", "application/json");
-        httpPosts.put(ParserFactory.PARSER_STOPS, stopsPost);
-
-        // Post to /buses
-        HttpPost busesPost = new HttpPost(BUSES_ADDR);
-        busesPost.setHeader("content-type", "application/json");
-        httpPosts.put(ParserFactory.PARSER_BUSES, busesPost);
-
-        client = new DefaultHttpClient(new BasicHttpParams());
-    }
-
-    /* Initialize and fetch ServerConnector singleton */
-    public static ServerConnector getServerConnector() {
-        if (connector == null)
-            connector = new ServerConnector();
-        return connector;
+    /* Checks if the device has an internet connection */
+    public boolean testConnection() {
+        NetworkInfo networkActivity = networkManager.getActiveNetworkInfo();
+        return (networkActivity != null && networkActivity.isConnected());
     }
 
     /* Create server requests and set resulting data */
     public boolean update() {
+        // Check network status
+        if (!testConnection()) {
+            //TODO communicate this to the user
+            Log.i(TAG, "Connection is invalid");
+            return false;
+        }
+
         // Fetch routes only once
         if (routes == null) {
             routes = (Route[]) sendRequest(ParserFactory.PARSER_ROUTES);

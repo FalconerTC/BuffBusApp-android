@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.i(TAG, "Starting");
 
         // Run a server request to get route information
-        ServerConnector listener = ServerConnector.getServerConnector();
+        ServerConnector listener = ServerConnector.getServerConnector(this);
         updater = new ServerThread(listener, this);
         updater.start();
     }

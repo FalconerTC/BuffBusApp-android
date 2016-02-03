@@ -8,8 +8,10 @@ import com.cherish.bustracker.lib.Log;
 public abstract class GenericThread extends Thread implements Runnable {
     public static final String TAG = "GenericThread";
 
-    // Base polling interval
-    public static final long POLLING_INTERVAL = 10 * 1000; //10 seconds
+    // Standard polling intervals
+    public static final long DEFAULT_POLLING_INTERVAL = 10 * 1000; //10 seconds
+    public static final long RAPID_POLLING_INTERVAL = 2 * 1000; //2 seconds
+
     // Time for threads to sleep
     public long currentPollingInterval;
     // Generic object used to synchronize pausing
@@ -23,7 +25,7 @@ public abstract class GenericThread extends Thread implements Runnable {
         this.lock = new Object();
         this.paused = false;
         this.active = true;
-        currentPollingInterval = POLLING_INTERVAL;
+        currentPollingInterval = DEFAULT_POLLING_INTERVAL;
     }
 
     public boolean isPaused() {

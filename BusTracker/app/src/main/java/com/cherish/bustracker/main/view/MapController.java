@@ -125,7 +125,7 @@ public class MapController implements OnMapReadyCallback, OnMarkerClickListener 
         }
     }
 
-    /* Called by UI thread by interval or stop change
+    /* Called by ServerThread by interval or stop change
     *  Takes a boolean to indicate if it should redraw buses (if it was called by interval)
     */
     public void onUpdate(String stop, boolean redrawBuses) {

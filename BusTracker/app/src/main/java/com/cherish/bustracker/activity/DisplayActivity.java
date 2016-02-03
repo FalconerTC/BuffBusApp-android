@@ -44,7 +44,6 @@ public class DisplayActivity extends FragmentActivity {
                 "Route selected: " + route, Toast.LENGTH_SHORT);
         routeInformer.show();
 
-
         // Create a GoogleApiClient instance
         locManager = LocationManager.getLocationManager(this);
 
@@ -52,7 +51,7 @@ public class DisplayActivity extends FragmentActivity {
         threads = new ThreadManager(this);
 
         // Initialize server connector
-        connector = ServerConnector.getServerConnector();
+        connector = ServerConnector.getServerConnector(this);
         //threads.createServerThread(connector);
 
         // Initialize data model

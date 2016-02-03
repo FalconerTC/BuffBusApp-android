@@ -28,7 +28,7 @@ public class LocationManager implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     public static final String TAG = "LocationManager";
 
-    public static final long FASTEST_INTERVAL = GenericThread.POLLING_INTERVAL / 2;
+    public static final long FASTEST_INTERVAL = GenericThread.DEFAULT_POLLING_INTERVAL / 2;
 
     /* Error codes */
     // Request code to use when launching the resolution activity
@@ -75,7 +75,7 @@ public class LocationManager implements
     protected void createLocationRequest() {
         locationRequest = new LocationRequest();
         // Desired interval for polling
-        locationRequest.setInterval(GenericThread.POLLING_INTERVAL);
+        locationRequest.setInterval(GenericThread.DEFAULT_POLLING_INTERVAL);
         // Fastest possible time it can poll
         locationRequest.setFastestInterval(FASTEST_INTERVAL);
 

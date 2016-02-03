@@ -2,7 +2,6 @@ package com.cherish.bustracker.util.threads;
 
 import android.app.Activity;
 
-import com.cherish.bustracker.activity.DisplayActivity;
 import com.cherish.bustracker.activity.MainActivity;
 import com.cherish.bustracker.lib.Log;
 import com.cherish.bustracker.main.DataModel;
@@ -37,18 +36,17 @@ public class ServerThread extends GenericThread {
         this.original = original;
         this.fullUpdate = false;
         // Start with rapid polling until a server response is received
-        this.currentPollingInterval = POLLING_INTERVAL / 5;
+        this.currentPollingInterval = RAPID_POLLING_INTERVAL;
     }
 
     public void onRun() {
         Log.i(TAG, "Executing...");
         boolean result;
-        // Send server request
-        result = controller.update();
 
+        result = controller.update();
         if (result) {
             // Slow to standard polling interval
-            this.currentPollingInterval = POLLING_INTERVAL;
+            this.currentPollingInterval = DEFAULT_POLLING_INTERVAL;
             // Notify activity if it exists
             if (!fullUpdate)
                 original.runOnUiThread(new Runnable() {
