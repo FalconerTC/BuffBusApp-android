@@ -52,18 +52,15 @@ public class DisplayActivity extends FragmentActivity {
 
         // Initialize server connector
         connector = ServerConnector.getServerConnector(this);
-        //threads.createServerThread(connector);
 
         // Initialize data model
         model = new DataModel(connector, route);
-        //threads.createModelThread(model);
 
         // Initialize map
         map = new MapController(this, model);
 
         // Initialize display controller and map
         display = new UIController(this, model, map);
-        //threads.createUIThread(display);
 
         threads.createServerThread(connector, model, display);
     }
