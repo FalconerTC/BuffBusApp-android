@@ -5,19 +5,15 @@ This is the android version of the BuffBus app. It's used to visualize the bus i
 CU Bus Tracker helps University of Colorado at Boulder students, faculty and affiliates commute by showing next bus times for CU operated buses.
 Bus routes that are tracked:
 
-&nbsp;&nbsp;Buff Bus (Williams Village)
-  
-&nbsp;&nbsp;Hop Clockwise and Counterclockwise
-
-&nbsp;&nbsp;Athens Route
-  
-&nbsp;&nbsp;Late Night Transit Routes
-  
-&nbsp;&nbsp;Discovery Express Route
+* Buff Bus (Williams Village)
+* Hop Clockwise and Counterclockwise
+* Athens Route
+* Late Night Transit Routes
+* Discovery Express Route
   
 ## App link
   https://play.google.com/store/apps/details?id=com.cherish.BusTracker
-
+  
   TODO:
   * Show network information to the user
   * Add DNS record and IP redundency
