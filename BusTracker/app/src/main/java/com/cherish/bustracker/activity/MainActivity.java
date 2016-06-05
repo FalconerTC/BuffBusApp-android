@@ -129,12 +129,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Set "Discovery Express Loop" to index 7
         swap(newRoutes, 9, 7);
 
-        // Replace BuffBus slot if no buses are running
         boolean routeActive = connector.isRouteActive("Buff Bus");
+        // Replace BuffBus slot if it's inactive and a sports route is active
         if (!routeActive) {
             if (connector.isRouteActive("Will Vill Football"))
                 swap(newRoutes, 0, 7);
-            else
+            else if (connector.isRouteActive("Will Vill Basketball"))
                 swap(newRoutes, 0, 8);
         }
 

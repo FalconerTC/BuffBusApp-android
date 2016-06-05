@@ -24,6 +24,8 @@ Bus routes that are tracked:
   * Make buttons more responsive
   * Set default zoom on location click
   * Add loading indicator?
-  * Clean and document code
+  * Unit tests for each function
+  * Data JSON testing
+  * Stampede (RTD integration)?
   * Diagrams!
   * Change ParsedObjets to use SparseArray over array?
