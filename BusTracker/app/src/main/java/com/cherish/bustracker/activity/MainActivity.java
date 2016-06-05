@@ -15,13 +15,12 @@ import android.widget.Toast;
 
 import com.cherish.bustracker.R;
 import com.cherish.bustracker.lib.Log;
+import com.cherish.bustracker.lib.RouteData;
 import com.cherish.bustracker.utilities.updater.ServerThread;
 import com.cherish.bustracker.main.ServerController;
 import com.cherish.bustracker.utilities.parser.objects.Route;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     public final static String TAG = "MainActivity";
@@ -36,9 +35,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ServerThread updater;
     private Button[] buttons;
 
-    /* Efficient swap helper
-    * http://stackoverflow.com/questions/13766209/effective-swapping-of-elements-of-an-array-in-java
-    * */
+    /** Efficient swap helper
+     * http://stackoverflow.com/questions/13766209
+     */
     public static final <T> void swap(T[] a, int i, int j) {
         T t = a[i];
         a[i] = a[j];
@@ -67,10 +66,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    /* Called by the ServerThread once it received route info
+    /** Called by the ServerThread once it received route info
      * This method then creates the buttons based on route info
      *  then destroys the server thread
-     * */
+     */
     public void onNotify(ServerController connector) {
         Log.i(TAG, "Received route info");
         Route[] routes = connector.getRoutes();
@@ -97,48 +96,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    /* This applies several hard-coded changes to what routes we show and in what order
-     * This function serves to mimic the route list as it is defined in the iOS version
-     * TODO rewrite this to be more reliable
-     */
+    /* Reorders routes to match order defined in RouteData */
     public Route[] modifyRoutes(ServerController connector) {
         Route[] routes = connector.getRoutes();
         int len = routes.length;
-        ArrayList<String> excludedRoutes = new ArrayList<>();
-        excludedRoutes.add("Football Extension");
 
-        Route[] newRoutes = new Route[len - excludedRoutes.size()];
-        // New routes index
-        int j = 0;
+        // Reorder routes to match ROUTE_MAP
         for (int i = 0; i < len; i++) {
-            // Check exclusion list
-            if (!(excludedRoutes.contains(routes[i].name))) {
-                newRoutes[j] = routes[i];
-                j++;
+            int newIndex = RouteData.ROUTES_MAP.get(routes[i].name, i);
+
+            if (newIndex != i) {
+                if (!connector.isRouteActive("Buff Bus")) {
+                    // Don't swap inactive sports routes
+                    if (routes[i].name.equals("Will Vill Football") &&
+                            !connector.isRouteActive("Will Vill Football"))
+                        continue;
+                    if (routes[i].name.equals("Will Vill Basketball") &&
+                            !connector.isRouteActive("Will Vill Basketball"))
+                        continue;
+                }
+                swap(routes, i, newIndex);
             }
         }
-
-        // Set "Hop Clockwise" to index 1
-        swap(newRoutes, 1, 2);
-        // Set "Athens Court Shuttle" to index 3
-        swap(newRoutes, 2, 3);
-        // Set "Late Night Black" to index 5
-        swap(newRoutes, 4, 5);
-        // Set "Late Night Silver" to index 6
-        swap(newRoutes, 5, 6);
-        // Set "Discovery Express Loop" to index 7
-        swap(newRoutes, 9, 7);
-
-        boolean routeActive = connector.isRouteActive("Buff Bus");
-        // Replace BuffBus slot if it's inactive and a sports route is active
-        if (!routeActive) {
-            if (connector.isRouteActive("Will Vill Football"))
-                swap(newRoutes, 0, 7);
-            else if (connector.isRouteActive("Will Vill Basketball"))
-                swap(newRoutes, 0, 8);
-        }
-
-        return newRoutes;
+        return routes;
     }
 
     /* Create a button for route-selection, based on the template */

@@ -22,6 +22,7 @@ Bus routes that are tracked:
   * Add loading indicator?
   * Unit tests for each function
   * Data JSON testing
+  * Make start page more sharp (change buttons, feedback button, font+colors)
   * Stampede (RTD integration)?
   * Diagrams!
   * Change ParsedObjets to use SparseArray over array?
