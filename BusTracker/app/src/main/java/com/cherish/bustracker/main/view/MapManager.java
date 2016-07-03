@@ -99,8 +99,8 @@ public class MapManager implements OnMapReadyCallback, OnMarkerClickListener {
         if (routeName != null) {
             // Draw route polyline
 
-            String lineData = RouteMappings.POLYLINE_MAP.get(routeName);
-            //String line_data = Polylines.POLYLINE_MAP.get(route);
+            String lineData = RouteMappings.ROUTE_POLYLINE.get(routeName);
+            //String line_data = Polylines.ROUTE_POLYLINE.get(route);
             if (lineData != null) {
                 map.addPolyline(new PolylineOptions()
                         .addAll(PolyUtil.decode(lineData))

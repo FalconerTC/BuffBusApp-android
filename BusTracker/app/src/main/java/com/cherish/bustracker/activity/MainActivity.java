@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Reorder routes to match ROUTE_MAP
         for (int i = 0; i < len; i++) {
-            int newIndex = RouteMappings.ROUTES_MAP.get(routes[i].name, i);
+            int newIndex = RouteMappings.ROUTE_ORDER.get(routes[i].name, i);
 
             if (newIndex != i) {
                 if (!connector.isRouteActive("Buff Bus")) {
