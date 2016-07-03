@@ -1,8 +1,6 @@
 package com.cherish.bustracker.lib;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Falcon on 6/5/2016.
