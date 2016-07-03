@@ -6,7 +6,7 @@ import android.graphics.Color;
 import com.cherish.bustracker.R;
 import com.cherish.bustracker.activity.DisplayActivity;
 import com.cherish.bustracker.lib.Log;
-import com.cherish.bustracker.lib.Polylines;
+import com.cherish.bustracker.lib.RouteMappings;
 import com.cherish.bustracker.main.DataModel;
 import com.cherish.bustracker.utilities.parser.objects.Bus;
 import com.cherish.bustracker.utilities.parser.objects.Stop;
@@ -95,13 +95,15 @@ public class MapManager implements OnMapReadyCallback, OnMarkerClickListener {
         Log.i(TAG, "Initializing data");
 
         // Draw the polyline for the current route
-        int route = (model.getRoute() != null ? model.getRoute().id : -1);
-        if (route >= 0) {
+        String routeName = (model.getRoute() != null ? model.getRoute().name : null);
+        if (routeName != null) {
             // Draw route polyline
-            String line_data = Polylines.POLYLINE_MAP.get(route);
-            if (line_data != null) {
+
+            String lineData = RouteMappings.POLYLINE_MAP.get(routeName);
+            //String line_data = Polylines.POLYLINE_MAP.get(route);
+            if (lineData != null) {
                 map.addPolyline(new PolylineOptions()
-                        .addAll(PolyUtil.decode(line_data))
+                        .addAll(PolyUtil.decode(lineData))
                         .width(20)
                         .color(Color.BLACK));
             }

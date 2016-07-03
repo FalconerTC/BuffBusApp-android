@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.cherish.bustracker.R;
 import com.cherish.bustracker.lib.Log;
-import com.cherish.bustracker.lib.RouteData;
+import com.cherish.bustracker.lib.RouteMappings;
 import com.cherish.bustracker.utilities.updater.ServerThread;
 import com.cherish.bustracker.main.ServerController;
 import com.cherish.bustracker.utilities.parser.objects.Route;
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Reorder routes to match ROUTE_MAP
         for (int i = 0; i < len; i++) {
-            int newIndex = RouteData.ROUTES_MAP.get(routes[i].name, i);
+            int newIndex = RouteMappings.ROUTES_MAP.get(routes[i].name, i);
 
             if (newIndex != i) {
                 if (!connector.isRouteActive("Buff Bus")) {

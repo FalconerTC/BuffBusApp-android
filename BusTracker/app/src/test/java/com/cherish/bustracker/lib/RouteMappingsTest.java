@@ -9,7 +9,7 @@ import static org.junit.Assert.assertThat;
 /**
  * Created by Falcon on 7/3/2016.
  */
-public class PolylinesTest {
+public class RouteMappingsTest {
 
     @Test
     public void getValidRoute() throws Exception {
