@@ -25,7 +25,6 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     public final static String TAG = "MainActivity";
 
-    public static final int MAX_ROUTES = 8;
     /* Tag for Extra when starting DisplayActivity*/
     public final static String SELECTED_ROUTE = "com.cherish.bustracker.selected_route";
 
@@ -79,7 +78,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // Change route order
             routes = modifyRoutes(connector);
             // Create route buttons
-            int len = (routes.length <= MAX_ROUTES ? routes.length : MAX_ROUTES);
+            int len = (routes.length <= RouteMappings.MAX_ROUTES ?
+                    routes.length : RouteMappings.MAX_ROUTES);
             int parentElem = R.id.textView_Subtitle;
             this.buttons = new Button[len];
             for (int i = 0; i < len; i++) {

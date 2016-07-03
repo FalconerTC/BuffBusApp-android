@@ -2,8 +2,8 @@ package com.cherish.bustracker.lib;
 
 /**
  * Created by Falcon on 9/5/2015.
- * <p/>
- * Taken from http://stackoverflow.com/questions/2446248/remove-all-debug-logging-calls-before-publishing-are-there-tools-to-do-this
+ * Proxy for Android's Log
+ * Taken from http://stackoverflow.com/questions/2446248
  */
 public class Log {
     static final boolean LOG = true;

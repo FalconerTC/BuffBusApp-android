@@ -10,17 +10,9 @@ public class RouteMappings {
     /*
      * Slightly modified HashMap that returns a given default value
      * if the requested value is not in the map.
-     * It also does a case-insensitive match
      * Modified from http://stackoverflow.com/questions/7519339
      */
     public static class DefaultHashMap<K,V> extends HashMap<K,V> {
-        @Override
-        public V get(Object k) {
-            if (k instanceof String)
-                return this.get(k, null);
-            return super.get(k);
-        }
-
         public V get(Object k, V defaultValue) {
             if (k instanceof String)
                 k = ((String)k).toLowerCase();
@@ -28,6 +20,7 @@ public class RouteMappings {
         }
     }
 
+    public static final int MAX_ROUTES = 8;
     // Mapping between route name and desired order on the main page
     public static final DefaultHashMap<String, Integer> ROUTE_ORDER;
     // Mapping between route name and encoded polyline
