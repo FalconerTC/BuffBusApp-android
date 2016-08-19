@@ -14,7 +14,7 @@ Bus routes that are tracked:
 ## App link
   https://play.google.com/store/apps/details?id=com.cherish.BusTracker
 
-  Next Release:
+Next Release:
   * Make start page more sharp (change buttons, feedback button, font+colors)
   * Make buttons responsive (splash effect?)
   * Stampede (RTD integration)
@@ -23,7 +23,7 @@ Bus routes that are tracked:
   * Show network information to the user (no connection vs server not responding)
   * Add loading indicator?
 
-  TODO:
+TODO:
   * Show announcements somehow?
   * Show data integrity estimates on bus times?
   * Unit tests for each function (In progress)
