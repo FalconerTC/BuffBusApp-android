@@ -24,7 +24,9 @@ Bus routes that are tracked:
   * Add loading indicator?
 
   TODO:
-  * Unit tests for each function
+  * Show announcements somehow?
+  * Show data integrity estimates on bus times?
+  * Unit tests for each function (In progress)
   * Data JSON testing
   * Diagrams!
   * Change ParsedObjets to use SparseArray over array?
