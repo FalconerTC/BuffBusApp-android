@@ -13,16 +13,18 @@ Bus routes that are tracked:
   
 ## App link
   https://play.google.com/store/apps/details?id=com.cherish.BusTracker
-  
-  TODO:
-  * Show network information to the user
-  * Add DNS record and IP redundency
-  * Make buttons more responsive
+
+  Next Release:
+  * Make start page more sharp (change buttons, feedback button, font+colors)
+  * Make buttons responsive (splash effect?)
+  * Stampede (RTD integration)
   * Set default zoom on location click
+  * Add DNS record and IP redundency
+  * Show network information to the user (no connection vs server not respondng)
   * Add loading indicator?
+
+  TODO:
   * Unit tests for each function
   * Data JSON testing
-  * Make start page more sharp (change buttons, feedback button, font+colors)
-  * Stampede (RTD integration)?
   * Diagrams!
   * Change ParsedObjets to use SparseArray over array?
