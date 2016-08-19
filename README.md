@@ -20,7 +20,7 @@ Bus routes that are tracked:
   * Stampede (RTD integration)
   * Set default zoom on location click
   * Add DNS record and IP redundency
-  * Show network information to the user (no connection vs server not respondng)
+  * Show network information to the user (no connection vs server not responding)
   * Add loading indicator?
 
   TODO:
