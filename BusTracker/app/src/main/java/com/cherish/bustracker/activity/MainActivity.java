@@ -16,9 +16,9 @@ import android.widget.Toast;
 import com.cherish.bustracker.R;
 import com.cherish.bustracker.lib.Log;
 import com.cherish.bustracker.lib.RouteMappings;
-import com.cherish.bustracker.utilities.updater.ServerThread;
 import com.cherish.bustracker.main.ServerController;
 import com.cherish.bustracker.utilities.parser.objects.Route;
+import com.cherish.bustracker.utilities.updater.ServerThread;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
@@ -34,7 +34,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ServerThread updater;
     private Button[] buttons;
 
-    /** Efficient swap helper
+    /**
+     * Efficient swap helper
      * http://stackoverflow.com/questions/13766209
      */
     public static final <T> void swap(T[] a, int i, int j) {
@@ -65,9 +66,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    /** Called by the ServerThread once it received route info
+    /**
+     * Called by the ServerThread once it received route info
      * This method then creates the buttons based on route info
-     *  then destroys the server thread
+     * then destroys the server thread
      */
     public void onNotify(ServerController connector) {
         Log.i(TAG, "Received route info");
@@ -104,17 +106,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Reorder routes to match ROUTE_MAP
         for (int i = 0; i < len; i++) {
             int newIndex = RouteMappings.ROUTE_ORDER.get(routes[i].name, i);
-
             if (newIndex != i) {
-                if (!connector.isRouteActive("Buff Bus")) {
-                    // Don't swap inactive sports routes
-                    if (routes[i].name.equals("Will Vill Football") &&
-                            !connector.isRouteActive("Will Vill Football"))
-                        continue;
-                    if (routes[i].name.equals("Will Vill Basketball") &&
-                            !connector.isRouteActive("Will Vill Basketball"))
-                        continue;
-                }
+                // Don't swap inactive sports routes
+                if (routes[i].name.equals("Will Vill Football") &&
+                        !connector.isRouteActive("Will Vill Football"))
+                    continue;
+                if (routes[i].name.equals("Will Vill Basketball") &&
+                        !connector.isRouteActive("Will Vill Basketball"))
+                    continue;
                 swap(routes, i, newIndex);
             }
         }
