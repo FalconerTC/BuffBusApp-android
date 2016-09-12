@@ -85,9 +85,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             int parentElem = R.id.textView_Subtitle;
             this.buttons = new Button[len];
             for (int i = 0; i < len; i++) {
-                buttons[i] = createRouteButton(parentElem, routes[i].name, (i + 1));
-                layout.addView(buttons[i]);
-                parentElem = (i + 1);
+                if (RouteMappings.ROUTE_ORDER.containsKey(routes[i].name.toLowerCase())) {
+                    buttons[i] = createRouteButton(parentElem, routes[i].name, (i + 1));
+                    layout.addView(buttons[i]);
+                    parentElem = (i + 1);
+                }
             }
             setContentView(layout);
 
