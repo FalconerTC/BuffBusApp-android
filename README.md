@@ -30,3 +30,4 @@ TODO:
   * Data JSON testing
   * Diagrams!
   * Change ParsedObjets to use SparseArray over array?
+  * Guarantee shortest arrival time is placed on top
