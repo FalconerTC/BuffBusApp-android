@@ -20,7 +20,7 @@ public class RouteMappings {
         }
     }
 
-    public static final int MAX_ROUTES = 9;
+    public static final int MAX_ROUTES = 12;
     // Mapping between route name and desired order on the main page
     public static final DefaultHashMap<String, Integer> ROUTE_ORDER;
     // Mapping between route name and encoded polyline

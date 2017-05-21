@@ -31,3 +31,6 @@ TODO:
   * Diagrams!
   * Change ParsedObjets to use SparseArray over array?
   * Guarantee shortest arrival time is placed on top
+  * Exclude routes with excessive times (> 2 hours)
+  * Make sure only one stop is defined as closest for RTD
+  * Differentiate between an inactive route and a stop that doesn't report an approaching bus

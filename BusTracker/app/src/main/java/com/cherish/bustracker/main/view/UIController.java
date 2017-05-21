@@ -46,19 +46,21 @@ public class UIController implements OnValueChangeListener {
             stopSelector = (NumberPicker) original.findViewById(R.id.stopPicker);
 
             int startingStop = getStartingValue();
-            selectedStop = stops[startingStop];
-            stopSelector.setMaxValue(stops.length - 1);
-            stopSelector.setDisplayedValues(stops);
-            stopSelector.setValue(startingStop);
-            stopSelector.setWrapSelectorWheel(true);
-            // Cycle visibility to adjust width to new values
-            stopSelector.setVisibility(View.GONE);
-            stopSelector.setVisibility(View.VISIBLE);
-            // Create event listener
-            stopSelector.setOnValueChangedListener(this);
+            if (stops.length >= startingStop) {
+                selectedStop = stops[startingStop];
+                stopSelector.setMaxValue(stops.length - 1);
+                stopSelector.setDisplayedValues(stops);
+                stopSelector.setValue(startingStop);
+                stopSelector.setWrapSelectorWheel(true);
+                // Cycle visibility to adjust width to new values
+                stopSelector.setVisibility(View.GONE);
+                stopSelector.setVisibility(View.VISIBLE);
+                // Create event listener
+                stopSelector.setOnValueChangedListener(this);
 
-            // Update UI
-            update(true);
+                // Update UI
+                update(true);
+            }
         }
     }
 
