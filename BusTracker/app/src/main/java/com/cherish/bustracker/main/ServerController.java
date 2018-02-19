@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * Created by Falcon on 8/13/2015.
  * <p/>
- * References http://stackoverflow.com/questions/9605913/how-to-parse-json-in-android
+ * References http://stackoverflow.com/questions/9605913
  */
 public class ServerController {
     public static final String TAG = "ServerConnector";
@@ -40,6 +40,7 @@ public class ServerController {
     //TODO add DNS redundancy
     // Server constants
     public static final String SERVER_ADDR = "http://104.131.176.10:8080/";
+    //public static final String SERVER_ADDR = "https://zmnjlpfugk.localtunnel.me/";
     public static final String ROUTES_ADDR = SERVER_ADDR + ParserFactory.PARSER_ROUTES;
     public static final String STOPS_ADDR = SERVER_ADDR + ParserFactory.PARSER_STOPS;
     public static final String BUSES_ADDR = SERVER_ADDR + ParserFactory.PARSER_BUSES;
@@ -176,6 +177,7 @@ public class ServerController {
             Log.e("IO error", "Error reading data");
             Log.printStackTrace(e);
         } catch (Exception e) {
+            // TODO add catch for IllegalStateException
             Log.e("Error", "Something broke");
             Log.printStackTrace(e);
         }
