@@ -16,6 +16,6 @@
     <string name="default_eta">X minutes</string>
     <string name="route_1">Buff Bus</string>
     <string name="bus_times_display">Arriving in:</string>
-    <string name="bus_inactive">No Buses Currently Running</string>
+    <string name="bus_inactive">No predicted arrival times</string>
 
 </resources>
